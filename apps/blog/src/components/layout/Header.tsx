@@ -9,6 +9,7 @@ export function Header() {
       component="header"
       direction="row"
       height={80}
+      minHeight={80}
       px={2}
       sx={(theme) => ({
         borderBottom: `1px solid ${theme.palette.divider}`
