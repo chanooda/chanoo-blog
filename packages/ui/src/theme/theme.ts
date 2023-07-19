@@ -7,5 +7,8 @@ export const theme = createTheme({
     background: {
       default: '#fff'
     }
+  },
+  typography: {
+    fontFamily: 'inherit'
   }
 });
