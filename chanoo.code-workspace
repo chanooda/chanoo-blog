@@ -1,0 +1,32 @@
+{
+  "folders": [
+    {
+      "name": "root",
+      "path": "."
+    },
+    {
+      "name": "chanoo",
+      "path": "./apps/blog"
+    },
+    {
+      "name": "chanoo-blog",
+      "path": "./apps/blog-admin"
+    },
+    {
+      "name": "eslint-config-custom",
+      "path": "./packages/eslint-config-custom"
+    },
+    {
+      "name": "tsconfig",
+      "path": "./packages/tsconfig"
+    },
+    {
+      "name": "ui",
+      "path": "./packages/ui"
+    },
+    {
+      "name": "ui-icon",
+      "path": "./packages/ui-icon"
+    }
+  ]
+}
