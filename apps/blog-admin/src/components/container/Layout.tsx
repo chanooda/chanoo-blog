@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import {
   AppBar,
@@ -11,13 +11,16 @@ import {
   ListItemIcon,
   ListItemText,
   ListSubheader,
+  Snackbar,
   Stack,
   Toolbar,
   Typography,
   theme,
-  useMediaQuery
+  useMediaQuery,
+  useSnackbar
 } from 'ui';
 import { Article, Create, Folder, Menu } from 'ui-icon';
+import { AlertContext } from './AlertContextProvider';
 
 export function Layout() {
   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
@@ -73,7 +76,7 @@ export function Layout() {
                 </ListItem>
               )}
             </NavLink>
-            <NavLink to="/writes">
+            <NavLink to="/write">
               {({ isActive }) => (
                 <ListItem disablePadding>
                   <ListItemButton selected={isActive}>
@@ -88,14 +91,14 @@ export function Layout() {
           </List>
           <Divider />
           <List subheader={<ListSubheader>Storage</ListSubheader>}>
-            <NavLink to="/files">
+            <NavLink to="/file">
               {({ isActive }) => (
                 <ListItem disablePadding>
                   <ListItemButton selected={isActive}>
                     <ListItemIcon>
                       <Folder />
                     </ListItemIcon>
-                    <ListItemText>files</ListItemText>
+                    <ListItemText>file</ListItemText>
                   </ListItemButton>
                 </ListItem>
               )}
