@@ -4,7 +4,8 @@ import { Home } from './Home';
 import { Layout } from './components/container/Layout';
 import { Writing } from './pages/Writing';
 import { Write } from './pages/Write';
-import { Files } from './pages/Files';
+import { FolderPage } from './pages/Folder';
+import { NotFound } from './pages/404';
 
 export function Router() {
   return (
@@ -12,9 +13,10 @@ export function Router() {
       <Route element={<Layout />} path="/">
         <Route element={<Home />} path="/" />
         <Route element={<Writing />} path="/writing" />
-        <Route element={<Write />} path="/Write" />
-        <Route element={<Files />} path="/files" />
+        <Route element={<Write />} path="write" />
+        <Route element={<FolderPage />} path="/folder" />
       </Route>
+      <Route element={<NotFound />} path="*" />
     </Routes>
   );
 }
