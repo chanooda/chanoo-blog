@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import {
   AppBar,
@@ -11,16 +11,13 @@ import {
   ListItemIcon,
   ListItemText,
   ListSubheader,
-  Snackbar,
   Stack,
   Toolbar,
   Typography,
   theme,
-  useMediaQuery,
-  useSnackbar
+  useMediaQuery
 } from 'ui';
 import { Article, Create, Folder, Menu } from 'ui-icon';
-import { AlertContext } from './AlertContextProvider';
 
 export function Layout() {
   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
@@ -50,7 +47,9 @@ export function Layout() {
               <Menu />
             </IconButton>
             <Link to="/">
-              <Typography>chanoo-admin</Typography>
+              <Typography color={theme.palette.primary.main} fontWeight={600}>
+                chanoo-admin
+              </Typography>
             </Link>
           </Stack>
         </Toolbar>
@@ -71,7 +70,7 @@ export function Layout() {
                     <ListItemIcon>
                       <Create />
                     </ListItemIcon>
-                    <ListItemText>writing</ListItemText>
+                    <ListItemText>Writing</ListItemText>
                   </ListItemButton>
                 </ListItem>
               )}
@@ -83,7 +82,7 @@ export function Layout() {
                     <ListItemIcon>
                       <Article />
                     </ListItemIcon>
-                    <ListItemText>writes</ListItemText>
+                    <ListItemText>Post</ListItemText>
                   </ListItemButton>
                 </ListItem>
               )}
@@ -91,14 +90,14 @@ export function Layout() {
           </List>
           <Divider />
           <List subheader={<ListSubheader>Storage</ListSubheader>}>
-            <NavLink to="/file">
+            <NavLink to="/folder">
               {({ isActive }) => (
                 <ListItem disablePadding>
                   <ListItemButton selected={isActive}>
                     <ListItemIcon>
                       <Folder />
                     </ListItemIcon>
-                    <ListItemText>file</ListItemText>
+                    <ListItemText>Folder</ListItemText>
                   </ListItemButton>
                 </ListItem>
               )}

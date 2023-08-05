@@ -43,7 +43,7 @@ export const useChanooQuery = <
 export type MutationKey<TVariables> = [
   Method,
   ((data: TVariables) => string) | string,
-  (data: TVariables) => unknown
+  ((data: TVariables) => unknown) | undefined
 ];
 
 export const useChanooMutation = <
@@ -66,7 +66,7 @@ export const useChanooMutation = <
       return axiosClient.request({
         method: keyCopy[0],
         url: typeof keyCopy[1] === 'function' ? keyCopy[1](variables) : keyCopy[1],
-        data: keyCopy[2](variables)
+        data: keyCopy[2] ? keyCopy[2](variables) : undefined
       });
     },
     ...options

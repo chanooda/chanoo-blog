@@ -15,6 +15,7 @@ export function Router() {
         <Route element={<Writing />} path="/writing" />
         <Route element={<Write />} path="write" />
         <Route element={<FolderPage />} path="/folder" />
+        <Route element={<FolderPage />} path="/folder/:id" />
       </Route>
       <Route element={<NotFound />} path="*" />
     </Routes>
