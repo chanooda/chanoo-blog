@@ -9,3 +9,8 @@ export interface GlobalError {
   error: string;
   status: number;
 }
+
+export interface ImageFile {
+  file: File;
+  url: string;
+}

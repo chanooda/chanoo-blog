@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse, Method } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, Method } from 'axios';
 import {
   QueryKey,
   UseMutationOptions,
@@ -56,7 +56,8 @@ export const useChanooMutation = <
   options?: Omit<
     UseMutationOptions<TData, AxiosError<TError>, TVariables, TContext>,
     'mutationFn' | 'mutationKey'
-  >
+  >,
+  axiosOption?: AxiosRequestConfig
 ) => {
   const mutation = useMutation<TData, AxiosError<TError>, TVariables, TContext>({
     mutationKey,
@@ -66,7 +67,8 @@ export const useChanooMutation = <
       return axiosClient.request({
         method: keyCopy[0],
         url: typeof keyCopy[1] === 'function' ? keyCopy[1](variables) : keyCopy[1],
-        data: keyCopy[2] ? keyCopy[2](variables) : undefined
+        data: keyCopy[2] ? keyCopy[2](variables) : undefined,
+        ...axiosOption
       });
     },
     ...options

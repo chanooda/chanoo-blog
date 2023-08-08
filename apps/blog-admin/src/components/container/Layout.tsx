@@ -32,6 +32,7 @@ export function Layout() {
     <Stack height="100%" width="100%">
       <AppBar
         color="inherit"
+        elevation={0}
         variant="outlined"
         sx={{
           zIndex: theme.zIndex.drawer + 1

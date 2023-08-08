@@ -14,6 +14,18 @@ export function ImageCoverModal({ open, onClose, image }: ImageCoverModalProps) 
   useEffect(() => {
     const imageElement = imageRef?.current;
 
+    if (window.innerWidth <= 500) {
+      setImageSize(() => ({
+        height: window.innerHeight - 20,
+        width: window.innerWidth
+      }));
+    } else {
+      setImageSize(() => ({
+        height: window.innerHeight - 100,
+        width: window.innerWidth - 100
+      }));
+    }
+
     const windowResizeHandler = () => {
       if (imageElement) {
         if (window.innerWidth <= 500) {
