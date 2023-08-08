@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
-import { Stack } from 'ui';
+import { ReactNode, forwardRef } from 'react';
+import { Stack, StackProps } from 'ui';
 
-interface ModalContentProps {
+interface ModalContentProps extends StackProps {
   children: ReactNode;
   noBackground?: boolean;
 }
@@ -16,6 +16,12 @@ const style = (noBackground?: boolean) => ({
   ...(!noBackground && { p: 2, borderRadius: 1 })
 });
 
-export function ModalContent({ children, noBackground = false }: ModalContentProps) {
-  return <Stack sx={style(noBackground)}>{children}</Stack>;
-}
+export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
+  ({ noBackground = false, children, sx, ...stackProps }, ref) => {
+    return (
+      <Stack sx={{ ...style(noBackground), ...sx }} {...stackProps} ref={ref}>
+        {children}
+      </Stack>
+    );
+  }
+);

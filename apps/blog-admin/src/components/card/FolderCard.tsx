@@ -72,7 +72,7 @@ export function FolderCard({ folder }: FolderCardProps) {
   };
 
   const editButtonClickHandler = (event: MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
+    event.preventDefault();
     setAnchorEl(null);
     setIsOpenEditModal(true);
   };
@@ -82,8 +82,8 @@ export function FolderCard({ folder }: FolderCardProps) {
       <Card
         variant="outlined"
         sx={(theme) => ({
-          height: '100%',
-          minHeight: 180,
+          width: '100%',
+          height: 200,
           position: 'relative',
           p: 1,
           cursor: 'pointer',
