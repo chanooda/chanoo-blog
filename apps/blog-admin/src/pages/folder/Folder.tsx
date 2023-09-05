@@ -1,17 +1,17 @@
 import { Card, Stack, Grid2 } from 'ui';
 import { useParams } from 'react-router-dom';
-import { useChanooQuery } from '../libs/queryHook';
-import { Folder } from '../types/folder';
-import { FolderCard } from '../components/card/FolderCard';
-import { ImageCard } from '../components/card/ImageCard';
-import { FolderAddButton } from '../components/button/FolderAddButton';
-import { ImageAddButton } from '../components/button/ImageAddButton';
+import { useChanooQuery } from '../../libs/queryHook';
+import { Folder } from '../../types/folder';
+import { FolderCard } from '../../components/card/FolderCard';
+import { ImageCard } from '../../components/card/ImageCard';
+import { FolderAddButton } from '../../components/button/FolderAddButton';
+import { ImageAddButton } from '../../components/button/ImageAddButton';
 
 // TODO 이미지는 오른쪽 클릭시에 설정 팝업이 뜨게 하기
 
 export function FolderPage() {
   const params = useParams();
-  const { data: rootFolder } = useChanooQuery<Folder[]>(['folders'], {
+  const { data: rootFolder } = useChanooQuery<Folder[]>(['folders/root'], {
     enabled: !params.id
   });
   const { data: detailFolder } = useChanooQuery<Folder>([`folders/${params.id}`], {
@@ -19,7 +19,7 @@ export function FolderPage() {
   });
 
   return (
-    <Stack direction="column" width="100%">
+    <Stack direction="column" p={4} width="100%">
       <Grid2
         columns={{ xs: 2, sm: 8, md: 12, lg: 16, xl: 15 }}
         container

@@ -4,3 +4,6 @@ export type { VariantType } from 'notistack';
 export * from './theme';
 export * from './ThemeRegistry';
 export { default as Grid2 } from '@mui/material/Unstable_Grid2';
+
+export { EllipsisTypography } from './components/EllipsisTyphography';
+export { MultiSelectInput } from './components/MultiSelectInput';

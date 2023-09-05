@@ -11,13 +11,22 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^4.29.25",
+    "@types/lodash": "^4.14.197",
+    "@uiw/react-md-editor": "^3.23.5",
     "axios": "^1.4.0",
+    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-error-boundary": "^4.0.11",
+    "react-hook-form": "^7.45.4",
+    "react-markdown": "^8.0.7",
     "react-router-dom": "^6.14.2",
+    "react-syntax-highlighter": "^15.5.0",
+    "remark-gfm": "^3.0.1",
     "ui": "workspace:*",
     "ui-icon": "workspace:*",
-    "usehooks-ts": "^2.9.1"
+    "usehooks-ts": "^2.9.1",
+    "utils": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18.2.14",

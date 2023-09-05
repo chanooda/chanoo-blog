@@ -64,7 +64,7 @@ export function Layout() {
         <Stack width={300}>
           <Toolbar />
           <List subheader={<ListSubheader>Blog</ListSubheader>}>
-            <NavLink to="/writing">
+            <NavLink to="/write">
               {({ isActive }) => (
                 <ListItem disablePadding>
                   <ListItemButton selected={isActive}>
@@ -76,7 +76,7 @@ export function Layout() {
                 </ListItem>
               )}
             </NavLink>
-            <NavLink to="/write">
+            <NavLink to="/post">
               {({ isActive }) => (
                 <ListItem disablePadding>
                   <ListItemButton selected={isActive}>
@@ -123,7 +123,7 @@ export function Layout() {
           })
         }}
       >
-        <Stack component="main" height="100$" minHeight={0} mt="64px" p={4} width="100%">
+        <Stack component="main" height="100%" minHeight={0} mt="64px" width="100%">
           <Outlet />
         </Stack>
       </Stack>
