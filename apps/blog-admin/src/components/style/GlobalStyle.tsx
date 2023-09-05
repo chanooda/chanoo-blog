@@ -4,6 +4,9 @@ export function GlobalStyle() {
   return (
     <GlobalStyles
       styles={css`
+        html {
+          font-family: 'Noto Sans KR', sans-serif;
+        }
         html,
         body,
         #root {

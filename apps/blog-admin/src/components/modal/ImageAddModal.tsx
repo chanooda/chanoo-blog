@@ -10,12 +10,13 @@ import {
   Stack,
   useSnackbar
 } from 'ui';
-import { ChangeEvent, forwardRef, useRef, useState } from 'react';
-import { Delete, Upload } from 'ui-icon';
+import { forwardRef, useState } from 'react';
+import { Delete } from 'ui-icon';
 import { useQueryClient } from '@tanstack/react-query';
 import { ModalContent } from './ModalContent';
 import { GlobalError, ImageFile } from '../../types/global';
 import { useChanooMutation } from '../../libs/queryHook';
+import { FIleUploadButton } from '../button/FIleUploadButton';
 
 export interface ImageAddModalProps extends Omit<ModalProps, 'children'> {
   folderId: number;
@@ -23,7 +24,6 @@ export interface ImageAddModalProps extends Omit<ModalProps, 'children'> {
 
 export const ImageAddModal = forwardRef<HTMLDivElement, ImageAddModalProps>(
   ({ folderId, open, onClose, ...modalProps }, ref) => {
-    const imageUploadRef = useRef<HTMLInputElement>(null);
     const client = useQueryClient();
     const { enqueueSnackbar } = useSnackbar();
     const [imageList, setImageList] = useState<ImageFile[]>([]);
@@ -34,18 +34,8 @@ export const ImageAddModal = forwardRef<HTMLDivElement, ImageAddModalProps>(
       (data) => data
     ]);
 
-    const clickImageUploadButtonHandler = () => {
-      if (!imageUploadRef?.current) return;
-      imageUploadRef.current.value = '';
-      imageUploadRef.current.click();
-    };
-
-    const changeImageHandler = (e: ChangeEvent<HTMLInputElement>) => {
-      const { files } = e.target;
-      if (!files || files?.length === 0) return;
-      const fileList = Array.from(files).map((file) => ({ file, url: URL.createObjectURL(file) }));
-
-      setImageList(fileList);
+    const getImageList = (imaegFiles: ImageFile[]) => {
+      setImageList(imaegFiles);
     };
 
     const imageClear = (_index: number) => {
@@ -79,22 +69,7 @@ export const ImageAddModal = forwardRef<HTMLDivElement, ImageAddModalProps>(
         <ModalContent sx={{ width: 'calc(100% - 50px)', maxWidth: 800 }}>
           <Stack width="100%">
             <Stack alignItems="center" direction="row" justifyContent="space-between" width="100%">
-              <Button
-                endIcon={<Upload />}
-                sx={{ maxWidth: 200 }}
-                variant="outlined"
-                onClick={clickImageUploadButtonHandler}
-              >
-                이미지 업로드
-              </Button>
-              <input
-                accept="image/*"
-                hidden
-                multiple
-                ref={imageUploadRef}
-                type="file"
-                onChange={changeImageHandler}
-              />
+              <FIleUploadButton getImageList={getImageList} multiple />
               {imageList.length > 0 && (
                 <Button color="error" endIcon={<Delete />} onClick={imageListAllClear}>
                   모두 지우기
