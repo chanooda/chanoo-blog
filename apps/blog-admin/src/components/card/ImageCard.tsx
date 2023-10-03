@@ -17,12 +17,12 @@ import { MouseEvent, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Delete } from 'ui-icon';
 import { ImageCoverModal } from '../modal/ImageCoverModal';
-import { Image } from '../../types/image';
 import { useChanooMutation } from '../../libs/queryHook';
 import { GlobalError } from '../../types/global';
+import { FolderImage } from '../../types/res';
 
 interface ImageCardProps {
-  image: Image;
+  image: FolderImage;
 }
 
 export function ImageCard({ image }: ImageCardProps) {
@@ -92,12 +92,6 @@ export function ImageCard({ image }: ImageCardProps) {
         </IconButton>
       </Card>
 
-      <ImageCoverModal
-        image={image}
-        open={isShowImageCoverModal}
-        onClose={() => setIsShowImageCoverModal(false)}
-      />
-
       <Dialog open={showAskAlert} onClose={() => setShowAskAlert(false)}>
         <DialogTitle>안내</DialogTitle>
         <DialogContent>
@@ -110,6 +104,13 @@ export function ImageCard({ image }: ImageCardProps) {
           </Button>
         </DialogActions>
       </Dialog>
+      {image && (
+        <ImageCoverModal
+          image={image}
+          open={isShowImageCoverModal}
+          onClose={() => setIsShowImageCoverModal(false)}
+        />
+      )}
     </>
   );
 }

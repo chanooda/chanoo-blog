@@ -34,8 +34,8 @@ export const ImageAddModal = forwardRef<HTMLDivElement, ImageAddModalProps>(
       (data) => data
     ]);
 
-    const getImageList = (imaegFiles: ImageFile[]) => {
-      setImageList(imaegFiles);
+    const getImageList = (imageFiles: ImageFile[]) => {
+      setImageList(imageFiles);
     };
 
     const imageClear = (_index: number) => {

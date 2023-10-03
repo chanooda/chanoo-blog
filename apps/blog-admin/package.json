@@ -11,10 +11,10 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^4.29.25",
-    "@types/lodash": "^4.14.197",
     "@uiw/react-md-editor": "^3.23.5",
     "axios": "^1.4.0",
     "lodash": "^4.17.21",
+    "markdown-to-text": "^0.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-error-boundary": "^4.0.11",
@@ -26,7 +26,8 @@
     "ui": "workspace:*",
     "ui-icon": "workspace:*",
     "usehooks-ts": "^2.9.1",
-    "utils": "workspace:*"
+    "utils": "workspace:*",
+    "markdown": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18.2.14",
@@ -35,6 +36,8 @@
     "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
     "typescript": "^5.0.2",
-    "vite": "^4.4.0"
+    "vite": "^4.4.0",
+    "@types/lodash": "^4.14.197",
+    "@types/react-syntax-highlighter": "^15.5.7"
   }
 }

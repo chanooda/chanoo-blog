@@ -1,39 +1,23 @@
-/* eslint-disable react/no-unstable-nested-components */
-import MDEditor, { ICommand, commands, image } from '@uiw/react-md-editor';
-import { MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
-  Box,
   Button,
-  Chip,
-  IconButton,
+  FormControlLabel,
   Input,
   MultiSelectInput,
-  Popover,
   Stack,
+  Switch,
   TextField,
-  Typography,
   useSnackbar
 } from 'ui';
-import { Image, Source } from 'ui-icon';
-import { day } from 'utils';
 import { FieldErrors, GlobalError, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
+import { day } from 'utils';
+import { MarkdownPreview } from 'markdown';
 import { WriteImageAddModal } from '../../../components/modal/WriteImageAddModal';
-import { WriteEmbedAddModal } from '../../../components/modal/WriteEmbedAddModal';
-import { convertLink } from '../../../libs/writerUtils';
-import { MdPreview } from '../../../components/markdown/MdPreview';
 import { useChanooMutation, useChanooQuery } from '../../../libs/queryHook';
 import { SeriesRes, TagRes, WriteRes } from '../../../types/res';
-
-export type ModalType = 'image' | 'embed' | '';
-
-interface WritingForm {
-  mainImage: string;
-  series: string;
-  tag: string[];
-  title: string;
-}
+import { WritingForm } from '../../../types/form';
+import { MarkdownEditor } from '../../../components/markdown/MarkdownEditor';
 
 interface WritingProps {
   id?: string;
@@ -41,17 +25,9 @@ interface WritingProps {
 
 export function Write({ id }: WritingProps) {
   const navigate = useNavigate();
-  const client = useQueryClient();
-  const insertImageRef = useRef<HTMLButtonElement>(null);
-  const insertEmbedRef = useRef<HTMLButtonElement>(null);
-  const [modalType, setModalType] = useState<ModalType>('');
-  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
+  const [editorValue, setEditorValue] = useState('');
   const [showImageAddModal, setShowImageAddModal] = useState(false);
   const [hideInfo, setHideInfo] = useState(false);
-  const [popoverPosition, setPopoverPosition] = useState({
-    vertical: 0,
-    horizontal: 0
-  });
   const { enqueueSnackbar } = useSnackbar();
 
   const { data: write } = useChanooQuery<WriteRes, GlobalError>([`/write/${id}`], {
@@ -68,55 +44,39 @@ export function Write({ id }: WritingProps) {
     () => [...(write?.data?.data?.tags?.map((tag) => tag.tag.name) || [])],
     [write?.data?.data]
   );
-  const [editorValue, setEditorValue] = useState(write?.data?.data?.content || '');
 
   const { data: seriesList } = useChanooQuery<SeriesRes[], GlobalError>(['/series']);
   const { data: tagList } = useChanooQuery<TagRes[], GlobalError>(['/tag']);
-  const { mutate: createWrite } = useChanooMutation<WriteRes, GlobalError, FormData>([
-    'POST',
-    '/write',
-    (data) => data
-  ]);
-  const { mutate: updateWrite } = useChanooMutation<
+  const { mutate: createWrite, isLoading: createWriteLoading } = useChanooMutation<
+    WriteRes,
+    GlobalError,
+    FormData
+  >(['POST', '/write', (data) => data]);
+  const { mutate: updateWrite, isLoading: updateWriteLoading } = useChanooMutation<
     WriteRes,
     GlobalError,
     { formData: FormData; writeId: string }
   >(['PATCH', ({ writeId }) => `/write/${writeId}`, ({ formData }) => formData]);
 
-  const contextMenuHandler = (e: MouseEvent<HTMLDivElement>) => {
-    if (e.target === document.querySelector('textarea.w-md-editor-text-input')) {
-      e.preventDefault();
-      setPopoverPosition({
-        horizontal: e.nativeEvent.offsetX,
-        vertical: e.nativeEvent.offsetY
-      });
-      setAnchorEl(e.currentTarget);
+  const updateWriteSuccessHandler = (isWriteButton?: boolean) => {
+    enqueueSnackbar({
+      message: '임시 저장 완료!',
+      variant: 'success'
+    });
+    if (isWriteButton) {
+      navigate(`/post/${id}`);
     }
   };
 
-  const closeOptionHandler = () => {
-    setAnchorEl(null);
-  };
-
-  const closeModalHandler = () => {
-    closeOptionHandler();
-    setModalType('');
-  };
-
-  const popoverContextMenuHandler = (e: MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    closeOptionHandler();
-  };
-
-  const getWriteFormData = (formData: WritingForm, type: 'save' | 'write' | 'update') => {
-    const { mainImage, series, tag, title } = formData;
+  const getWriteFormData = (formData: WritingForm) => {
+    const { mainImage, series, tag, title, isPublish } = formData;
 
     const writeFormData = new FormData();
     writeFormData.append('title', title);
     writeFormData.append('content', editorValue);
     writeFormData.append('imgUrl', mainImage);
     writeFormData.append('seriesName', series);
-    writeFormData.append('isPublish', JSON.stringify(type === 'save' ? 'false' : 'true'));
+    writeFormData.append('isPublish', String(isPublish));
     writeFormData.append('tagNames', JSON.stringify(tag));
 
     return writeFormData;
@@ -133,21 +93,35 @@ export function Write({ id }: WritingProps) {
     });
   };
 
-  const updateWriteSubmitHandler = handleSubmit(
+  const updateSaveSubmitHandler = handleSubmit(
     (formData) => {
-      if (!id) return;
-      const writeFormData = getWriteFormData(formData, 'save');
+      if (!id || updateWriteLoading) return;
+      const writeFormData = getWriteFormData(formData);
 
       updateWrite(
         { formData: writeFormData, writeId: id },
         {
           onSuccess() {
-            enqueueSnackbar({
-              message: '글 수정 완료!',
-              variant: 'success'
-            });
+            updateWriteSuccessHandler(false);
+          }
+        }
+      );
+    },
+    (error) => {
+      formErrorHandler(error);
+    }
+  );
 
-            client.invalidateQueries([`/write/${id}`]);
+  const updateWriteSubmitHandler = handleSubmit(
+    (formData) => {
+      if (!id || updateWriteLoading) return;
+      const writeFormData = getWriteFormData(formData);
+
+      updateWrite(
+        { formData: writeFormData, writeId: id },
+        {
+          onSuccess() {
+            updateWriteSuccessHandler(true);
           }
         }
       );
@@ -159,15 +133,18 @@ export function Write({ id }: WritingProps) {
 
   const saveWriteSubmitHandler = handleSubmit(
     (formData) => {
-      const writeFormData = getWriteFormData(formData, 'save');
+      if (createWriteLoading) return;
+      const writeFormData = getWriteFormData(formData);
       createWrite(writeFormData, {
         onSuccess(data) {
           enqueueSnackbar({
             message: '임시 저장 완료!',
             variant: 'success'
           });
-          const writeId = data?.data?.data?.id;
-          navigate(`/writing/${writeId}`);
+          if (!id) {
+            const writeId = data?.data?.data?.id;
+            navigate(`/post/${writeId}/edit`);
+          }
         }
       });
     },
@@ -178,15 +155,16 @@ export function Write({ id }: WritingProps) {
 
   const writeSubmitHandler = handleSubmit(
     (formData) => {
-      const writeFormData = getWriteFormData(formData, 'write');
+      if (createWriteLoading) return;
+      const writeFormData = getWriteFormData(formData);
       createWrite(writeFormData, {
         onSuccess(data) {
           enqueueSnackbar({
-            message: '임시 저장 완료!',
+            message: '글쓰기 완료',
             variant: 'success'
           });
           const writeId = data?.data?.data?.id;
-          navigate(`/write/${writeId}`);
+          navigate(`/post/${writeId}`);
         }
       });
     },
@@ -195,122 +173,57 @@ export function Write({ id }: WritingProps) {
     }
   );
 
-  const insertImage: ICommand = {
-    value: 'image',
-    name: 'image',
-    keyCommand: 'image',
-    shortcuts: image.shortcuts,
-    children: ({ textApi, close }) => {
-      return (
-        <WriteImageAddModal
-          open={modalType === 'image'}
-          onChooseImage={(url: string) => {
-            textApi?.replaceSelection(`![image](${url})`);
-            close();
-            setModalType('');
-          }}
-          onClose={() => {
-            closeModalHandler();
-            close();
-          }}
-        />
-      );
-    },
-    render(command, disabled, executeCommand) {
-      return (
-        <IconButton
-          ref={insertImageRef}
-          size="small"
-          sx={{
-            width: 20,
-            height: 15
-          }}
-          onClick={() => {
-            executeCommand(command);
-          }}
-        >
-          <Image fontSize="inherit" />
-        </IconButton>
-      );
-    },
-    execute() {
-      setModalType((prev) => (prev === 'image' ? '' : 'image'));
+  const clickSaveButtonHandler = () => {
+    if (id) {
+      updateSaveSubmitHandler();
+    } else {
+      saveWriteSubmitHandler();
     }
   };
 
-  const embed: ICommand = {
-    name: 'embed',
-    keyCommand: 'embed',
-    render: (command, disabled, executeCommand) => (
-      <IconButton
-        ref={insertEmbedRef}
-        size="small"
-        sx={{
-          width: 20,
-          height: 15
-        }}
-        onClick={() => {
-          executeCommand(command);
-        }}
-      >
-        <Source fontSize="inherit" />
-      </IconButton>
-    ),
-    children: ({ textApi, close }) => {
-      return (
-        <WriteEmbedAddModal
-          open={modalType === 'embed'}
-          getEmbedUrl={(url: string) => {
-            textApi?.replaceSelection(convertLink(url));
-            close();
-            closeModalHandler();
-          }}
-          onClose={() => {
-            close();
-            closeModalHandler();
-          }}
-        />
-      );
-    },
-    execute() {
-      setModalType((prev) => (prev === 'embed' ? '' : 'embed'));
+  const clickWriteButtonHandler = () => {
+    if (id) {
+      updateWriteSubmitHandler();
+    } else {
+      writeSubmitHandler();
     }
   };
-
-  const {
-    bold,
-    italic,
-    hr,
-    title,
-    divider,
-    unorderedListCommand,
-    orderedListCommand,
-    checkedListCommand
-  } = commands;
-
-  const newCommands = [
-    bold,
-    italic,
-    hr,
-    title,
-    divider,
-    unorderedListCommand,
-    orderedListCommand,
-    checkedListCommand,
-    divider,
-    insertImage,
-    embed
-  ];
 
   useEffect(() => {
     reset({
       tag: initialTagList || [],
       title: write?.data?.data?.title || '',
       mainImage: write?.data?.data?.imgUrl || '',
-      series: write?.data?.data?.series.name || ''
+      series: write?.data?.data?.series?.name || ''
     });
     setEditorValue(write?.data?.data?.content || '');
   }, [write?.data?.data]);
+
+  useEffect(() => {
+    const { confirm, history, location } = window;
+    const preventGoBack = () => {
+      if (confirm('페이지 이동 시 저장되지 않을 수 있습니다.')) {
+        history.go(-2);
+      } else {
+        history.back();
+      }
+    };
+    const beforeunloadHandler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = '';
+      return '';
+    };
+
+    history.pushState(null, '', location.href);
+
+    window.addEventListener('popstate', preventGoBack);
+    window.addEventListener('beforeunload', beforeunloadHandler);
+
+    return () => {
+      window.removeEventListener('popstate', preventGoBack);
+      window.removeEventListener('beforeunload', beforeunloadHandler);
+    };
+  }, []);
 
   return (
     <>
@@ -330,84 +243,76 @@ export function Write({ id }: WritingProps) {
           height="100%"
           width="50%"
         >
-          {!hideInfo ? (
-            <Stack
-              gap={2}
-              height={300}
-              justifyContent="center"
-              minHeight={300}
-              overflow="auto"
-              px={2}
-              py={1}
-            >
-              <TextField
-                placeholder="제목을 입력해주세요."
-                size="small"
-                type="text"
-                variant="standard"
-                {...register('title', {
-                  required: '제목을 입력해주세요.'
-                })}
-              />
-              <Input inputProps={{ list: 'series' }} {...register('series')} placeholder="시리즈" />
+          <Stack
+            alignItems="center"
+            borderBottom={(theme) => `1px solid ${theme.palette.grey[500]}`}
+            direction="row"
+            justifyContent="space-between"
+            px={2}
+            py={2}
+            width="100%"
+          >
+            <FormControlLabel control={<Switch {...register('isPublish')} />} label="공개 여부" />
+            <Stack direction="row" gap={2} ml="auto">
+              <Button variant="outlined" onClick={clickSaveButtonHandler}>
+                임시저장
+              </Button>
+              <Button variant="contained" onClick={clickWriteButtonHandler}>
+                글쓰기
+              </Button>
+            </Stack>
+          </Stack>
+          {!hideInfo && (
+            <Stack height={210} minHeight={210} overflow="auto">
+              <Stack gap={2} px={2} py={2} width="100%">
+                <TextField
+                  placeholder="제목을 입력해주세요."
+                  size="small"
+                  type="text"
+                  variant="standard"
+                  {...register('title', {
+                    required: '제목을 입력해주세요.'
+                  })}
+                />
+                <Input
+                  inputProps={{ list: 'series' }}
+                  {...register('series')}
+                  placeholder="시리즈"
+                />
 
-              <datalist id="series">
-                {seriesList?.data?.data?.map((series) => (
-                  <option key={series.id} value={series.name}>
-                    {series.name}
-                  </option>
-                ))}
-              </datalist>
-              <MultiSelectInput
-                initialValue={initialTagList}
-                placeholder="태그"
-                selectOptionList={tagList?.data?.data?.map((tag) => ({
-                  label: tag.name,
-                  value: tag.name
-                }))}
-                {...register('tag')}
-              />
-              <Stack direction="row" justifyContent="space-between" width="100%">
-                <Button
-                  color="secondary"
-                  sx={{ maxWidth: 130 }}
-                  variant="contained"
-                  onClick={() => setShowImageAddModal(true)}
-                >
-                  메인 이미지 추가
-                </Button>
-                <Button color="secondary" onClick={() => setHideInfo(true)}>
-                  접기
-                </Button>
-              </Stack>
-              <Stack
-                alignItems="center"
-                direction="row"
-                justifyContent="space-between"
-                width="100%"
-              >
-                {!id && (
-                  <>
-                    <Button variant="outlined" onClick={saveWriteSubmitHandler}>
-                      임시저장
-                    </Button>
-                    <Button variant="contained" onClick={writeSubmitHandler}>
-                      글쓰기
-                    </Button>
-                  </>
-                )}
-                {id && (
+                <datalist id="series">
+                  {seriesList?.data?.data?.map((series) => (
+                    <option key={series.id} value={series.name}>
+                      {series.name}
+                    </option>
+                  ))}
+                </datalist>
+                <MultiSelectInput
+                  initialValue={initialTagList}
+                  placeholder="태그"
+                  selectOptionList={tagList?.data?.data?.map((tag) => ({
+                    label: tag.name,
+                    value: tag.name
+                  }))}
+                  {...register('tag')}
+                />
+                <Stack direction="row" justifyContent="space-between" width="100%">
                   <Button
-                    sx={{ ml: 'auto' }}
+                    color="secondary"
+                    sx={{ maxWidth: 130 }}
                     variant="contained"
-                    onClick={updateWriteSubmitHandler}
+                    onClick={() => setShowImageAddModal(true)}
                   >
-                    저장하기
+                    메인 이미지 추가
                   </Button>
-                )}
+                  <Button color="secondary" onClick={() => setHideInfo(true)}>
+                    접기
+                  </Button>
+                </Stack>
               </Stack>
             </Stack>
-          ) : (
+          )}
+          {hideInfo && (
             <Stack width="100%">
               <Button color="secondary" onClick={() => setHideInfo(false)}>
                 펼치기
@@ -415,14 +320,7 @@ export function Write({ id }: WritingProps) {
             </Stack>
           )}
           <Stack height="100%" minHeight={0}>
-            <MDEditor
-              commands={[...newCommands]}
-              height="100%"
-              preview="edit"
-              value={editorValue}
-              onChange={setEditorValue as any}
-              onContextMenu={contextMenuHandler}
-            />
+            <MarkdownEditor value={editorValue} onChange={setEditorValue as any} />
           </Stack>
         </Stack>
         <Stack height="100%" width="50%">
@@ -434,59 +332,20 @@ export function Write({ id }: WritingProps) {
             sx={{ overflow: 'auto' }}
             width="100%"
           >
-            <Stack direction="column" width="100%">
-              <Box component="h1" my={0}>
-                {watch('title')}
-              </Box>
-              <Stack direction="row" mt={1}>
-                <Typography fontWeight={600}>김찬우</Typography> ・
-                <Typography color="grey.700">{day.todayFull}</Typography>
-              </Stack>
-              {watch('tag') && (
-                <Stack direction="row" flexWrap="wrap" gap={2} mt={2} width="100%">
-                  {watch('tag').map((tag) => (
-                    <Chip key={tag} label={tag} />
-                  ))}
-                </Stack>
-              )}
-              {watch('series') && (
-                <Stack bgcolor="grey.200" borderRadius={2} height={100} mt={2} p={2} width="100%">
-                  <Typography variant="h6">{watch('series')}</Typography>
-                </Stack>
-              )}
-              {watch('mainImage') && (
-                <Box mt={2} width="100%">
-                  <Box
-                    alt="메인 이미지"
-                    component="img"
-                    src={watch('mainImage')}
-                    sx={{ objectFit: 'cover', aspectRatio: 16 / 9 }}
-                    width="100%"
-                  />
-                </Box>
-              )}
-            </Stack>
-            <MdPreview>{editorValue}</MdPreview>
+            <MarkdownPreview
+              write={{
+                mainImage: watch('mainImage'),
+                series: watch('series'),
+                tag: watch('tag'),
+                title: watch('title'),
+                createdAt: write?.data?.data?.createdAt || day().todayFull()
+              }}
+            >
+              {editorValue}
+            </MarkdownPreview>
           </Stack>
         </Stack>
       </Stack>
-      <Popover
-        anchorEl={anchorEl}
-        anchorOrigin={popoverPosition}
-        id="folder-edit"
-        open={!!anchorEl}
-        onClose={closeOptionHandler}
-        onContextMenu={popoverContextMenuHandler}
-      >
-        <Stack direction="row">
-          <IconButton size="large" onClick={() => insertImageRef.current?.click()}>
-            <Image />
-          </IconButton>
-          <IconButton size="large" onClick={() => insertEmbedRef.current?.click()}>
-            <Source />
-          </IconButton>
-        </Stack>
-      </Popover>
       <WriteImageAddModal
         open={showImageAddModal}
         onClose={() => setShowImageAddModal(false)}

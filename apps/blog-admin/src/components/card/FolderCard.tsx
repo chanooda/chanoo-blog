@@ -18,12 +18,13 @@ import {
 } from 'ui';
 import { Folder as FolderIcon, MoreVert } from 'ui-icon';
 import { useQueryClient } from '@tanstack/react-query';
-import { Folder } from '../../types/folder';
+import { GlobalError } from 'react-hook-form';
 import { useChanooMutation } from '../../libs/queryHook';
 import { FolderMutateModal } from '../modal/FolderMutateModal';
+import { FolderRes } from '../../types/res';
 
 interface FolderCardProps {
-  folder: Folder;
+  folder: FolderRes;
 }
 
 export function FolderCard({ folder }: FolderCardProps) {
@@ -40,16 +41,17 @@ export function FolderCard({ folder }: FolderCardProps) {
     (folder?.folderImage?.length || 0) +
     (folder?.child?.length || 0);
 
-  const { mutate: deleteFolder, isLoading: isDeleteFolderLoading } = useChanooMutation(
-    ['DELETE', `/folders/${folder.id}`, undefined],
-    {
-      onSuccess() {
-        enqueueSnackbar('폴더가 삭제되었습니다.', { variant: 'success' });
-        setAnchorEl(null);
-        client.invalidateQueries([folder.parentId ? `folders/${folder.parentId}` : `folders`]);
-      }
+  const { mutate: deleteFolder, isLoading: isDeleteFolderLoading } = useChanooMutation<
+    unknown,
+    GlobalError,
+    unknown
+  >(['DELETE', `/folders/${folder.id}`, undefined], {
+    onSuccess() {
+      enqueueSnackbar('폴더가 삭제되었습니다.', { variant: 'success' });
+      setAnchorEl(null);
+      client.invalidateQueries([folder.parentId ? `folders/${folder.parentId}` : `folders/root`]);
     }
-  );
+  });
 
   const clickFolderCardHandler = (folderId: number) => {
     navigate(`/folder/${folderId}`);
@@ -68,7 +70,7 @@ export function FolderCard({ folder }: FolderCardProps) {
   const deleteButtonClickHandler = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (isDeleteFolderLoading) return;
-    deleteFolder();
+    deleteFolder({});
   };
 
   const editButtonClickHandler = (event: MouseEvent<HTMLButtonElement>) => {

@@ -4,11 +4,12 @@ import { useQueryClient } from '@tanstack/react-query';
 import { ModalContent } from './ModalContent';
 import { useChanooMutation } from '../../libs/queryHook';
 import { GlobalError } from '../../types/global';
-import { EditFolder, Folder, AddFolder } from '../../types/folder';
+import { FolderRes } from '../../types/res';
+import { AddFolder, EditFolder } from '../../types/req';
 
 interface FolderAddModalProps extends Omit<ModalProps, 'children'> {
-  folder?: Folder;
-  parentId?: Folder['parentId'];
+  folder?: FolderRes;
+  parentId?: FolderRes['parentId'];
 }
 
 export const FolderMutateModal = forwardRef<HTMLDivElement, FolderAddModalProps>(
@@ -25,7 +26,7 @@ export const FolderMutateModal = forwardRef<HTMLDivElement, FolderAddModalProps>
       onSuccess() {
         enqueueSnackbar('폴더 생성 성공!', { variant: 'success' });
         setFolderName('');
-        client.invalidateQueries(parentId ? [`folders/${parentId}`] : [`folders`]);
+        client.invalidateQueries(parentId ? [`folders/${parentId}`] : [`folders/root`]);
         if (onClose) onClose({}, 'escapeKeyDown');
       }
     });
@@ -38,14 +39,14 @@ export const FolderMutateModal = forwardRef<HTMLDivElement, FolderAddModalProps>
       onSuccess() {
         enqueueSnackbar('폴더 수정 성공!', { variant: 'success' });
         setFolderName('');
-        client.invalidateQueries(parentId ? [`folders/${parentId}`] : [`folders`]);
+        client.invalidateQueries(parentId ? [`folders/${parentId}`] : [`folders/root`]);
         if (onClose) onClose({}, 'escapeKeyDown');
       }
     });
 
     const folderAddSubmitHandler = (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      if (isAddFolderLoading || isEditFolderLoading) return;
+      if (!folderName || isAddFolderLoading || isEditFolderLoading) return;
 
       if (folder) {
         editFolder({
