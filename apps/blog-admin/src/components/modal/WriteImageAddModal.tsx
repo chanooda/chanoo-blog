@@ -20,31 +20,39 @@ import { useQueryClient } from '@tanstack/react-query';
 import { ModalContent } from './ModalContent';
 import { FIleUploadButton } from '../button/FIleUploadButton';
 import { GlobalError, ImageFile } from '../../types/global';
-import { useChanooQuery } from '../../libs/queryHook';
-import { Folder } from '../../types/folder';
+import { useChanooMutation, useChanooQuery } from '../../libs/queryHook';
+import { FolderImage, FolderRes } from '../../types/res';
 
 export interface WriteImageAddModalProps extends Omit<ModalProps, 'children'> {
   onChooseImage: (url: string) => void;
 }
 
 export const WriteImageAddModal = forwardRef<HTMLDivElement, WriteImageAddModalProps>(
-  ({ onChooseImage, ...modalProps }, ref) => {
+  ({ onChooseImage, open, ...modalProps }, ref) => {
     const embedImageRef = useRef<HTMLImageElement>(null);
     const client = useQueryClient();
     const [tabValue, setTabValue] = useState('upload');
     const [imageList, setImageList] = useState<ImageFile[]>([]);
     const [embed, setEmbed] = useState('');
     const [embedUrl, setEmbedUrl] = useState('');
-    const [uploadFolderName, setUploadFolderName] = useState('0');
+    const [uploadFolderId, setUploadFolderId] = useState('0');
     const [folderId, setFolderId] = useState<string | undefined>(undefined);
 
-    const { data: folders } = useChanooQuery<Folder[], GlobalError>(['folders']);
-    const { data: folderDetail, isLoading } = useChanooQuery<Folder, GlobalError>(
+    const { data: folders } = useChanooQuery<FolderRes[], GlobalError>(['folders'], {
+      enabled: open
+    });
+    const { data: folderDetail, isLoading } = useChanooQuery<FolderRes, GlobalError>(
       [`folders/${folderId}`],
       {
-        enabled: !!folderId
+        enabled: !!folderId && open
       }
     );
+    const { mutate, isLoading: addImageLoading } = useChanooMutation<
+      FolderImage,
+      GlobalError,
+      FormData
+    >(['POST', `/folders/${uploadFolderId}/image`, (data) => data]);
+
     const folderImageList = folderDetail?.data?.data?.folderImage || [];
 
     // 탭 이동
@@ -52,12 +60,27 @@ export const WriteImageAddModal = forwardRef<HTMLDivElement, WriteImageAddModalP
       setImageList([]);
       setEmbed('');
       setEmbedUrl('');
-      setUploadFolderName('0');
+      setUploadFolderId('0');
       client.cancelQueries([`folders/${folderId}`]);
     };
     const changeTabHandler = (event: React.SyntheticEvent, newValue: string) => {
       dataClear();
       setTabValue(newValue);
+    };
+
+    // 이미지 업로드 버튼
+    const clickUploadButtonHandler = () => {
+      if (tabValue === 'embed' && embedUrl) onChooseImage(embed);
+      if (tabValue === 'upload') {
+        if (imageList?.length < 1 || addImageLoading || !uploadFolderId) return;
+        const formData = new FormData();
+        formData.append('image', imageList[0].file);
+        mutate(formData, {
+          onSuccess(data) {
+            onChooseImage(data.data.data.url);
+          }
+        });
+      }
     };
 
     // 업로드 이미지
@@ -66,7 +89,7 @@ export const WriteImageAddModal = forwardRef<HTMLDivElement, WriteImageAddModalP
     };
 
     const uploadFolderSelectChangeHandler = (e: SelectChangeEvent) => {
-      setUploadFolderName(e.target.value);
+      setUploadFolderId(e.target.value);
     };
 
     // embed
@@ -91,7 +114,7 @@ export const WriteImageAddModal = forwardRef<HTMLDivElement, WriteImageAddModalP
     };
 
     return (
-      <Modal {...modalProps} ref={ref}>
+      <Modal {...modalProps} open={open} ref={ref}>
         <ModalContent sx={{ width: 'calc(100% - 24px)', maxWidth: 600 }}>
           <Stack width="100%">
             <Tabs value={tabValue} onChange={changeTabHandler}>
@@ -183,7 +206,7 @@ export const WriteImageAddModal = forwardRef<HTMLDivElement, WriteImageAddModalP
               {tabValue === 'upload' && (
                 <Select
                   size="medium"
-                  value={uploadFolderName}
+                  value={uploadFolderId}
                   variant="standard"
                   onChange={uploadFolderSelectChangeHandler}
                 >
@@ -199,7 +222,9 @@ export const WriteImageAddModal = forwardRef<HTMLDivElement, WriteImageAddModalP
               )}
               {tabValue !== 'file' && (
                 <Stack mx="auto" width={300}>
-                  <Button variant="contained">업로드</Button>
+                  <Button variant="contained" onClick={clickUploadButtonHandler}>
+                    업로드
+                  </Button>
                 </Stack>
               )}
             </Stack>

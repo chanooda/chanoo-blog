@@ -1,10 +1,10 @@
 import { Box, Modal, ModalProps } from 'ui';
 import { useEffect, useRef, useState } from 'react';
 import { ModalContent } from './ModalContent';
-import { Image } from '../../types/image';
+import { FolderImage } from '../../types/res';
 
 interface ImageCoverModalProps extends Omit<ModalProps, 'children'> {
-  image?: Image;
+  image?: FolderImage;
 }
 
 export function ImageCoverModal({ open, onClose, image }: ImageCoverModalProps) {

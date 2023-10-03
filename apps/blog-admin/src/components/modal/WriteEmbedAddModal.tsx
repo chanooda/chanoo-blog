@@ -20,7 +20,7 @@ export function WriteEmbedAddModal({ getEmbedUrl, ...props }: WriteEmbedAddModal
   return (
     <Modal {...props}>
       <ModalContent sx={{ width: 'calc(100% - 40px)', maxWidth: 500 }}>
-        <Input type="text" onChange={onChange} />
+        <Input placeholder="url을 입력해주세요." type="text" onChange={onChange} />
         <Button fullWidth sx={{ mt: 2 }} onClick={submitHandler}>
           확인
         </Button>

@@ -1,20 +1,20 @@
 import { Card, Stack, Grid2 } from 'ui';
 import { useParams } from 'react-router-dom';
 import { useChanooQuery } from '../../libs/queryHook';
-import { Folder } from '../../types/folder';
 import { FolderCard } from '../../components/card/FolderCard';
 import { ImageCard } from '../../components/card/ImageCard';
 import { FolderAddButton } from '../../components/button/FolderAddButton';
 import { ImageAddButton } from '../../components/button/ImageAddButton';
+import { FolderRes } from '../../types/res';
 
 // TODO 이미지는 오른쪽 클릭시에 설정 팝업이 뜨게 하기
 
 export function FolderPage() {
   const params = useParams();
-  const { data: rootFolder } = useChanooQuery<Folder[]>(['folders/root'], {
+  const { data: rootFolder } = useChanooQuery<FolderRes[]>(['folders/root'], {
     enabled: !params.id
   });
-  const { data: detailFolder } = useChanooQuery<Folder>([`folders/${params.id}`], {
+  const { data: detailFolder } = useChanooQuery<FolderRes>([`folders/${params.id}`], {
     enabled: !!params.id
   });
 

@@ -49,7 +49,7 @@ export type MutationKey<TVariables> = [
 export const useChanooMutation = <
   TData = unknown,
   TError = unknown,
-  TVariables = object,
+  TVariables = void,
   TContext = unknown
 >(
   mutationKey: MutationKey<TVariables>,
@@ -71,7 +71,7 @@ export const useChanooMutation = <
     TContext
   >({
     mutationKey,
-    mutationFn: (variables) => {
+    mutationFn: (variables: TVariables) => {
       const keyCopy: MutationKey<TVariables> = [...mutationKey];
 
       return axiosClient.request({

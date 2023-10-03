@@ -69,9 +69,6 @@ importers:
       '@tanstack/react-query':
         specifier: ^4.29.25
         version: 4.29.25(react-dom@18.2.0)(react@18.2.0)
-      '@types/lodash':
-        specifier: ^4.14.197
-        version: 4.14.197
       '@uiw/react-md-editor':
         specifier: ^3.23.5
         version: 3.23.5(@types/react@18.2.15)(react-dom@18.2.0)(react@18.2.0)
@@ -81,6 +78,12 @@ importers:
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
+      markdown:
+        specifier: workspace:*
+        version: link:../../packages/markdown
+      markdown-to-text:
+        specifier: ^0.1.1
+        version: 0.1.1
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -118,12 +121,18 @@ importers:
         specifier: workspace:*
         version: link:../../packages/utils
     devDependencies:
+      '@types/lodash':
+        specifier: ^4.14.197
+        version: 4.14.197
       '@types/react':
         specifier: ^18.2.14
         version: 18.2.15
       '@types/react-dom':
         specifier: ^18.2.6
         version: 18.2.7
+      '@types/react-syntax-highlighter':
+        specifier: ^15.5.7
+        version: 15.5.7
       '@vitejs/plugin-react-swc':
         specifier: ^3.3.2
         version: 3.3.2(vite@4.4.0)
@@ -199,6 +208,61 @@ importers:
         version: link:../tsconfig
       typescript:
         specifier: ^5.0.3
+        version: 5.1.6
+
+  packages/markdown:
+    dependencies:
+      markdown-to-text:
+        specifier: ^0.1.1
+        version: 0.1.1
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+      react-markdown:
+        specifier: ^8.0.7
+        version: 8.0.7(@types/react@18.2.15)(react@18.2.0)
+      react-router-dom:
+        specifier: ^6.14.2
+        version: 6.14.2(react-dom@18.2.0)(react@18.2.0)
+      react-syntax-highlighter:
+        specifier: ^15.5.0
+        version: 15.5.0(react@18.2.0)
+      remark-gfm:
+        specifier: ^3.0.1
+        version: 3.0.1
+      ui:
+        specifier: workspace:*
+        version: link:../ui
+      ui-icon:
+        specifier: workspace:*
+        version: link:../ui-icon
+      utils:
+        specifier: workspace:*
+        version: link:../utils
+    devDependencies:
+      '@types/lodash':
+        specifier: ^4.14.197
+        version: 4.14.197
+      '@types/react':
+        specifier: ^18.2.14
+        version: 18.2.15
+      '@types/react-dom':
+        specifier: ^18.2.6
+        version: 18.2.7
+      '@types/react-syntax-highlighter':
+        specifier: ^15.5.7
+        version: 15.5.7
+      eslint-config-custom:
+        specifier: workspace:*
+        version: link:../eslint-config-custom
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: ^5.0.2
         version: 5.1.6
 
   packages/tsconfig: {}
@@ -1222,6 +1286,10 @@ packages:
       - typescript
     dev: true
 
+  /@types/chai@4.3.6:
+    resolution: {integrity: sha512-VOVRLM1mBxIRxydiViqPcKn6MIxZytrbMpd6RJLIWKxUNr3zux8no0Oc7kJx0WAPIitgZ0gkrDS+btlqQpubpw==}
+    dev: false
+
   /@types/debug@4.1.8:
     resolution: {integrity: sha512-/vPO1EPOs306Cvhwv7KfVfYvOJqA/S/AXjaHQiJboCZzcNDb+TIJFN9/2C9DZ//ijSKWioNyUxD792QmDJ+HKQ==}
     dependencies:
@@ -1258,7 +1326,7 @@ packages:
 
   /@types/lodash@4.14.197:
     resolution: {integrity: sha512-BMVOiWs0uNxHVlHBgzTIqJYmj+PgCo4euloGF+5m4okL3rEYzM2EEv78mw8zWSMM57dM7kVIgJ2QDvwHSoCI5g==}
-    dev: false
+    dev: true
 
   /@types/mdast@3.0.12:
     resolution: {integrity: sha512-DT+iNIRNX884cx0/Q1ja7NyUPpZuv0KPyL5rGNxm1WC1OtHstl7n4Jb7nk+xacNShQMbczJjt8uFzznpp6kYBg==}
@@ -1269,6 +1337,10 @@ packages:
   /@types/minimatch@5.1.2:
     resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
     dev: true
+
+  /@types/mocha@8.2.3:
+    resolution: {integrity: sha512-ekGvFhFgrc2zYQoX4JeZPmVzZxw6Dtllga7iGHzfbYIYkAMUx/sAFP2GdFpLff+vdHXu5fl7WX9AT+TtqYcsyw==}
+    dev: false
 
   /@types/ms@0.7.31:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
@@ -1304,6 +1376,12 @@ packages:
     dependencies:
       '@types/react': 18.2.15
     dev: false
+
+  /@types/react-syntax-highlighter@15.5.7:
+    resolution: {integrity: sha512-bo5fEO5toQeyCp0zVHBeggclqf5SQ/Z5blfFmjwO5dkMVGPgmiwZsJh9nu/Bo5L7IHTuGWrja6LxJVE2uB5ZrQ==}
+    dependencies:
+      '@types/react': 18.2.15
+    dev: true
 
   /@types/react-transition-group@4.4.6:
     resolution: {integrity: sha512-VnCdSxfcm08KjsJVQcfBmhEQAPnLB8G08hAxn39azX1qYBQ/5RVQuoHuKIcfKOdncuaUvEpFKFzEvbtIMsfVew==}
@@ -3821,6 +3899,13 @@ packages:
 
   /markdown-table@3.0.3:
     resolution: {integrity: sha512-Z1NL3Tb1M9wH4XESsCDEksWoKTdlUafKc4pt0GRwjUyXaCFZ+dc3g2erqB6zm3szA2IUSi7VnPI+o/9jnxh9hw==}
+    dev: false
+
+  /markdown-to-text@0.1.1:
+    resolution: {integrity: sha512-co/J5l8mJ2RK9wD/nQRGwO7JxoeyfvVNtOZll016EdAX2qYkwCWMdtYvJO42b41Ho7GFEJMuly9llf0Nj+ReQw==}
+    dependencies:
+      '@types/chai': 4.3.6
+      '@types/mocha': 8.2.3
     dev: false
 
   /mdast-util-definitions@5.1.2:

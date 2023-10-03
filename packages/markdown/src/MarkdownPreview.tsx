@@ -6,16 +6,24 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Box, Chip, EllipsisTypography, Stack, Typography } from 'ui';
 import { Components } from 'react-markdown';
 import { useEffect, useState } from 'react';
-import { day } from 'utils';
 import { Link } from 'react-router-dom';
-import { convertLink } from '../../libs/writerUtils';
-import { githubRepoInfo, githubUserInfo } from '../../types/mdPreview';
-import { WritingForm } from '../../types/form';
-import { WriteDeleteModal } from '../modal/WriteDeleteModal';
+import { day } from 'utils';
+import { githubRepoInfo, githubUserInfo } from './markdownType';
+import { convertLink } from './markdownUtils';
+
+interface MarkdownPreviewWrite {
+  createdAt?: string;
+  isPublish?: boolean;
+  mainImage?: string;
+  series?: string;
+  tag?: string[];
+  title?: string;
+}
 
 export interface MdPreviewProps extends ReactMarkdownOptions {
   id?: string;
-  write?: Partial<WritingForm> & { createdAt?: string };
+  isAdmin?: boolean;
+  write?: MarkdownPreviewWrite;
 }
 
 const Code: Components['code'] = ({ node, inline, className, children, ...props }) => {
@@ -188,7 +196,7 @@ const Blockquote: Components['blockquote'] = ({ ...props }) => {
   );
 };
 
-export function MdPreview({ children, id, write }: MdPreviewProps) {
+export function MarkdownPreview({ children, id, write, isAdmin = false }: MdPreviewProps) {
   const [isShowDeleteModal, setIsShowDeleteModal] = useState(false);
 
   const clickDeleteHandler = () => {
@@ -201,7 +209,7 @@ export function MdPreview({ children, id, write }: MdPreviewProps) {
         <Box component="h1" my={0}>
           {write?.title}
         </Box>
-        {id && (
+        {isAdmin && id && (
           <Stack direction="row" gap={1} justifyContent="end" width="100%">
             <Link to={`/post/${id}/edit`}>
               <Typography sx={{ textDecoration: 'underline' }}>수정</Typography>
@@ -256,14 +264,6 @@ export function MdPreview({ children, id, write }: MdPreviewProps) {
       >
         {children}
       </ReactMarkdown>
-      {id && isShowDeleteModal && (
-        <WriteDeleteModal
-          id={id}
-          open={isShowDeleteModal}
-          title={write?.title || ''}
-          onClose={() => setIsShowDeleteModal(false)}
-        />
-      )}
     </Box>
   );
 }

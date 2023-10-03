@@ -108,7 +108,7 @@ export function Layout() {
       </Drawer>
       <Stack
         height="100%"
-        ml={!smallScreen && isOpenSidebar ? '300px' : '0px'}
+        // ml={!smallScreen && isOpenSidebar ? '300px' : '0px'}
         width="100%"
         sx={{
           transition: theme.transitions.create('margin', {
