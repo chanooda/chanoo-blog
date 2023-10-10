@@ -22,7 +22,10 @@
   //   "noFallthroughCasesInSwitch": true
   // },
   "compilerOptions": {
-    "types": ["./src/query.d.ts"]
+    "types": ["./src/query.d.ts"],
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "outDir": "./dist"
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
