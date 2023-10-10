@@ -9,6 +9,6 @@ export const theme = createTheme({
     }
   },
   typography: {
-    fontFamily: 'inherit'
+    fontFamily: ['Noto Sans KR', 'sans-serif'].join(',')
   }
 });

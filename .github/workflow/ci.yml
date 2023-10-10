@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['main']
+
+jobs:
+  build:
+    name: Build and Test
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.32.2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        run: pnpm build
+
+      - name: Create .env file
+        run: |
+          touch .env    
+          jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' <<< "$SECRETS_CONTEXT" > .env
+
+        env:
+          SECRETS_CONTEXT: ${{ toJson(secrets) }}
+
+      - name: initial set deploy directory
+        run: |
+          mkdir deploy
+          mkdir -p deploy/{blog,blog-admin}
+
+      - name: blog mv build
+        run: |
+          cd /apps/blog
+          mv .next /deploy/blog
+          mv package.json /deploy/blog
+
+      - name: blog-admin mv build
+        run: |
+          cd /apps/blog-admin
+          mv dist /deploy/blog-admin
+          mv package.json /deploy/blog-admin
+
+      - name: blog-admin mv build
+        run: |
+          tar cvfz ./deploy.tar.gz ./deploy/.
+
+      - name: AWS configure credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.SECRET_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./deploy.tar.gz s3://chanoo-deploy/chanoo-blog/
+
+      - name: deploy with AWS codeDeploy
+        run: aws deploy create-deployment
+          --application-name chanoo-deploy
+          --deployment-config-name CodeDeployDefault.OneAtATime
+          --deployment-group-name chanoo-blog
+          --s3-location bucket=chanoo-deploy,bundleType=tgz,key=chanoo-blog/deploy.tar.gz
