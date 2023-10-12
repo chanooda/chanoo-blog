@@ -19,7 +19,7 @@
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noUnusedLocals": false,
-    "noUnusedParameters": true,
+    "noUnusedParameters": false,
     "preserveWatchOutput": true,
     "removeComments": true,
     "resolveJsonModule": true,

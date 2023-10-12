@@ -1,9 +1,9 @@
 import { QueryProvider } from '@Components/container/QueryProvider';
+import { ServerThemeRegistry } from '@Components/container/ServerThemeRegistry';
 import { Layout } from '@Components/layout';
 import { GlobalStyle } from '@Components/theme/GlobalStyle';
 import type { Metadata } from 'next';
 import { Noto_Sans_KR } from 'next/font/google';
-import { ThemeRegistry } from 'ui';
 
 const inter = Noto_Sans_KR({ weight: '400', preload: true, subsets: ['latin'] });
 
@@ -17,10 +17,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko">
       <body className={inter.className}>
         <QueryProvider>
-          <ThemeRegistry options={{ key: 'mui' }}>
+          <ServerThemeRegistry>
             <GlobalStyle />
             <Layout>{children}</Layout>
-          </ThemeRegistry>
+          </ServerThemeRegistry>
         </QueryProvider>
       </body>
     </html>

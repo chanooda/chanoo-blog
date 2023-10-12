@@ -1,4 +1,4 @@
-'use client';
+/* eslint-disable @typescript-eslint/no-shadow */
 
 import React, { useState } from 'react';
 import createCache from '@emotion/cache';
