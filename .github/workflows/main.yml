@@ -52,15 +52,14 @@ jobs:
 
       - name: blog mv build
         run: |
-          cd apps/blog
-          mv .next deploy/blog
-          mv package.json deploy/blog
+          mv apps/blog/.next/* deploy/blog
+          mv apps/blog/package.json deploy/blog
 
       - name: blog-admin mv build
         run: |
           cd apps/blog-admin
-          mv dist deploy/blog-admin
-          mv package.json deploy/blog-admin
+          mv apps/blog-admin/dist/* deploy/blog-admin
+          mv apps/blog-admin/package.json deploy/blog-admin
 
       - name: zip build folder
         run: |
