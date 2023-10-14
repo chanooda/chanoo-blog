@@ -17,13 +17,41 @@ jobs:
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
     steps:
+      - name: checkout release
+        uses: actions/checkout@v3
+
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.32.2
+
       - name: Create .env file
         run: |
-          touch .env    
+          touch .env
           jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' <<< "$SECRETS_CONTEXT" > .env
+          ls -a
 
         env:
           SECRETS_CONTEXT: ${{ toJson(secrets) }}
+
+      - name: move .env
+        run: |
+          ls -a
+          cp .env apps/blog-admin
+          cp .env apps/blog
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        run: pnpm build --filter blog-admin
+
+      #
 
       # - name: initial set deploy directory
       #   run: |
@@ -31,23 +59,26 @@ jobs:
       #     mv appspec.yml deploy
       #     mv after-install.sh deploy
       #     mv .env deploy
-      #     ls apps/blog-admin
 
       # - name: blog mv build
       #   run: |
       #     mv blog.dockerfile deploy/blog
+      #     cp pnpm-lock.yaml deploy/blog
       #     mv apps/blog/.next deploy/blog
       #     mv apps/blog/package.json deploy/blog
 
       # - name: blog-admin mv build
       #   run: |
       #     mv blog-admin.dockerfile deploy/blog-admin
+      #     cp pnpm-lock.yaml deploy/blog-admin
       #     mv apps/blog-admin/dist deploy/blog-admin
       #     mv apps/blog-admin/package.json deploy/blog-admin
 
       - name: zip build folder
         run: |
-          tar cvfz ./deploy.tar.gz ./.
+          touch deploy.tar.gz
+          tar --exclude=deploy.tar.gz -zcvf deploy.tar.gz --exclude "*/**/node_modules" ./. 
+          ls -a
 
       - name: AWS configure credentials
         uses: aws-actions/configure-aws-credentials@v1

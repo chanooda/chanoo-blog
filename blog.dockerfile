@@ -1,22 +1,42 @@
-FROM node:18-slim
+FROM node:18-alpine AS base
+ 
+FROM base AS builder
+RUN apk add --no-cache libc6-compat
+RUN apk update
+# Set working directory
+WORKDIR /app
+RUN npm install -g turbo
+COPY . .
+RUN turbo prune blog --docker
 
-# PNPM 설치
-RUN npm install -g pnpm
+# Add lockfile and package.json's of isolated subworkspace
+FROM base AS installer
+RUN apk add --no-cache libc6-compat
+RUN apk update
+WORKDIR /app
+ 
+# First install the dependencies (as they change less often)
+COPY --from=builder /app/out/json/ .
+COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+RUN corepack enable
+RUN pnpm install --frozen-lockfile
 
-# 작업 디렉토리를 설정합니다.
+COPY --from=builder /app/out/full/ .
+RUN pnpm dlx turbo run build --filter=blog
+
+FROM base AS runner
 WORKDIR /app
 
-# 의존성 파일을 복사합니다.
-COPY package.json .
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+USER nextjs
 
-# 의존성 설치
-RUN pnpm install
 
-# 소스 코드를 현재 디렉토리로 복사합니다.
-COPY . .
+COPY --from=installer /app/apps/blog/next.config.js .
+COPY --from=installer /app/apps/blog/package.json .
 
-# 이미지 내에서 리액트 앱이 실행되는 포트를 설정합니다.
-EXPOSE 30021
+COPY --from=installer --chown=nextjs:nodejs /app/apps/blog/.next/standalone ./
+COPY --from=installer --chown=nextjs:nodejs /app/apps/blog/.next/static ./apps/blog/.next/static
+COPY --from=installer --chown=nextjs:nodejs /app/apps/blog/public ./apps/blog/public
 
-# 애플리케이션 실행
-CMD ["pnpm", "serve"]
+CMD node apps/docs/server.js
