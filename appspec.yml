@@ -1,0 +1,13 @@
+version: 0.0
+os: linux
+
+files:
+  - source: /blog
+    destination: /home/ubuntu/blog
+    overwrite: yes
+  - source: /blog-admin
+    destination: /home/ubuntu/blog-admin
+    overwrite: yes
+hooks:
+  AfterInstall:
+    - location: ./after-install.sh
