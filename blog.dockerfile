@@ -8,7 +8,6 @@ WORKDIR /app
 
 # 의존성 파일을 복사합니다.
 COPY package.json .
-COPY pnpm-lock.yaml .
 
 # 의존성 설치
 RUN pnpm install
