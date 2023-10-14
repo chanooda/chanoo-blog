@@ -56,13 +56,13 @@ jobs:
 
       - name: blog mv build
         run: |
-          mv apps/blog-admin/blog.dockerfile deploy/blog
+          mv blog.dockerfile deploy/blog
           mv apps/blog/.next/* deploy/blog
           mv apps/blog/package.json deploy/blog
 
       - name: blog-admin mv build
         run: |
-          mv apps/blog-admin/blog-admin.dockerfile deploy/blog-admin
+          mv blog-admin.dockerfile deploy/blog-admin
           mv apps/blog-admin/dist/* deploy/blog-admin
           mv apps/blog-admin/package.json deploy/blog-admin
 
