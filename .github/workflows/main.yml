@@ -49,7 +49,7 @@ jobs:
       - name: initial set deploy directory
         run: |
           mkdir -p deploy/{blog,blog-admin}
-          ls
+          ls apps/blog-admin
 
       - name: blog mv build
         run: |
