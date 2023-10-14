@@ -59,12 +59,14 @@ jobs:
           mv blog.dockerfile deploy/blog
           mv apps/blog/.next deploy/blog
           mv apps/blog/package.json deploy/blog
+          mv apps/blog/pnpm-lock.yaml deploy/blog
 
       - name: blog-admin mv build
         run: |
           mv blog-admin.dockerfile deploy/blog-admin
           mv apps/blog-admin/dist deploy/blog-admin
           mv apps/blog-admin/package.json deploy/blog-admin
+          mv apps/blog-admin/pnpm-lock.yaml deploy/blog-admin
 
       - name: zip build folder
         run: |
