@@ -15,9 +15,6 @@ RUN pnpm install
 # 소스 코드를 현재 디렉토리로 복사합니다.
 COPY . .
 
-# 프로덕션 빌드를 수행합니다. Vite의 경우 `build` 명령을 사용합니다.
-RUN pnpm build
-
 # 이미지 내에서 리액트 앱이 실행되는 포트를 설정합니다.
 EXPOSE 30021
 

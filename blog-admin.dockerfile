@@ -1,5 +1,4 @@
-# Node.js 14 버전을 기반으로 하는 이미지를 사용합니다.
-FROM node:14
+FROM node:18-slim
 
 # PNPM 설치
 RUN npm install -g pnpm
@@ -15,9 +14,6 @@ RUN pnpm install
 
 # 소스 코드를 현재 디렉토리로 복사합니다.
 COPY . .
-
-# 프로덕션 빌드를 수행합니다. Next.js의 경우 `build` 명령을 사용합니다.
-RUN pnpm build
 
 # 이미지 내에서 Next.js 앱이 실행되는 포트를 설정합니다.
 EXPOSE 30022

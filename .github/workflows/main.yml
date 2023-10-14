@@ -46,29 +46,29 @@ jobs:
         env:
           SECRETS_CONTEXT: ${{ toJson(secrets) }}
 
-      - name: initial set deploy directory
-        run: |
-          mkdir -p deploy/{blog,blog-admin}
-          mv appspec.yml deploy
-          mv after-install.sh deploy
-          mv .env deploy
-          ls apps/blog-admin
+      # - name: initial set deploy directory
+      #   run: |
+      #     mkdir -p deploy/{blog,blog-admin}
+      #     mv appspec.yml deploy
+      #     mv after-install.sh deploy
+      #     mv .env deploy
+      #     ls apps/blog-admin
 
-      - name: blog mv build
-        run: |
-          mv blog.dockerfile deploy/blog
-          mv apps/blog/.next deploy/blog
-          mv apps/blog/package.json deploy/blog
+      # - name: blog mv build
+      #   run: |
+      #     mv blog.dockerfile deploy/blog
+      #     mv apps/blog/.next deploy/blog
+      #     mv apps/blog/package.json deploy/blog
 
-      - name: blog-admin mv build
-        run: |
-          mv blog-admin.dockerfile deploy/blog-admin
-          mv apps/blog-admin/dist deploy/blog-admin
-          mv apps/blog-admin/package.json deploy/blog-admin
+      # - name: blog-admin mv build
+      #   run: |
+      #     mv blog-admin.dockerfile deploy/blog-admin
+      #     mv apps/blog-admin/dist deploy/blog-admin
+      #     mv apps/blog-admin/package.json deploy/blog-admin
 
       - name: zip build folder
         run: |
-          tar cvfz ./deploy.tar.gz ./deploy/.
+          tar cvfz ./deploy.tar.gz ./.
 
       - name: AWS configure credentials
         uses: aws-actions/configure-aws-credentials@v1
