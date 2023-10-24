@@ -39,4 +39,4 @@ COPY --from=installer --chown=nextjs:nodejs /app/apps/blog/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/blog/.next/static ./apps/blog/.next/static
 COPY --from=installer --chown=nextjs:nodejs /app/apps/blog/public ./apps/blog/public
 
-CMD node apps/docs/server.js
+CMD node apps/blog/server.js
