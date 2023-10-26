@@ -125,7 +125,9 @@ export const WriteImageAddModal = forwardRef<HTMLDivElement, WriteImageAddModalP
             <Stack mt={2} width="100%">
               {tabValue === 'upload' && (
                 <Stack alignItems="flex-end" gap={2} width="100%">
-                  <Box width={140}>{/* <FIleUploadButton getImageList={getImageList} /> */}</Box>
+                  <Box width={140}>
+                    <FIleUploadButton getImageList={getImageList} />{' '}
+                  </Box>
                   {imageList?.map((image) => (
                     <Box height={300} key={image.url} width="100%">
                       <Box
