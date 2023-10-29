@@ -10,7 +10,7 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   return (
-    <Stack height="100%" maxWidth={1024} minHeight={0} mx="auto" width="100%">
+    <Stack height="100%" minHeight={0} mx="auto" width="100%">
       <Header />
       <Stack
         component="main"
@@ -18,7 +18,9 @@ export function Layout({ children }: LayoutProps) {
         sx={{ overflowY: 'scroll', minHeight: '100%' }}
         width="100%"
       >
-        <Stack p={2}>{children}</Stack>
+        <Stack px={6} py={4}>
+          {children}
+        </Stack>
       </Stack>
     </Stack>
   );

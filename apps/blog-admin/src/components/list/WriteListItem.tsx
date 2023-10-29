@@ -9,8 +9,6 @@ interface WriteListItemProps {
   write: WriteRes;
 }
 export function WriteListItem({ write }: WriteListItemProps) {
-  console.log(removeMarkdown(write.content));
-  console.log(write.content);
   return (
     <Link style={{ width: '100%' }} to={`/post/${write.id}`}>
       <Stack direction="row" gap={2} height={200} width="100%">

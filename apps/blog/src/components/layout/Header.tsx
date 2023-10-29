@@ -10,7 +10,7 @@ export function Header() {
       direction="row"
       height={80}
       minHeight={80}
-      px={2}
+      px={6}
       sx={(theme) => ({
         borderBottom: `1px solid ${theme.palette.divider}`
       })}

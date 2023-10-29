@@ -1,6 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalEnv": ["VITE_APP_BLOG_ADMIN_BASE_URL"],
+  "globalEnv": ["VITE_APP_BLOG_ADMIN_BASE_URL", "BLOG_ADMIN_BASE_URL"],
+  "globalDotEnv": [".env"],
   "globalDependencies": ["**/.env.*local"],
   "pipeline": {
     "build": {
@@ -9,6 +10,7 @@
     },
     "lint": {},
     "dev": {
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     },
