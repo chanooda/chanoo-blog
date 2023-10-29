@@ -6,11 +6,8 @@ import {
   useMutation,
   useQuery
 } from '@tanstack/react-query';
+import { axiosClient } from 'utils';
 import { GlobalResponse } from '../types/global';
-
-export const axiosClient = axios.create({
-  baseURL: `${import.meta.env.VITE_APP_BLOG_ADMIN_BASE_URL}/api`
-});
 
 export const useChanooQuery = <
   TQueryFnData = unknown,

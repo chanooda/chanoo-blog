@@ -1,3 +1,5 @@
+import { HttpStatusCode } from 'axios';
+
 export interface FolderImage {
   fieldname: string;
   folderId: number;

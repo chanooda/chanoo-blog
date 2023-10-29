@@ -13,20 +13,36 @@
       "path": "./apps/blog-admin"
     },
     {
-      "name": "eslint-config-custom",
-      "path": "./packages/eslint-config-custom"
-    },
-    {
-      "name": "tsconfig",
-      "path": "./packages/tsconfig"
-    },
-    {
       "name": "ui",
       "path": "./packages/ui"
     },
     {
       "name": "ui-icon",
       "path": "./packages/ui-icon"
+    },
+    {
+      "name": "utils",
+      "path": "./packages/utils"
+    },
+    {
+      "name": "markdown",
+      "path": "./packages/markdown"
+    },
+    {
+      "name": "eslint-config-custom",
+      "path": "./packages/eslint-config-custom"
+    },
+    {
+      "name": "tsconfig",
+      "path": "./packages/tsconfig"
     }
-  ]
+  ],
+  "settings": {
+    "eslint.workingDirectories": [{ "pattern": "apps/*/" }, { "pattern": "packages/*/" }],
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    }
+  }
 }
