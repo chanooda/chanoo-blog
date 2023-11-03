@@ -1,15 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import {
-  Button,
-  FormControlLabel,
-  Input,
-  MultiSelectInput,
-  Stack,
-  Switch,
-  TextField,
-  useSnackbar
-} from 'ui';
-import { FieldErrors, GlobalError, useForm } from 'react-hook-form';
+import { Button, Input, MultiSelectInput, Stack, Switch, TextField, useSnackbar } from 'ui';
+import { Controller, FieldErrors, GlobalError, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { day } from 'utils';
 import { MarkdownPreview } from 'markdown';
@@ -34,16 +25,21 @@ export function Write({ id }: WritingProps) {
     enabled: !!id,
     useErrorBoundary: true
   });
-  const { register, watch, setValue, handleSubmit, reset } = useForm<WritingForm>({
-    defaultValues: {
-      tag: []
-    }
-  });
 
   const initialTagList = useMemo(
     () => [...(write?.data?.data?.tags?.map((tag) => tag.tag.name) || [])],
     [write?.data?.data]
   );
+
+  const { register, watch, setValue, handleSubmit, reset, control } = useForm<WritingForm>({
+    defaultValues: {
+      tag: initialTagList || [],
+      title: write?.data?.data?.title || '',
+      mainImage: write?.data?.data?.imgUrl || '',
+      series: write?.data?.data?.series?.name || '',
+      isPublish: write?.data?.data?.isPublish || false
+    }
+  });
 
   const { data: seriesList } = useChanooQuery<SeriesRes[], GlobalError>(['/series']);
   const { data: tagList } = useChanooQuery<TagRes[], GlobalError>(['/tag']);
@@ -71,13 +67,17 @@ export function Write({ id }: WritingProps) {
   const getWriteFormData = (formData: WritingForm) => {
     const { mainImage, series, tag, title, isPublish } = formData;
 
+    console.log(isPublish);
+
     const writeFormData = new FormData();
     writeFormData.append('title', title);
     writeFormData.append('content', editorValue);
     writeFormData.append('imgUrl', mainImage);
     writeFormData.append('seriesName', series);
-    writeFormData.append('isPublish', String(isPublish));
+    writeFormData.append('isPublish', JSON.stringify(isPublish));
     writeFormData.append('tagNames', JSON.stringify(tag));
+
+    console.log(writeFormData.get('isPublish'));
 
     return writeFormData;
   };
@@ -135,6 +135,7 @@ export function Write({ id }: WritingProps) {
     (formData) => {
       if (createWriteLoading) return;
       const writeFormData = getWriteFormData(formData);
+      console.log(writeFormData);
       createWrite(writeFormData, {
         onSuccess(data) {
           enqueueSnackbar({
@@ -194,7 +195,8 @@ export function Write({ id }: WritingProps) {
       tag: initialTagList || [],
       title: write?.data?.data?.title || '',
       mainImage: write?.data?.data?.imgUrl || '',
-      series: write?.data?.data?.series?.name || ''
+      series: write?.data?.data?.series?.name || '',
+      isPublish: write?.data?.data?.isPublish || false
     });
     setEditorValue(write?.data?.data?.content || '');
   }, [write?.data?.data]);
@@ -252,7 +254,23 @@ export function Write({ id }: WritingProps) {
             py={2}
             width="100%"
           >
-            <FormControlLabel control={<Switch {...register('isPublish')} />} label="공개 여부" />
+            <Stack alignItems="center" direction="row">
+              <Controller
+                control={control}
+                name="isPublish"
+                render={({ field: { name, onChange, ref, value } }) => (
+                  <Switch
+                    checked={value}
+                    id="isPublish"
+                    name={name}
+                    ref={ref}
+                    onChange={onChange}
+                  />
+                )}
+              />
+              {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+              <label htmlFor="isPublish">공개 여부</label>
+            </Stack>
             <Stack direction="row" gap={2} ml="auto">
               <Button variant="outlined" onClick={clickSaveButtonHandler}>
                 임시저장
