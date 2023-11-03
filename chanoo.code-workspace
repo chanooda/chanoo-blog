@@ -5,11 +5,11 @@
       "path": "."
     },
     {
-      "name": "chanoo",
+      "name": "blog",
       "path": "./apps/blog"
     },
     {
-      "name": "chanoo-blog",
+      "name": "blog-admin",
       "path": "./apps/blog-admin"
     },
     {

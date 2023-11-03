@@ -2,53 +2,42 @@
 import { ReactMarkdown, ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Box, Chip, Stack, Typography } from 'ui';
-import { day } from 'utils';
+import { WriteRes, day } from 'utils';
 import { A, Blockquote, Code, Img } from './MarkdownComponents';
 
-interface MarkdownPreviewWrite {
-  createdAt?: string;
-  isPublish?: boolean;
-  mainImage?: string;
-  series?: string;
-  tag?: string[];
-  title?: string;
+export interface MarkdownProps extends Omit<ReactMarkdownOptions, 'children'> {
+  write: WriteRes;
 }
 
-export interface MdPreviewProps extends ReactMarkdownOptions {
-  write: MarkdownPreviewWrite;
-}
-
-export function MarkdownPreview({ children, write }: MdPreviewProps) {
+export function Markdown({ write }: MarkdownProps) {
   return (
     <Box fontFamily="inherit" height="100%" maxWidth={800} mx="auto" px={2} py={4} width="100%">
       <Stack direction="column" width="100%">
         <Box component="h1" my={0}>
           {write?.title}
         </Box>
-        {write?.createdAt && (
-          <Stack direction="row" mt={1}>
-            <Typography fontWeight={600}>김찬우</Typography> ・
-            <Typography color="grey.700">{day(write?.createdAt).format('YYYY-MM-DD')}</Typography>
-          </Stack>
-        )}
-        {write?.tag && (
+        <Stack direction="row" mt={1}>
+          <Typography fontWeight={600}>김찬우</Typography> ・
+          <Typography color="grey.700">{day(write?.createdAt).format('YYYY-MM-DD')}</Typography>
+        </Stack>
+        {write?.tags?.length > 0 && (
           <Stack direction="row" flexWrap="wrap" gap={2} mt={2} width="100%">
-            {write?.tag?.map((tag) => (
-              <Chip key={tag} label={tag} />
+            {write?.tags?.map((writeTag) => (
+              <Chip key={writeTag.tag.id} label={writeTag.tag.name} />
             ))}
           </Stack>
         )}
-        {write?.series && (
+        {write.series && (
           <Stack bgcolor="grey.200" borderRadius={2} height={100} mt={2} p={2} width="100%">
-            <Typography variant="h6">{write?.series}</Typography>
+            <Typography variant="h6">{write.series.name}</Typography>
           </Stack>
         )}
-        {write?.mainImage && (
+        {write.imgUrl && (
           <Box mt={2} width="100%">
             <Box
               alt="메인 이미지"
               component="img"
-              src={write?.mainImage}
+              src={write.imgUrl}
               sx={{ objectFit: 'cover', aspectRatio: 16 / 9 }}
               width="100%"
             />
@@ -65,7 +54,7 @@ export function MarkdownPreview({ children, write }: MdPreviewProps) {
           blockquote: Blockquote
         }}
       >
-        {children}
+        {write.content}
       </ReactMarkdown>
     </Box>
   );

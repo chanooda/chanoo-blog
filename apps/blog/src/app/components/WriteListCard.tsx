@@ -1,4 +1,6 @@
+import { NextLink } from '@Components/common/NextLink';
 import { removeMarkdown } from 'markdown';
+import Link from 'next/link';
 import React from 'react';
 import {
   Card,
@@ -7,7 +9,6 @@ import {
   CardMedia,
   EllipsisMultilineTypography,
   EllipsisTypography,
-  Link,
   Stack,
   Typography
 } from 'ui';
@@ -21,7 +22,7 @@ export function WriteListCard({ write }: WriteListCardProps) {
   const markdownPreviewContent = regex.getWriteDescription(removeMarkdown(write.content));
 
   return (
-    <Link href={`/post/${write.id}`}>
+    <NextLink href={`/post/${write.id}`}>
       <Card sx={{ width: '100%' }}>
         <CardActionArea>
           {write.imgUrl ? (
@@ -44,6 +45,6 @@ export function WriteListCard({ write }: WriteListCardProps) {
           </CardContent>
         </CardActionArea>
       </Card>
-    </Link>
+    </NextLink>
   );
 }

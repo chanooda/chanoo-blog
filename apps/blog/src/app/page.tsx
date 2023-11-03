@@ -3,7 +3,9 @@ import { WriteList } from './components/WriteList';
 
 export const getData = async () => {
   const writeRepository = new WriteRepository();
-  const writes = await writeRepository.getWrites({});
+  const writes = await writeRepository.getWrites({
+    isPublish: true
+  });
   return writes;
 };
 
