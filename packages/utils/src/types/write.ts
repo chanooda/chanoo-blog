@@ -1,4 +1,5 @@
 export interface WriteReq {
+  isPublish?: boolean;
   limit?: number;
   page?: number;
   search?: string;
