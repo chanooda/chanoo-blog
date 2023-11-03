@@ -1,30 +1,55 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { GlobalError } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
-import { Stack } from 'ui';
+import { Link, useParams } from 'react-router-dom';
+import { Stack, Typography } from 'ui';
+import { Markdown } from 'markdown';
+import { WriteRes } from 'utils';
 import { useChanooQuery } from '../../libs/queryHook';
-import { WriteRes } from '../../types/res';
-import { MdPreview, MdPreviewProps } from '../../components/markdown/MdPreview';
+import { WriteDeleteModal } from '../../components/modal/WriteDeleteModal';
 
 export function PostDetail() {
   const { id } = useParams();
+  const [isShowDeleteModal, setIsShowDeleteModal] = useState(false);
   const { data: write } = useChanooQuery<WriteRes, GlobalError>([`/write/${id}`], {
     enabled: !!id,
     useErrorBoundary: true
   });
 
-  const wrtieInfo: MdPreviewProps['write'] = {
-    mainImage: write?.data?.data?.imgUrl,
-    series: write?.data?.data?.series?.name,
-    tag: write?.data?.data?.tags?.map((tag) => tag.tag.name),
-    title: write?.data?.data?.title,
-    createdAt: write?.data?.data?.createdAt
+  const clickDeleteHandler = () => {
+    setIsShowDeleteModal(true);
   };
+
   return (
     <Stack>
-      <MdPreview id={id} write={wrtieInfo}>
-        {write?.data?.data?.content || ''}
-      </MdPreview>
+      <Stack
+        direction="row"
+        gap={1}
+        justifyContent="end"
+        maxWidth={800}
+        mt={4}
+        mx="auto"
+        px={2}
+        width="100%"
+      >
+        <Link to={`/post/${id}/edit`}>
+          <Typography sx={{ textDecoration: 'underline' }}>수정</Typography>
+        </Link>
+        <Typography
+          sx={{ textDecoration: 'underline', cursor: 'pointer' }}
+          onClick={clickDeleteHandler}
+        >
+          삭제
+        </Typography>
+      </Stack>
+      {write && <Markdown write={write.data.data} />}
+      {id && isShowDeleteModal && (
+        <WriteDeleteModal
+          id={id}
+          open={isShowDeleteModal}
+          title={write?.data.data.title || ''}
+          onClose={() => setIsShowDeleteModal(false)}
+        />
+      )}
     </Stack>
   );
 }
