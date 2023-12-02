@@ -135,7 +135,7 @@ export function Post() {
           </Stack>
         }
       >
-        <Stack>
+        <Stack width="100%">
           <WriteList />
         </Stack>
       </Suspense>
