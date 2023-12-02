@@ -12,7 +12,7 @@ export class WriteRepository extends BaseRepository implements AbstractWriteRepo
       return writeRes.data.data;
     } catch (e) {
       console.error(e);
-      throw e;
+      return [];
     }
   }
 

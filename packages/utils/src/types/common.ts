@@ -1,4 +1,5 @@
 import { HttpStatusCode } from 'axios';
+import { ReactNode } from 'react';
 
 export interface GlobalResponse<T> {
   data: T;
@@ -7,4 +8,8 @@ export interface GlobalResponse<T> {
 
 export interface IdReq {
   id: number;
+}
+
+export interface ChildrenProps {
+  children: ReactNode;
 }

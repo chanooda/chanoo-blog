@@ -20,7 +20,8 @@
     "next": "13.4.10",
     "notistack": "^3.0.1",
     "react": "18.2.0",
-    "usehooks-ts": "^2.9.1"
+    "usehooks-ts": "^2.9.1",
+    "utils": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "18.2.15",
