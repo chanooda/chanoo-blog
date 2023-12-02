@@ -68,8 +68,20 @@ export function Post() {
   }, [query]);
 
   return (
-    <Stack direction="row" minHeight="100%" py={2}>
-      <Stack gap={2} height="100%" minWidth={240} p={2} width={240}>
+    <Stack direction="row" minHeight="100%" position="relative" py={2}>
+      <Stack
+        gap={2}
+        height="100%"
+        minWidth={240}
+        p={2}
+        width={240}
+        sx={(theme) => ({
+          [theme.breakpoints.down('sm')]: {
+            transform: 'translateX(-100%)',
+            position: 'absolute'
+          }
+        })}
+      >
         <Stack width="100%">
           <Stack alignItems="center" direction="row" justifyContent="space-between">
             <InputLabel>Search</InputLabel>
@@ -123,7 +135,9 @@ export function Post() {
           </Stack>
         }
       >
-        <WriteList />
+        <Stack>
+          <WriteList />
+        </Stack>
       </Suspense>
     </Stack>
   );
