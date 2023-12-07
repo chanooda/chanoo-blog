@@ -28,9 +28,9 @@ export function WriteList() {
       {writeList?.data.data.map((write) => {
         return (
           <Grid2 key={write.id} lg={4} md={6} sm={8} xl={3} xs={2}>
-            {/* <Link to={`/post/${write.id}`}> */}
-            <WriteListCard write={write} />
-            {/* </Link> */}
+            <Link to={`/post/${write.id}`}>
+              <WriteListCard write={write} />
+            </Link>
           </Grid2>
         );
       })}

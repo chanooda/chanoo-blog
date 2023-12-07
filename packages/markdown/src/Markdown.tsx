@@ -11,7 +11,7 @@ export interface MarkdownProps extends Omit<ReactMarkdownOptions, 'children'> {
 
 export function Markdown({ write }: MarkdownProps) {
   return (
-    <Box fontFamily="inherit" height="100%" maxWidth={800} mx="auto" px={2} py={4} width="100%">
+    <Box fontFamily="inherit" height="100%" mx="auto" px={2} py={4} width="100%">
       <Stack direction="column" width="100%">
         <Box component="h1" my={0}>
           {write?.title}

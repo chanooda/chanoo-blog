@@ -4,35 +4,45 @@ export interface WriteReq {
   page?: number;
   search?: string;
   seriesId?: number;
-  tagId?: string;
+  tagId?: number;
 }
 
-export interface TagRes {
+export interface Tag {
   id: number;
   name: string;
 }
 
-export interface WriteTagRes {
+export interface WriteTag {
   id: number;
-  tag: TagRes;
+  tag: Tag;
   tagId: number;
   writeId: number;
 }
 
-export interface WriteRes {
+export interface Write {
   content: string;
   createdAt: string;
   heart: number;
   id: number;
   imgUrl: string;
   isPublish: true;
-  series: {
-    id: number;
-    name: string;
-  };
   seriesId: number;
-  tags: WriteTagRes[];
   title: string;
   updatedAt: string;
   view: number;
+}
+
+export interface Series {
+  id: number;
+  name: string;
+  writeOrder: number[];
+}
+
+export interface SeriesDetail extends Series {
+  writes: Write[];
+}
+
+export interface WriteDetail extends Write {
+  series: SeriesDetail;
+  tags: WriteTag[];
 }

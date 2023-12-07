@@ -10,17 +10,15 @@ import {
   Stack,
   TextField
 } from 'ui';
-import { GlobalError, useForm } from 'react-hook-form';
-import { getQuery } from 'utils';
+import { GlobalError, Series, Tag, WriteFilterForm, getQuery, useForm } from 'utils';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FormEvent, Suspense, useEffect } from 'react';
 import { useChanooQuery } from '../../libs/queryHook';
-import { SeriesRes, TagRes } from '../../types/res';
-import { WriteFilterForm } from '../../types/form';
 import { WriteList } from '../../components/list/WriteList';
 
 export function Post() {
   const { search: query } = useLocation();
+
   const navigate = useNavigate();
 
   const queryObject = getQuery(query, ['search', 'seriesId', 'tagId']);
@@ -35,8 +33,8 @@ export function Post() {
 
   const { search, tagId } = watch();
 
-  const { data: series } = useChanooQuery<SeriesRes[], GlobalError>(['/series']);
-  const { data: tags } = useChanooQuery<TagRes[], GlobalError>(['/tag']);
+  const { data: series } = useChanooQuery<Series[], GlobalError>(['/series']);
+  const { data: tags } = useChanooQuery<Tag[], GlobalError>(['/tag']);
 
   const resetQuires = () => {
     navigate('/post');

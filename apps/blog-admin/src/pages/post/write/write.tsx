@@ -1,14 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Input, MultiSelectInput, Stack, Switch, TextField, useSnackbar } from 'ui';
-import { Controller, FieldErrors, GlobalError, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { day } from 'utils';
+import { Controller, FieldErrors, IdRes, Series, Tag, WriteDetail, day, useForm } from 'utils';
 import { MarkdownPreview } from 'markdown';
 import { WriteImageAddModal } from '../../../components/modal/WriteImageAddModal';
 import { useChanooMutation, useChanooQuery } from '../../../libs/queryHook';
-import { SeriesRes, TagRes, WriteRes } from '../../../types/res';
 import { WritingForm } from '../../../types/form';
 import { MarkdownEditor } from '../../../components/markdown/MarkdownEditor';
+import { GlobalError } from '../../../types/global';
 
 interface WritingProps {
   id?: string;
@@ -21,10 +20,23 @@ export function Write({ id }: WritingProps) {
   const [hideInfo, setHideInfo] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
-  const { data: write } = useChanooQuery<WriteRes, GlobalError>([`/write/${id}`], {
+  const { data: write } = useChanooQuery<WriteDetail, GlobalError>([`/write/${id}`], {
     enabled: !!id,
     useErrorBoundary: true
   });
+
+  const { data: seriesList } = useChanooQuery<Series[], GlobalError>(['/series']);
+  const { data: tagList } = useChanooQuery<Tag[], GlobalError>(['/tag']);
+  const { mutate: createWrite, isLoading: createWriteLoading } = useChanooMutation<
+    IdRes,
+    GlobalError,
+    FormData
+  >(['POST', '/write', (data) => data]);
+  const { mutate: updateWrite, isLoading: updateWriteLoading } = useChanooMutation<
+    IdRes,
+    GlobalError,
+    { formData: FormData; writeId: string }
+  >(['PATCH', ({ writeId }) => `/write/${writeId}`, ({ formData }) => formData]);
 
   const initialTagList = useMemo(
     () => [...(write?.data?.data?.tags?.map((tag) => tag.tag.name) || [])],
@@ -40,19 +52,6 @@ export function Write({ id }: WritingProps) {
       isPublish: write?.data?.data?.isPublish || false
     }
   });
-
-  const { data: seriesList } = useChanooQuery<SeriesRes[], GlobalError>(['/series']);
-  const { data: tagList } = useChanooQuery<TagRes[], GlobalError>(['/tag']);
-  const { mutate: createWrite, isLoading: createWriteLoading } = useChanooMutation<
-    WriteRes,
-    GlobalError,
-    FormData
-  >(['POST', '/write', (data) => data]);
-  const { mutate: updateWrite, isLoading: updateWriteLoading } = useChanooMutation<
-    WriteRes,
-    GlobalError,
-    { formData: FormData; writeId: string }
-  >(['PATCH', ({ writeId }) => `/write/${writeId}`, ({ formData }) => formData]);
 
   const updateWriteSuccessHandler = (isWriteButton?: boolean) => {
     enqueueSnackbar({
@@ -293,12 +292,13 @@ export function Write({ id }: WritingProps) {
                   })}
                 />
                 <Input
+                  autoComplete="off"
                   inputProps={{ list: 'series' }}
                   {...register('series')}
                   placeholder="시리즈"
                 />
 
-                <datalist id="series">
+                <datalist autoSave="false" id="series">
                   {seriesList?.data?.data?.map((series) => (
                     <option key={series.id} value={series.name}>
                       {series.name}

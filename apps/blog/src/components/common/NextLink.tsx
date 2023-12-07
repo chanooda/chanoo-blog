@@ -9,9 +9,6 @@ export const StyledNextLink = styled('div')`
   & > a {
     text-decoration: none;
     color: ${({ theme }) => theme.palette.text.primary};
-    &:hover {
-      text-decoration: underline;
-    }
   }
 `;
 

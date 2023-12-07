@@ -32,6 +32,8 @@ export const MultiSelectInput = forwardRef<HTMLInputElement, MultiSelectInputPro
     const [showSelectOption, setShowSelectOption] = useState(false);
 
     const addSelectedValues = (value: string) => {
+      if (!value) return;
+
       setSelectTedValues((prev) => {
         if (!prev.includes(value)) {
           nativeOptionList.current = [...prev, value];
