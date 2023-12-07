@@ -1,8 +1,8 @@
 import { Button, Input, Modal, ModalProps, Stack, Typography, useSnackbar } from 'ui';
-import { GlobalError } from 'react-hook-form';
 import { ChangeEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
+import { GlobalError } from 'utils';
 import { ModalContent } from './ModalContent';
 import { useChanooMutation } from '../../libs/queryHook';
 

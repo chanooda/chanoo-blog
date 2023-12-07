@@ -1,9 +1,9 @@
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
-import { WriteRes } from 'utils/src/types';
+import { Write } from 'utils';
 import { WriteListCard } from './WriteListCard';
 
 interface WriteListProps {
-  writeList: WriteRes[];
+  writeList: Write[];
 }
 
 export function WriteList({ writeList }: WriteListProps) {

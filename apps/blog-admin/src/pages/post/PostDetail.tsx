@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
-import { GlobalError } from 'react-hook-form';
 import { Link, useParams } from 'react-router-dom';
 import { Stack, Typography } from 'ui';
 import { Markdown } from 'markdown';
-import { WriteRes } from 'utils';
+import { GlobalError, WriteDetail } from 'utils';
 import { useChanooQuery } from '../../libs/queryHook';
 import { WriteDeleteModal } from '../../components/modal/WriteDeleteModal';
 
 export function PostDetail() {
   const { id } = useParams();
   const [isShowDeleteModal, setIsShowDeleteModal] = useState(false);
-  const { data: write } = useChanooQuery<WriteRes, GlobalError>([`/write/${id}`], {
+  const { data: write } = useChanooQuery<WriteDetail, GlobalError>([`/write/${id}`], {
     enabled: !!id,
     useErrorBoundary: true
   });

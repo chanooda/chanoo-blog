@@ -2,11 +2,11 @@
 import { ReactMarkdown, ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Box, Chip, Stack, Typography } from 'ui';
-import { WriteRes, day } from 'utils';
+import { WriteDetail, day } from 'utils';
 import { A, Blockquote, Code, Img } from './MarkdownComponents';
 
 export interface MarkdownProps extends Omit<ReactMarkdownOptions, 'children'> {
-  write: WriteRes;
+  write: WriteDetail;
 }
 
 export function Markdown({ write }: MarkdownProps) {
