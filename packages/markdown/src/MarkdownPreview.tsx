@@ -3,7 +3,6 @@ import { ReactMarkdown, ReactMarkdownOptions } from 'react-markdown/lib/react-ma
 import remarkGfm from 'remark-gfm';
 import { Box, Chip, Stack, Typography } from 'ui';
 import { SeriesDetail, Write, WriteTag, day } from 'utils';
-import { isObject } from 'lodash';
 import { A, Blockquote, Code, Img } from './MarkdownComponents';
 
 interface MarkdownPreviewWrite {
@@ -75,7 +74,7 @@ export function MarkdownPreview({ children, handleGetId, write }: MdPreviewProps
               </Typography>
             )}
 
-            {isObject(write.series) && write.series.writes.length > 0 && (
+            {typeof write.series === 'object' && write.series.writes.length > 0 && (
               <Stack mt={1}>
                 {write.series.writeOrder.map((order, index) => {
                   const orderedWrite = (write.series as SeriesDetail).writes.find(
