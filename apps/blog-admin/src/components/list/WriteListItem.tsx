@@ -1,6 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Box, EllipsisMultilineTypography, EllipsisTypography, Stack, Typography } from 'ui';
+import {
+  Box,
+  EllipsisMultilineTypography,
+  EllipsisTypography,
+  Stack,
+  Typography,
+  useMediaQuery
+} from 'ui';
 import removeMarkdown from 'markdown-to-text';
 import { day, regex } from 'utils';
 import { WriteRes } from '../../types/res';
@@ -9,8 +16,6 @@ interface WriteListItemProps {
   write: WriteRes;
 }
 export function WriteListItem({ write }: WriteListItemProps) {
-  console.log(removeMarkdown(write.content));
-  console.log(write.content);
   return (
     <Link style={{ width: '100%' }} to={`/post/${write.id}`}>
       <Stack direction="row" gap={2} height={200} width="100%">

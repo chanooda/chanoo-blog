@@ -1,24 +1,13 @@
 /* eslint-disable react/function-component-definition */
-import { ReactMarkdown, ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
-import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Box, Chip, EllipsisTypography, Stack, Typography } from 'ui';
+import { Box, EllipsisTypography, Stack } from 'ui';
 import { Components } from 'react-markdown';
 import { useEffect, useState } from 'react';
-import { day } from 'utils';
-import { Link } from 'react-router-dom';
-import { convertLink } from '../../libs/writerUtils';
-import { githubRepoInfo, githubUserInfo } from '../../types/mdPreview';
-import { WritingForm } from '../../types/form';
-import { WriteDeleteModal } from '../modal/WriteDeleteModal';
+import { githubRepoInfo, githubUserInfo } from './markdownType';
+import { convertLink } from './markdownUtils';
 
-export interface MdPreviewProps extends ReactMarkdownOptions {
-  id?: string;
-  write?: Partial<WritingForm> & { createdAt?: string };
-}
-
-const Code: Components['code'] = ({ node, inline, className, children, ...props }) => {
+export const Code: Components['code'] = ({ node, inline, className, children, ...props }) => {
   const match = /language-(\w+)/.exec(className || '');
   return !inline && match ? (
     <SyntaxHighlighter {...props} PreTag="div" language={match[1]} style={vscDarkPlus}>
@@ -39,11 +28,11 @@ const Code: Components['code'] = ({ node, inline, className, children, ...props 
   );
 };
 
-const Img: Components['img'] = ({ src, alt, ...props }) => {
+export const Img: Components['img'] = ({ src, alt, ...props }) => {
   return <Box alt={alt} component="img" maxWidth="100%" src={src} {...props} />;
 };
 
-const A: Components['a'] = ({ children, href, target, ...props }) => {
+export const A: Components['a'] = ({ children, href, target, ...props }) => {
   if (href?.indexOf('https://youtu.be/') !== -1)
     return (
       <Box
@@ -150,9 +139,9 @@ const A: Components['a'] = ({ children, href, target, ...props }) => {
               <EllipsisTypography variant="caption">{userInfo.html_url}</EllipsisTypography>
             </Stack>
             {/* <Stack>
-              <EllipsisTypography variant="body2">{userInfo.blog}</EllipsisTypography>
-              <EllipsisTypography variant="body2">{userInfo.company}</EllipsisTypography>
-            </Stack> */}
+                <EllipsisTypography variant="body2">{userInfo.blog}</EllipsisTypography>
+                <EllipsisTypography variant="body2">{userInfo.company}</EllipsisTypography>
+              </Stack> */}
           </Stack>
         </Stack>
       );
@@ -172,7 +161,7 @@ const A: Components['a'] = ({ children, href, target, ...props }) => {
   );
 };
 
-const Blockquote: Components['blockquote'] = ({ ...props }) => {
+export const Blockquote: Components['blockquote'] = ({ ...props }) => {
   return (
     <Box
       component="blockquote"
@@ -187,83 +176,3 @@ const Blockquote: Components['blockquote'] = ({ ...props }) => {
     />
   );
 };
-
-export function MdPreview({ children, id, write }: MdPreviewProps) {
-  const [isShowDeleteModal, setIsShowDeleteModal] = useState(false);
-
-  const clickDeleteHandler = () => {
-    setIsShowDeleteModal(true);
-  };
-
-  return (
-    <Box fontFamily="inherit" height="100%" maxWidth={800} mx="auto" px={2} py={4} width="100%">
-      <Stack direction="column" width="100%">
-        <Box component="h1" my={0}>
-          {write?.title}
-        </Box>
-        {id && (
-          <Stack direction="row" gap={1} justifyContent="end" width="100%">
-            <Link to={`/post/${id}/edit`}>
-              <Typography sx={{ textDecoration: 'underline' }}>수정</Typography>
-            </Link>
-            <Typography
-              sx={{ textDecoration: 'underline', cursor: 'pointer' }}
-              onClick={clickDeleteHandler}
-            >
-              삭제
-            </Typography>
-          </Stack>
-        )}
-        {write?.createdAt && (
-          <Stack direction="row" mt={1}>
-            <Typography fontWeight={600}>김찬우</Typography> ・
-            <Typography color="grey.700">{day(write?.createdAt).format('YYYY-MM-DD')}</Typography>
-          </Stack>
-        )}
-        {write?.tag && (
-          <Stack direction="row" flexWrap="wrap" gap={2} mt={2} width="100%">
-            {write?.tag?.map((tag) => (
-              <Chip key={tag} label={tag} />
-            ))}
-          </Stack>
-        )}
-        {write?.series && (
-          <Stack bgcolor="grey.200" borderRadius={2} height={100} mt={2} p={2} width="100%">
-            <Typography variant="h6">{write?.series}</Typography>
-          </Stack>
-        )}
-        {write?.mainImage && (
-          <Box mt={2} width="100%">
-            <Box
-              alt="메인 이미지"
-              component="img"
-              src={write?.mainImage}
-              sx={{ objectFit: 'cover', aspectRatio: 16 / 9 }}
-              width="100%"
-            />
-          </Box>
-        )}
-      </Stack>
-      <ReactMarkdown
-        linkTarget="_blank"
-        remarkPlugins={[remarkGfm]}
-        components={{
-          code: Code,
-          img: Img,
-          a: A,
-          blockquote: Blockquote
-        }}
-      >
-        {children}
-      </ReactMarkdown>
-      {id && isShowDeleteModal && (
-        <WriteDeleteModal
-          id={id}
-          open={isShowDeleteModal}
-          title={write?.title || ''}
-          onClose={() => setIsShowDeleteModal(false)}
-        />
-      )}
-    </Box>
-  );
-}

@@ -9,10 +9,15 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "20.4.2",
+    "@types/react": "18.2.15",
     "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*"
   },
   "dependencies": {
-    "dayjs": "^1.11.9"
+    "axios": "^1.4.0",
+    "dayjs": "^1.11.9",
+    "markdown-to-text": "^0.1.1",
+    "react-hook-form": "^7.45.4"
   }
 }

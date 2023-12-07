@@ -5,6 +5,4 @@ export * from './theme';
 export * from './ThemeRegistry';
 export { default as Grid2 } from '@mui/material/Unstable_Grid2';
 
-export { EllipsisTypography } from './components/EllipsisTypography';
-export { EllipsisMultilineTypography } from './components/EllipsisMultilineTypography';
-export { MultiSelectInput } from './components/MultiSelectInput';
+export * from './components';

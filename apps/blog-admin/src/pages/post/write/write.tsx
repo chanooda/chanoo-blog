@@ -1,23 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
-import {
-  Button,
-  FormControlLabel,
-  Input,
-  MultiSelectInput,
-  Stack,
-  Switch,
-  TextField,
-  useSnackbar
-} from 'ui';
-import { FieldErrors, GlobalError, useForm } from 'react-hook-form';
+import { Button, Input, MultiSelectInput, Stack, Switch, TextField, useSnackbar } from 'ui';
 import { useNavigate } from 'react-router-dom';
-import { day } from 'utils';
+import { Controller, FieldErrors, IdRes, Series, Tag, WriteDetail, day, useForm } from 'utils';
 import { MarkdownPreview } from 'markdown';
 import { WriteImageAddModal } from '../../../components/modal/WriteImageAddModal';
 import { useChanooMutation, useChanooQuery } from '../../../libs/queryHook';
-import { SeriesRes, TagRes, WriteRes } from '../../../types/res';
 import { WritingForm } from '../../../types/form';
 import { MarkdownEditor } from '../../../components/markdown/MarkdownEditor';
+import { GlobalError } from '../../../types/global';
 
 interface WritingProps {
   id?: string;
@@ -30,33 +20,38 @@ export function Write({ id }: WritingProps) {
   const [hideInfo, setHideInfo] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
-  const { data: write } = useChanooQuery<WriteRes, GlobalError>([`/write/${id}`], {
+  const { data: write } = useChanooQuery<WriteDetail, GlobalError>([`/write/${id}`], {
     enabled: !!id,
     useErrorBoundary: true
   });
-  const { register, watch, setValue, handleSubmit, reset } = useForm<WritingForm>({
-    defaultValues: {
-      tag: []
-    }
-  });
+
+  const { data: seriesList } = useChanooQuery<Series[], GlobalError>(['/series']);
+  const { data: tagList } = useChanooQuery<Tag[], GlobalError>(['/tag']);
+  const { mutate: createWrite, isLoading: createWriteLoading } = useChanooMutation<
+    IdRes,
+    GlobalError,
+    FormData
+  >(['POST', '/write', (data) => data]);
+  const { mutate: updateWrite, isLoading: updateWriteLoading } = useChanooMutation<
+    IdRes,
+    GlobalError,
+    { formData: FormData; writeId: string }
+  >(['PATCH', ({ writeId }) => `/write/${writeId}`, ({ formData }) => formData]);
 
   const initialTagList = useMemo(
     () => [...(write?.data?.data?.tags?.map((tag) => tag.tag.name) || [])],
     [write?.data?.data]
   );
 
-  const { data: seriesList } = useChanooQuery<SeriesRes[], GlobalError>(['/series']);
-  const { data: tagList } = useChanooQuery<TagRes[], GlobalError>(['/tag']);
-  const { mutate: createWrite, isLoading: createWriteLoading } = useChanooMutation<
-    WriteRes,
-    GlobalError,
-    FormData
-  >(['POST', '/write', (data) => data]);
-  const { mutate: updateWrite, isLoading: updateWriteLoading } = useChanooMutation<
-    WriteRes,
-    GlobalError,
-    { formData: FormData; writeId: string }
-  >(['PATCH', ({ writeId }) => `/write/${writeId}`, ({ formData }) => formData]);
+  const { register, watch, setValue, handleSubmit, reset, control } = useForm<WritingForm>({
+    defaultValues: {
+      tag: initialTagList || [],
+      title: write?.data?.data?.title || '',
+      mainImage: write?.data?.data?.imgUrl || '',
+      series: write?.data?.data?.series?.name || '',
+      isPublish: write?.data?.data?.isPublish || false
+    }
+  });
 
   const updateWriteSuccessHandler = (isWriteButton?: boolean) => {
     enqueueSnackbar({
@@ -71,13 +66,17 @@ export function Write({ id }: WritingProps) {
   const getWriteFormData = (formData: WritingForm) => {
     const { mainImage, series, tag, title, isPublish } = formData;
 
+    console.log(isPublish);
+
     const writeFormData = new FormData();
     writeFormData.append('title', title);
     writeFormData.append('content', editorValue);
     writeFormData.append('imgUrl', mainImage);
     writeFormData.append('seriesName', series);
-    writeFormData.append('isPublish', String(isPublish));
+    writeFormData.append('isPublish', JSON.stringify(isPublish));
     writeFormData.append('tagNames', JSON.stringify(tag));
+
+    console.log(writeFormData.get('isPublish'));
 
     return writeFormData;
   };
@@ -135,6 +134,7 @@ export function Write({ id }: WritingProps) {
     (formData) => {
       if (createWriteLoading) return;
       const writeFormData = getWriteFormData(formData);
+      console.log(writeFormData);
       createWrite(writeFormData, {
         onSuccess(data) {
           enqueueSnackbar({
@@ -194,7 +194,8 @@ export function Write({ id }: WritingProps) {
       tag: initialTagList || [],
       title: write?.data?.data?.title || '',
       mainImage: write?.data?.data?.imgUrl || '',
-      series: write?.data?.data?.series?.name || ''
+      series: write?.data?.data?.series?.name || '',
+      isPublish: write?.data?.data?.isPublish || false
     });
     setEditorValue(write?.data?.data?.content || '');
   }, [write?.data?.data]);
@@ -252,7 +253,23 @@ export function Write({ id }: WritingProps) {
             py={2}
             width="100%"
           >
-            <FormControlLabel control={<Switch {...register('isPublish')} />} label="공개 여부" />
+            <Stack alignItems="center" direction="row">
+              <Controller
+                control={control}
+                name="isPublish"
+                render={({ field: { name, onChange, ref, value } }) => (
+                  <Switch
+                    checked={value}
+                    id="isPublish"
+                    name={name}
+                    ref={ref}
+                    onChange={onChange}
+                  />
+                )}
+              />
+              {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+              <label htmlFor="isPublish">공개 여부</label>
+            </Stack>
             <Stack direction="row" gap={2} ml="auto">
               <Button variant="outlined" onClick={clickSaveButtonHandler}>
                 임시저장
@@ -275,12 +292,13 @@ export function Write({ id }: WritingProps) {
                   })}
                 />
                 <Input
+                  autoComplete="off"
                   inputProps={{ list: 'series' }}
                   {...register('series')}
                   placeholder="시리즈"
                 />
 
-                <datalist id="series">
+                <datalist autoSave="false" id="series">
                   {seriesList?.data?.data?.map((series) => (
                     <option key={series.id} value={series.name}>
                       {series.name}

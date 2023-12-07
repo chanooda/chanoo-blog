@@ -5,9 +5,3 @@ export interface WritingForm {
   tag: string[];
   title: string;
 }
-
-export interface WriteFilterForm {
-  search: string;
-  seriesId: number;
-  tagId: number;
-}
