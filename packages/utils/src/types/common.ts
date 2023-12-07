@@ -13,3 +13,7 @@ export interface IdReq {
 export interface ChildrenProps {
   children: ReactNode;
 }
+
+export interface IdRes {
+  id: number;
+}

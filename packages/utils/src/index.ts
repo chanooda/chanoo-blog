@@ -6,3 +6,4 @@ export * from 'axios';
 export * from './axios';
 export * from './types';
 export { default as removeMarkdown } from 'markdown-to-text';
+export * from './client/index';

@@ -1,10 +1,10 @@
 import { Card, CardActionArea, CardContent, CardMedia, Stack, Typography } from '@mui/material';
-import { WriteRes, day, regex, removeMarkdown } from 'utils';
+import { Write, day, regex, removeMarkdown } from 'utils';
 import { EllipsisTypography } from './EllipsisTypography';
 import { EllipsisMultilineTypography } from './EllipsisMultilineTypography';
 
 interface WriteListCardProps {
-  write: WriteRes;
+  write: Write;
 }
 
 export function WriteListCard({ write }: WriteListCardProps) {
@@ -22,14 +22,14 @@ export function WriteListCard({ write }: WriteListCardProps) {
           <EllipsisTypography fontSize={18} gutterBottom>
             {write.title}
           </EllipsisTypography>
-          <Stack height={75} width="100%">
+          <Stack width="100%">
             <EllipsisMultilineTypography color="text.secondary" ellipsisLine={4} variant="body2">
               {markdownPreviewContent}
             </EllipsisMultilineTypography>
           </Stack>
-          <Stack alignItems="center" direction="row" justifyContent="space-between">
+          <Stack alignItems="center" direction="row" gap={2} justifyContent="space-between" mt={2}>
             {!write.isPublish && (
-              <Typography color={(theme) => theme.palette.grey[500]} fontSize={15} mt={2}>
+              <Typography color={(theme) => theme.palette.grey[500]} fontSize={15}>
                 비공개글
               </Typography>
             )}

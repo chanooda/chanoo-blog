@@ -13,12 +13,11 @@ export function EllipsisMultilineTypography({
     <Typography
       sx={{
         width: '100%',
-        height: ellipsisLine * 25,
-        wordBreak: 'break-word',
+        wordBreak: 'break-all',
         display: '-webkit-box',
         WebkitBoxOrient: 'vertical',
         WebkitLineClamp: ellipsisLine,
-        overflowWrap: 'break-word',
+        overflowWrap: 'break-all',
         textOverflow: 'ellipsis',
         overflow: 'hidden'
       }}

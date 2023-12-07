@@ -8,9 +8,11 @@ export function Logo() {
     <Typography
       variant="h1"
       sx={{
-        fontSize: 32,
+        fontSize: '30px',
         fontWeight: 600,
-        cursor: 'pointer'
+        cursor: 'pointer',
+        verticalAlign: 'bottom',
+        lineHeight: 1
       }}
     >
       Chanoo

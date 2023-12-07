@@ -2,6 +2,7 @@ import { Button, Input, Modal, ModalProps, Stack, Typography, useSnackbar } from
 import { GlobalError } from 'react-hook-form';
 import { ChangeEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { ModalContent } from './ModalContent';
 import { useChanooMutation } from '../../libs/queryHook';
 
@@ -13,13 +14,14 @@ interface WriteDeleteModalProps extends Omit<ModalProps, 'children'> {
 export function WriteDeleteModal({ id, title, ...modalProps }: WriteDeleteModalProps) {
   const navigate = useNavigate();
   const [enteredTitle, setEnteredTitle] = useState('');
-
   const { enqueueSnackbar } = useSnackbar();
+  const { invalidateQueries } = useQueryClient();
 
   const { mutate } = useChanooMutation<undefined, GlobalError>(
     ['DELETE', `write/${id}`, undefined],
     {
       onSuccess() {
+        invalidateQueries(['/write']);
         enqueueSnackbar({
           variant: 'success',
           message: '삭제되었습니다.'
