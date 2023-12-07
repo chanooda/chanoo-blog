@@ -2,7 +2,7 @@ import React from 'react';
 import { SeriesRepository } from 'src/repository/seriesRepository';
 import { SeriesList } from './components/SeriesList';
 
-export const getData = async (seriesId?: number) => {
+const getData = async (seriesId?: number) => {
   const seriesRepository = new SeriesRepository();
   const series = seriesRepository.getSeries();
   const seriesDetail = seriesId ? seriesRepository.getSeriesDetail({ id: seriesId }) : undefined;
