@@ -1,5 +1,5 @@
 interface ImportMeta {
   env: {
-    VITE_BLOG_ADMIN_BASE_URL: string;
+    VITE_APP_BLOG_ADMIN_BASE_URL: string;
   };
 }
