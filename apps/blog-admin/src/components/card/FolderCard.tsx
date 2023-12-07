@@ -18,7 +18,7 @@ import {
 } from 'ui';
 import { Folder as FolderIcon, MoreVert } from 'ui-icon';
 import { useQueryClient } from '@tanstack/react-query';
-import { GlobalError } from 'react-hook-form';
+import { GlobalError } from 'utils';
 import { useChanooMutation } from '../../libs/queryHook';
 import { FolderMutateModal } from '../modal/FolderMutateModal';
 import { FolderRes } from '../../types/res';
