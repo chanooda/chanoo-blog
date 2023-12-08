@@ -1,4 +1,3 @@
-import React from 'react';
 import { WriteRepository } from 'src/repository/writeRepository';
 import { SeriesRepository } from 'src/repository/seriesRepository';
 import { TagRepository } from 'src/repository/tagRepository';
