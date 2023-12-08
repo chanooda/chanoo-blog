@@ -77,7 +77,7 @@ export function PostList({ writes, series, tags }: PostListProps) {
   return (
     <Stack>
       <Stack>
-        <Stack maxWidth={800} mx="auto" position="relative">
+        <Stack maxWidth={800} mx="auto" position="relative" width="100%">
           {mediaQueryLoading && !matches && (
             <Stack direction="row" gap={1} mb={1}>
               <TextField {...register('search')} placeholder="검색" size="small" />
@@ -162,20 +162,24 @@ export function PostList({ writes, series, tags }: PostListProps) {
               </Stack>
             </Stack>
           )}
-          <Grid2
-            columns={{ xs: 8, sm: 8, md: 8 }}
-            container
-            spacing={{ xl: 2, lg: 2, md: 2, sm: 2, xs: 2 }}
-            width="100%"
-          >
-            {writes?.map((write) => (
-              <Grid2 key={write.id} md={4} sm={4} xs={8}>
-                <NextLink href={`/post/${write.id}`}>
-                  <WriteListCard write={write} />
-                </NextLink>
-              </Grid2>
-            ))}
-          </Grid2>
+          {writes?.length > 0 ? (
+            <Grid2
+              columns={{ xs: 8, sm: 8, md: 8 }}
+              container
+              spacing={{ xl: 2, lg: 2, md: 2, sm: 2, xs: 2 }}
+              width="100%"
+            >
+              {writes?.map((write) => (
+                <Grid2 key={write.id} md={4} sm={4} xs={8}>
+                  <NextLink href={`/post/${write.id}`}>
+                    <WriteListCard write={write} />
+                  </NextLink>
+                </Grid2>
+              ))}
+            </Grid2>
+          ) : (
+            <Stack width="100%" />
+          )}
         </Stack>
       </Stack>
     </Stack>
