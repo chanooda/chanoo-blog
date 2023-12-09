@@ -29,7 +29,7 @@ export function PostList({ writes, series, tags }: PostListProps) {
   const query = useSearchParams();
   const router = useRouter();
   const matches = useMediaQuery('(min-width:1270px)');
-  const [mediaQueryLoading, setMediaQueryLoading] = useState(false);
+  const [mediaQueryLoading, setMediaQueryLoading] = useState(true);
 
   const { register, watch, reset } = useForm<WriteFilterForm>({
     defaultValues: {
@@ -71,14 +71,14 @@ export function PostList({ writes, series, tags }: PostListProps) {
   }, [query]);
 
   useEffect(() => {
-    setMediaQueryLoading(true);
+    setMediaQueryLoading(false);
   }, []);
 
   return (
     <Stack>
       <Stack>
-        <Stack maxWidth={800} mx="auto" position="relative">
-          {mediaQueryLoading && !matches && (
+        <Stack maxWidth={800} mx="auto" position="relative" width="100%">
+          {!mediaQueryLoading && !matches && (
             <Stack direction="row" gap={1} mb={1}>
               <TextField {...register('search')} placeholder="검색" size="small" />
               <Select
@@ -114,7 +114,7 @@ export function PostList({ writes, series, tags }: PostListProps) {
               </Button>
             </Stack>
           )}
-          {mediaQueryLoading && matches && (
+          {!mediaQueryLoading && matches && (
             <Stack gap={2} left={-235} minWidth={200} position="absolute" width={200}>
               <Stack width="100%">
                 <Stack alignItems="center" direction="row" justifyContent="space-between">
@@ -148,34 +148,40 @@ export function PostList({ writes, series, tags }: PostListProps) {
               <Divider />
               <Stack width="100%">
                 <InputLabel>Tags</InputLabel>
-                <MenuList>
-                  {tags?.map((tag) => (
-                    <MenuItem
-                      key={tag.id}
-                      selected={tag.id === tagId}
-                      onClick={() => changeTagHandler(tag.id)}
-                    >
-                      {tag.name}
-                    </MenuItem>
-                  ))}
-                </MenuList>
+                <Stack height={500} overflow="auto">
+                  <MenuList>
+                    {tags?.map((tag) => (
+                      <MenuItem
+                        key={tag.id}
+                        selected={tag.id === tagId}
+                        onClick={() => changeTagHandler(tag.id)}
+                      >
+                        {tag.name}
+                      </MenuItem>
+                    ))}
+                  </MenuList>
+                </Stack>
               </Stack>
             </Stack>
           )}
-          <Grid2
-            columns={{ xs: 8, sm: 8, md: 8 }}
-            container
-            spacing={{ xl: 2, lg: 2, md: 2, sm: 2, xs: 2 }}
-            width="100%"
-          >
-            {writes?.map((write) => (
-              <Grid2 key={write.id} md={4} sm={4} xs={8}>
-                <NextLink href={`/post/${write.id}`}>
-                  <WriteListCard write={write} />
-                </NextLink>
-              </Grid2>
-            ))}
-          </Grid2>
+          {writes?.length > 0 ? (
+            <Grid2
+              columns={{ xs: 8, sm: 8, md: 8 }}
+              container
+              spacing={{ xl: 2, lg: 2, md: 2, sm: 2, xs: 2 }}
+              width="100%"
+            >
+              {writes?.map((write) => (
+                <Grid2 key={write.id} md={4} sm={4} xs={8}>
+                  <NextLink href={`/post/${write.id}`}>
+                    <WriteListCard write={write} />
+                  </NextLink>
+                </Grid2>
+              ))}
+            </Grid2>
+          ) : (
+            <Stack width="100%" />
+          )}
         </Stack>
       </Stack>
     </Stack>

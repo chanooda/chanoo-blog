@@ -8,7 +8,6 @@ export class WriteRepository extends BaseRepository implements AbstractWriteRepo
       const writeRes = await this.client.get<GlobalResponse<Write[]>>('write', {
         params: writeReq
       });
-
       return writeRes.data.data;
     } catch (e) {
       console.error(e);

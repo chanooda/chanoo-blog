@@ -19,7 +19,7 @@ export function PostDetail() {
   };
 
   return (
-    <Stack maxWidth={800} mx="auto">
+    <Stack maxWidth={800} mx="auto" width="100%">
       <Stack direction="row" gap={1} justifyContent="end" mt={4} mx="auto" px={2} width="100%">
         <Link to={`/post/${id}/edit`}>
           <Typography sx={{ textDecoration: 'underline' }}>수정</Typography>

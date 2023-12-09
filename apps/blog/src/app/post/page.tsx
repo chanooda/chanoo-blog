@@ -1,4 +1,3 @@
-import React from 'react';
 import { WriteRepository } from 'src/repository/writeRepository';
 import { SeriesRepository } from 'src/repository/seriesRepository';
 import { TagRepository } from 'src/repository/tagRepository';
@@ -32,10 +31,11 @@ interface PostPageProps {
 async function PostPage({ searchParams }: PostPageProps) {
   const writeReq: WriteReq = {
     search: searchParams?.search || '',
-    seriesId: Number(searchParams?.seriesId) || 0,
-    tagId: Number(searchParams?.tagId) || 0
+    seriesId: Number(searchParams?.seriesId) || undefined,
+    tagId: Number(searchParams?.tagId) || undefined
   };
   const { series, writes, tags } = await getData(writeReq);
+
   return <PostList series={series} tags={tags} writes={writes} />;
 }
 
