@@ -1,12 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Button, Input, MultiSelectInput, Stack, Switch, TextField, useSnackbar } from 'ui';
-import { useNavigate } from 'react-router-dom';
-import { Controller, FieldErrors, IdRes, Series, Tag, WriteDetail, day, useForm } from 'utils';
 import { MarkdownPreview } from 'markdown';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button, Input, MultiSelectInput, Stack, Switch, TextField, useSnackbar } from 'ui';
+import { Controller, FieldErrors, IdRes, Series, Tag, WriteDetail, day, useForm } from 'utils';
+import { MarkdownEditor } from '../../../components/markdown/MarkdownEditor';
 import { WriteImageAddModal } from '../../../components/modal/WriteImageAddModal';
 import { useChanooMutation, useChanooQuery } from '../../../libs/queryHook';
 import { WritingForm } from '../../../types/form';
-import { MarkdownEditor } from '../../../components/markdown/MarkdownEditor';
 import { GlobalError } from '../../../types/global';
 
 interface WritingProps {
@@ -66,7 +66,13 @@ export function Write({ id }: WritingProps) {
   const getWriteFormData = (formData: WritingForm) => {
     const { mainImage, series, tag, title, isPublish } = formData;
 
-    console.log(isPublish);
+    if (!editorValue) {
+      enqueueSnackbar({
+        message: '본문을 입력해주세요.',
+        variant: 'error'
+      });
+      return false;
+    }
 
     const writeFormData = new FormData();
     writeFormData.append('title', title);
@@ -75,8 +81,6 @@ export function Write({ id }: WritingProps) {
     writeFormData.append('seriesName', series);
     writeFormData.append('isPublish', JSON.stringify(isPublish));
     writeFormData.append('tagNames', JSON.stringify(tag));
-
-    console.log(writeFormData.get('isPublish'));
 
     return writeFormData;
   };
@@ -92,30 +96,11 @@ export function Write({ id }: WritingProps) {
     });
   };
 
-  const updateSaveSubmitHandler = handleSubmit(
-    (formData) => {
-      if (!id || updateWriteLoading) return;
-      const writeFormData = getWriteFormData(formData);
-
-      updateWrite(
-        { formData: writeFormData, writeId: id },
-        {
-          onSuccess() {
-            updateWriteSuccessHandler(false);
-          }
-        }
-      );
-    },
-    (error) => {
-      formErrorHandler(error);
-    }
-  );
-
   const updateWriteSubmitHandler = handleSubmit(
     (formData) => {
       if (!id || updateWriteLoading) return;
       const writeFormData = getWriteFormData(formData);
-
+      if (!writeFormData) return;
       updateWrite(
         { formData: writeFormData, writeId: id },
         {
@@ -130,33 +115,11 @@ export function Write({ id }: WritingProps) {
     }
   );
 
-  const saveWriteSubmitHandler = handleSubmit(
-    (formData) => {
-      if (createWriteLoading) return;
-      const writeFormData = getWriteFormData(formData);
-      console.log(writeFormData);
-      createWrite(writeFormData, {
-        onSuccess(data) {
-          enqueueSnackbar({
-            message: '임시 저장 완료!',
-            variant: 'success'
-          });
-          if (!id) {
-            const writeId = data?.data?.data?.id;
-            navigate(`/post/${writeId}/edit`);
-          }
-        }
-      });
-    },
-    (error) => {
-      formErrorHandler(error);
-    }
-  );
-
   const writeSubmitHandler = handleSubmit(
     (formData) => {
       if (createWriteLoading) return;
       const writeFormData = getWriteFormData(formData);
+      if (!writeFormData) return;
       createWrite(writeFormData, {
         onSuccess(data) {
           enqueueSnackbar({
@@ -172,14 +135,6 @@ export function Write({ id }: WritingProps) {
       formErrorHandler(error);
     }
   );
-
-  const clickSaveButtonHandler = () => {
-    if (id) {
-      updateSaveSubmitHandler();
-    } else {
-      saveWriteSubmitHandler();
-    }
-  };
 
   const clickWriteButtonHandler = () => {
     if (id) {
@@ -271,11 +226,8 @@ export function Write({ id }: WritingProps) {
               <label htmlFor="isPublish">공개 여부</label>
             </Stack>
             <Stack direction="row" gap={2} ml="auto">
-              <Button variant="outlined" onClick={clickSaveButtonHandler}>
-                임시저장
-              </Button>
               <Button variant="contained" onClick={clickWriteButtonHandler}>
-                글쓰기
+                {id ? '수정하기' : '글쓰기'}
               </Button>
             </Stack>
           </Stack>
