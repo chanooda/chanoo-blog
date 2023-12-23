@@ -1,4 +1,5 @@
 export interface WritingForm {
+  content: string;
   isPublish: boolean;
   mainImage: string;
   series: string;

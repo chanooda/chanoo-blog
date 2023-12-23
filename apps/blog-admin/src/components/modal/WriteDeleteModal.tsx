@@ -1,10 +1,10 @@
-import { Button, Input, Modal, ModalProps, Stack, Typography, useSnackbar } from 'ui';
+import { useQueryClient } from '@tanstack/react-query';
 import { ChangeEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
+import { Button, Input, Modal, ModalProps, Stack, Typography, useSnackbar } from 'ui';
 import { GlobalError } from 'utils';
-import { ModalContent } from './ModalContent';
 import { useChanooMutation } from '../../libs/queryHook';
+import { ModalContent } from './ModalContent';
 
 interface WriteDeleteModalProps extends Omit<ModalProps, 'children'> {
   id: string;
@@ -21,12 +21,11 @@ export function WriteDeleteModal({ id, title, ...modalProps }: WriteDeleteModalP
     ['DELETE', `write/${id}`, undefined],
     {
       onSuccess() {
-        invalidateQueries(['/write']);
+        // invalidateQueries(['/write']);
         enqueueSnackbar({
           variant: 'success',
           message: '삭제되었습니다.'
         });
-
         navigate('/post');
       }
     }
