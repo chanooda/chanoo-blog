@@ -10,10 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@mui/icons-material": "^5.14.1"
+    "@mui/icons-material": "^7.3.4"
   },
   "devDependencies": {
-    "eslint-config-custom": "workspace:*",
+    
     "tsconfig": "workspace:*"
   }
 }

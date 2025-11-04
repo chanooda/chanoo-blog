@@ -1,18 +1,32 @@
 {
-  "name": "chanoo",
-  "private": true,
-  "scripts": {
-    "build": "turbo run build",
-    "dev": "dotenv -- turbo dev",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
-  },
-  "devDependencies": {
-    "@turbo/gen": "^1.9.7",
-    "dotenv-cli": "^7.3.0",
-    "eslint": "^7.32.0",
-    "prettier": "^2.5.1",
-    "turbo": "latest"
-  },
-  "packageManager": "pnpm@7.15.0"
+	"name": "chanoo",
+	"private": true,
+	"scripts": {
+		"build": "turbo run build",
+		"dev": "dotenv -- turbo dev",
+		"lint": "turbo run lint",
+		"format": "prettier --write \"**/*.{ts,tsx,md}\""
+	},
+	"devDependencies": {
+		"@turbo/gen": "^2.6.0",
+		"dotenv-cli": "^11.0.0",
+		"turbo": "latest"
+	},
+	"packageManager": "pnpm@10.20.0",
+	"pnpm": {
+    "supportedArchitectures": {
+      "os": [
+        "linux",
+        "darwin"
+      ],
+      "cpu": [
+        "x64",
+        "arm64"
+      ],
+      "libc": [
+        "musl",
+        "glibc"
+      ]
+    }
+  }
 }

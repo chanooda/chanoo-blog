@@ -1,48 +1,43 @@
 {
-  "folders": [
-    {
-      "name": "root",
-      "path": "."
-    },
-    {
-      "name": "blog",
-      "path": "./apps/blog"
-    },
-    {
-      "name": "blog-admin",
-      "path": "./apps/blog-admin"
-    },
-    {
-      "name": "ui",
-      "path": "./packages/ui"
-    },
-    {
-      "name": "ui-icon",
-      "path": "./packages/ui-icon"
-    },
-    {
-      "name": "utils",
-      "path": "./packages/utils"
-    },
-    {
-      "name": "markdown",
-      "path": "./packages/markdown"
-    },
-    {
-      "name": "eslint-config-custom",
-      "path": "./packages/eslint-config-custom"
-    },
-    {
-      "name": "tsconfig",
-      "path": "./packages/tsconfig"
-    }
-  ],
-  "settings": {
-    "eslint.workingDirectories": [{ "mode": "auto" }],
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true
-    }
-  }
+	"folders": [
+		{
+			"name": "root",
+			"path": "."
+		},
+		{
+			"name": "blog",
+			"path": "./apps/blog"
+		},
+		{
+			"name": "blog-admin",
+			"path": "./apps/blog-admin"
+		},
+		{
+			"name": "ui",
+			"path": "./packages/ui"
+		},
+		{
+			"name": "ui-icon",
+			"path": "./packages/ui-icon"
+		},
+		{
+			"name": "utils",
+			"path": "./packages/utils"
+		},
+		{
+			"name": "markdown",
+			"path": "./packages/markdown"
+		},
+		{
+			"name": "tsconfig",
+			"path": "./packages/tsconfig"
+		}
+	],
+	"settings": {
+		"editor.defaultFormatter": "biomejs.biome",
+		"editor.formatOnSave": true,
+		"editor.codeActionsOnSave": {
+			"source.biome": "always"
+		}
+	}
 }

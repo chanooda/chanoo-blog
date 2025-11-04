@@ -11,22 +11,22 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@emotion/cache": "^11.11.0",
-    "@emotion/react": "^11.11.1",
-    "@emotion/styled": "^11.11.0",
-    "@mui/material": "^5.14.0",
-    "@types/react": "18.2.15",
+    "@emotion/cache": "^11.14.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/material": "^7.3.4",
+    "@types/react": "19.2.2",
     "from": "^0.1.7",
-    "next": "13.4.10",
-    "notistack": "^3.0.1",
-    "react": "18.2.0",
-    "usehooks-ts": "^2.9.1",
+    "next": "16.0.1",
+    "notistack": "^3.0.2",
+    "react": "19.2.0",
+    "usehooks-ts": "^3.1.1",
     "utils": "workspace:*"
   },
   "devDependencies": {
-    "@types/react": "18.2.15",
-    "@types/react-dom": "18.2.7",
-    "eslint-config-custom": "workspace:*",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    
     "tsconfig": "workspace:*"
   }
 }
