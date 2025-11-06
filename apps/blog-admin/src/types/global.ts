@@ -1,16 +1,16 @@
-import { HttpStatusCode } from 'axios';
+import type { HttpStatusCode } from "axios";
 
 export interface GlobalResponse<T> {
-  data: T;
-  status: HttpStatusCode;
+	data: T;
+	status: HttpStatusCode;
 }
 
 export interface GlobalError {
-  error: string;
-  status: number;
+	error: string;
+	status: number;
 }
 
 export interface ImageFile {
-  file: File;
-  url: string;
+	file: File;
+	url: string;
 }

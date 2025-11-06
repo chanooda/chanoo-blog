@@ -1,19 +1,18 @@
-import { HttpStatusCode } from 'axios';
-import { ReactNode } from 'react';
+import type { ReactNode } from "react";
 
 export interface GlobalResponse<T> {
-  data: T;
-  status: HttpStatusCode;
+	data: T;
+	status: "success" | "error";
 }
 
 export interface IdReq {
-  id: number;
+	id: string;
 }
 
 export interface ChildrenProps {
-  children: ReactNode;
+	children: ReactNode;
 }
 
 export interface IdRes {
-  id: number;
+	id: string;
 }

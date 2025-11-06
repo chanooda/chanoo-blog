@@ -1,11 +1,11 @@
-import { Card, Stack, Grid2 } from "ui";
 import { useParams } from "react-router-dom";
-import { useChanooQuery } from "../../libs/queryHook";
-import { FolderCard } from "../../components/card/FolderCard";
-import { ImageCard } from "../../components/card/ImageCard";
+import { Card, Grid2, Stack } from "ui";
 import { FolderAddButton } from "../../components/button/FolderAddButton";
 import { ImageAddButton } from "../../components/button/ImageAddButton";
-import { FolderRes } from "../../types/res";
+import { FolderCard } from "../../components/card/FolderCard";
+import { ImageCard } from "../../components/card/ImageCard";
+import { useChanooQuery } from "../../libs/queryHook";
+import type { FolderRes } from "../../types/res";
 
 // TODO 이미지는 오른쪽 클릭시에 설정 팝업이 뜨게 하기
 
@@ -28,7 +28,7 @@ export function FolderPage() {
 				container
 				spacing={{ xs: 2, md: 3 }}
 			>
-				<Grid2 md={4} sm={4} xl={3} xs={2}>
+				<Grid2 size={{ md: 4, sm: 4, xl: 3, xs: 2 }}>
 					<Card sx={{ height: 200 }}>
 						<Stack
 							alignItems="center"
@@ -46,24 +46,26 @@ export function FolderPage() {
 				{rootFolder &&
 					!params.id &&
 					rootFolder?.data?.data?.map((rootFolderData) => (
-						<Grid2 key={rootFolderData.id} md={4} sm={4} xl={3} xs={2}>
+						<Grid2
+							key={rootFolderData.id}
+							size={{ md: 4, sm: 4, xl: 3, xs: 2 }}
+						>
 							<FolderCard folder={rootFolderData} />
 						</Grid2>
 					))}
-				{detailFolder &&
-					detailFolder?.data?.data?.child?.map((childFolder) => (
-						<Grid2 key={childFolder.id} md={4} sm={4} xl={3} xs={2}>
-							<FolderCard folder={childFolder} />
+
+				{detailFolder?.data?.data?.child?.map((childFolder) => (
+					<Grid2 key={childFolder.id} size={{ md: 4, sm: 4, xl: 3, xs: 2 }}>
+						<FolderCard folder={childFolder} />
+					</Grid2>
+				))}
+				{detailFolder?.data?.data?.folderImage?.map((image) => {
+					return (
+						<Grid2 key={image.id} size={{ md: 4, sm: 4, xl: 3, xs: 2 }}>
+							<ImageCard image={image} />
 						</Grid2>
-					))}
-				{detailFolder &&
-					detailFolder?.data?.data?.folderImage?.map((image) => {
-						return (
-							<Grid2 key={image.id} md={4} sm={4} xl={3} xs={2}>
-								<ImageCard image={image} />
-							</Grid2>
-						);
-					})}
+					);
+				})}
 			</Grid2>
 		</Stack>
 	);

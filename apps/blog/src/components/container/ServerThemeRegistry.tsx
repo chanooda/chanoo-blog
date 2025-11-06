@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import React, { ReactNode } from 'react';
-import { ThemeRegistry } from 'ui';
+import { ThemeRegistry } from "@Components/ThemeRegistry";
+import type { ReactNode } from "react";
 
 interface ThemeRegistryProps {
-  children: ReactNode;
+	children: ReactNode;
 }
 export function ServerThemeRegistry({ children }: ThemeRegistryProps) {
-  return <ThemeRegistry options={{ key: 'mui' }}>{children}</ThemeRegistry>;
+	return <ThemeRegistry options={{ key: "mui" }}>{children}</ThemeRegistry>;
 }

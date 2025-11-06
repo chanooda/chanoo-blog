@@ -1,76 +1,80 @@
-import { Box, Modal, ModalProps } from 'ui';
-import { useEffect, useRef, useState } from 'react';
-import { ModalContent } from './ModalContent';
-import { FolderImage } from '../../types/res';
+import { useEffect, useRef, useState } from "react";
+import { Box, Modal, type ModalProps } from "ui";
+import type { FolderImage } from "../../types/res";
+import { ModalContent } from "./ModalContent";
 
-interface ImageCoverModalProps extends Omit<ModalProps, 'children'> {
-  image?: FolderImage;
+interface ImageCoverModalProps extends Omit<ModalProps, "children"> {
+	image?: FolderImage;
 }
 
-export function ImageCoverModal({ open, onClose, image }: ImageCoverModalProps) {
-  const imageRef = useRef<HTMLImageElement>(null);
-  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+export function ImageCoverModal({
+	open,
+	onClose,
+	image,
+}: ImageCoverModalProps) {
+	const imageRef = useRef<HTMLImageElement>(null);
+	const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
 
-  useEffect(() => {
-    const imageElement = imageRef?.current;
+	useEffect(() => {
+		const imageElement = imageRef?.current;
 
-    if (window.innerWidth <= 500) {
-      setImageSize(() => ({
-        height: window.innerHeight - 20,
-        width: window.innerWidth
-      }));
-    } else {
-      setImageSize(() => ({
-        height: window.innerHeight - 100,
-        width: window.innerWidth - 100
-      }));
-    }
+		if (window.innerWidth <= 500) {
+			setImageSize(() => ({
+				height: window.innerHeight - 20,
+				width: window.innerWidth,
+			}));
+		} else {
+			setImageSize(() => ({
+				height: window.innerHeight - 100,
+				width: window.innerWidth - 100,
+			}));
+		}
 
-    const windowResizeHandler = () => {
-      if (imageElement) {
-        if (window.innerWidth <= 500) {
-          setImageSize(() => ({
-            height: window.innerHeight - 20,
-            width: window.innerWidth
-          }));
-        } else {
-          setImageSize(() => ({
-            height: window.innerHeight - 100,
-            width: window.innerWidth - 100
-          }));
-        }
-      }
-    };
+		const windowResizeHandler = () => {
+			if (imageElement) {
+				if (window.innerWidth <= 500) {
+					setImageSize(() => ({
+						height: window.innerHeight - 20,
+						width: window.innerWidth,
+					}));
+				} else {
+					setImageSize(() => ({
+						height: window.innerHeight - 100,
+						width: window.innerWidth - 100,
+					}));
+				}
+			}
+		};
 
-    window?.addEventListener('resize', windowResizeHandler);
-    return () => window?.removeEventListener('resize', windowResizeHandler);
-  }, []);
+		window?.addEventListener("resize", windowResizeHandler);
+		return () => window?.removeEventListener("resize", windowResizeHandler);
+	}, []);
 
-  return (
-    <Modal
-      keepMounted
-      open={open}
-      slotProps={{
-        backdrop: {
-          sx: {
-            backgroundColor: 'rgba(1,1,1,0.9)'
-          }
-        }
-      }}
-      onClose={onClose}
-    >
-      <ModalContent noBackground>
-        <Box
-          alt={image?.originalname}
-          component="img"
-          ref={imageRef}
-          src={image?.url}
-          sx={{
-            maxWidth: imageSize.width !== 0 ? imageSize.width : 'auto',
-            maxHeight: imageSize.height !== 0 ? imageSize.height : 'auto'
-          }}
-        />
-      </ModalContent>
-    </Modal>
-  );
+	return (
+		<Modal
+			keepMounted
+			open={open}
+			slotProps={{
+				backdrop: {
+					sx: {
+						backgroundColor: "rgba(1,1,1,0.9)",
+					},
+				},
+			}}
+			onClose={onClose}
+		>
+			<ModalContent noBackground>
+				<Box
+					alt={image?.originalname}
+					component="img"
+					ref={imageRef}
+					src={image?.url}
+					sx={{
+						maxWidth: imageSize.width !== 0 ? imageSize.width : "auto",
+						maxHeight: imageSize.height !== 0 ? imageSize.height : "auto",
+					}}
+				/>
+			</ModalContent>
+		</Modal>
+	);
 }

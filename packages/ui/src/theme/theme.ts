@@ -1,24 +1,24 @@
-import { createTheme } from '@mui/material';
+import { createTheme } from "@mui/material";
 
 export const theme = createTheme({
-  palette: {
-    background: {
-      default: '#f8f9fa'
-    },
-    primary: {
-      main: '#212529',
-      '100': '#f8f9fa',
-      '200': '#e9ecef',
-      '300': '#dee2e6',
-      '400': '#ced4da',
-      '500': '#adb5bd',
-      '600': '#6c757d',
-      '700': '#495057',
-      '800': '#343a40',
-      '900': '#212529'
-    }
-  },
-  typography: {
-    fontFamily: ['Noto Sans KR', 'sans-serif'].join(',')
-  }
+	palette: {
+		background: {
+			default: "#f8f9fa",
+		},
+		primary: {
+			main: "#d32f2f",
+			"100": "#ffcdd2",
+			"200": "#ef9a9a",
+			"300": "#e57373",
+			"400": "#ef5350",
+			"500": "#f44336",
+			"600": "#e53935",
+			"700": "#d32f2f",
+			"800": "#c62828",
+			"900": "#b71c1c",
+		},
+	},
+	typography: {
+		fontFamily: ["Noto Sans KR", "sans-serif"].join(","),
+	},
 });

@@ -11,13 +11,11 @@
 	"devDependencies": {
 		"@types/node": "24.10.0",
 		"@types/react": "19.2.2",
-
 		"tsconfig": "workspace:*"
 	},
 	"dependencies": {
-		"axios": "^1.13.1",
+		"@chanooda/libs": "^0.0.9",
 		"dayjs": "^1.11.19",
-		"markdown-to-text": "^0.1.1",
-		"react-hook-form": "^7.66.0"
+		"markdown-to-text": "^0.1.1"
 	}
 }

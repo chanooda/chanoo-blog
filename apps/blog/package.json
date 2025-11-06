@@ -11,12 +11,13 @@
   "dependencies": {
     "@tanstack/react-query": "^5.90.6",
     "axios": "^1.13.1",
+    "markdown": "workspace:*",
     "next": "16.0.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",
+    "react-hook-form": "^7.66.0",
     "ui": "workspace:*",
     "ui-icon": "workspace:*",
-    "markdown": "workspace:*",
     "utils": "workspace:*"
   },
   "devDependencies": {
