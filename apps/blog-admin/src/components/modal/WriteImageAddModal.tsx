@@ -1,42 +1,38 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { debounce } from "lodash";
+import { Button } from "@ui/components/button";
 import {
-	type ChangeEvent,
-	forwardRef,
-	useCallback,
-	useRef,
-	useState,
-} from "react";
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from "@ui/components/dialog";
+import { Input } from "@ui/components/input";
 import {
-	Box,
-	Button,
-	CircularProgress,
-	ImageList,
-	ImageListItem,
-	Input,
-	MenuItem,
-	Modal,
-	type ModalProps,
 	Select,
-	type SelectChangeEvent,
-	Stack,
-	Tab,
-	Tabs,
-} from "ui";
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@ui/components/select";
+import { Spinner } from "@ui/components/spinner";
+import { Tabs, TabsList, TabsTrigger } from "@ui/components/tabs";
+import { debounce } from "lodash";
+import { type ChangeEvent, useCallback, useRef, useState } from "react";
+import type { ModalProps } from "@/src/types/ui";
 import { useChanooMutation, useChanooQuery } from "../../libs/queryHook";
 import type { GlobalError, ImageFile } from "../../types/global";
 import type { FolderImage, FolderRes } from "../../types/res";
-import { FIleUploadButton } from "../button/FIleUploadButton";
-import { ModalContent } from "./ModalContent";
+import { FileUploadButton } from "../button/FileUploadButton";
 
-export interface WriteImageAddModalProps extends Omit<ModalProps, "children"> {
+export interface WriteImageAddModalProps extends ModalProps {
 	onChooseImage: (url: string) => void;
 }
 
-export const WriteImageAddModal = forwardRef<
-	HTMLDivElement,
-	WriteImageAddModalProps
->(({ onChooseImage, open, ...modalProps }, ref) => {
+export const WriteImageAddModal = ({
+	onChooseImage,
+	onClose,
+	open,
+}: WriteImageAddModalProps) => {
 	const embedImageRef = useRef<HTMLImageElement>(null);
 	const client = useQueryClient();
 	const [tabValue, setTabValue] = useState("upload");
@@ -46,18 +42,13 @@ export const WriteImageAddModal = forwardRef<
 	const [uploadFolderId, setUploadFolderId] = useState("0");
 	const [folderId, setFolderId] = useState<string | undefined>(undefined);
 
-	const { data: folders } = useChanooQuery<FolderRes[], GlobalError>(
-		["folders"],
-		{
-			enabled: open,
-		},
-	);
+	const { data: folders } = useChanooQuery<FolderRes[], GlobalError>([
+		"folders",
+	]);
 	const { data: folderDetail, isLoading } = useChanooQuery<
 		FolderRes,
 		GlobalError
-	>([`folders/${folderId}`], {
-		enabled: !!folderId && open,
-	});
+	>([`folders/${folderId}`], { enabled: !!folderId });
 	const { mutate, isPending: addImageLoading } = useChanooMutation<
 		FolderImage,
 		GlobalError,
@@ -74,7 +65,7 @@ export const WriteImageAddModal = forwardRef<
 		setUploadFolderId("0");
 		client.cancelQueries({ queryKey: [`folders/${folderId}`] });
 	};
-	const changeTabHandler = (event: React.SyntheticEvent, newValue: string) => {
+	const changeTabHandler = (newValue: string) => {
 		dataClear();
 		setTabValue(newValue);
 	};
@@ -99,8 +90,8 @@ export const WriteImageAddModal = forwardRef<
 		setImageList(imageFiles);
 	};
 
-	const uploadFolderSelectChangeHandler = (e: SelectChangeEvent) => {
-		setUploadFolderId(e.target.value);
+	const uploadFolderSelectChangeHandler = (value: string) => {
+		setUploadFolderId(value);
 	};
 
 	// embed
@@ -119,8 +110,8 @@ export const WriteImageAddModal = forwardRef<
 	};
 
 	// file
-	const folderSelectChangeHandler = (e: SelectChangeEvent) => {
-		setFolderId(e.target.value);
+	const folderSelectChangeHandler = (value: string) => {
+		setFolderId(value);
 	};
 
 	const insertImage = (url: string) => {
@@ -128,35 +119,55 @@ export const WriteImageAddModal = forwardRef<
 	};
 
 	return (
-		<Modal {...modalProps} open={open} ref={ref}>
-			<ModalContent sx={{ width: "calc(100% - 24px)", maxWidth: 600 }}>
-				<Stack width="100%">
-					<Tabs value={tabValue} onChange={changeTabHandler}>
-						<Tab label="upload" value="upload" />
-						<Tab label="embed" value="embed" />
-						<Tab label="file" value="file" />
+		<Dialog open={open} onOpenChange={(open) => !open && onClose()}>
+			<DialogContent className="w-[calc(100% - 24px)] max-w-600">
+				<DialogHeader>
+					<DialogTitle>이미지 추가</DialogTitle>
+				</DialogHeader>
+				<div className="w-full">
+					<Tabs defaultValue={tabValue} className="w-full mt-4">
+						<TabsList className="w-full">
+							<TabsTrigger
+								onClick={() => changeTabHandler("upload")}
+								value="upload"
+							>
+								upload
+							</TabsTrigger>
+							<TabsTrigger
+								onClick={() => changeTabHandler("embed")}
+								value="embed"
+							>
+								embed
+							</TabsTrigger>
+							<TabsTrigger
+								onClick={() => changeTabHandler("file")}
+								value="file"
+							>
+								file
+							</TabsTrigger>
+						</TabsList>
 					</Tabs>
-					<Stack mt={2} width="100%">
+					<div className="mt-4 w-full flex flex-col gap-2">
 						{tabValue === "upload" && (
-							<Stack alignItems="flex-end" gap={2} width="100%">
-								<Box width={140}>
-									<FIleUploadButton getImageList={getImageList} />{" "}
-								</Box>
+							<div className="flex gap-4 w-full flex-col">
+								<FileUploadButton
+									className="w-full"
+									getImageList={getImageList}
+								/>
+
 								{imageList?.map((image) => (
-									<Box height={300} key={image.url} width="100%">
-										<Box
-											component="img"
-											height="100%"
+									<div className="h-80 w-full" key={image.url}>
+										<img
+											alt={image.url}
+											className="object-contain h-full w-full"
 											src={image.url}
-											sx={{ objectFit: "contain" }}
-											width="100%"
 										/>
-									</Box>
+									</div>
 								))}
-							</Stack>
+							</div>
 						)}
 						{tabValue === "embed" && (
-							<Stack gap={2} width="100%">
+							<div className="flex flex-col gap-2 w-full">
 								<Input
 									placeholder="이미지 링크를 입력해주세요."
 									type="text"
@@ -164,86 +175,80 @@ export const WriteImageAddModal = forwardRef<
 									onChange={changeEmbedInputHandler}
 								/>
 								{embedUrl && (
-									<Box height={300} key={embed} width="100%">
-										<Box
-											component="img"
-											height="100%"
+									<div className="h-80 w-full" key={embed}>
+										<img
+											className="object-contain h-full w-full"
+											alt={embedUrl}
 											ref={embedImageRef}
 											src={embedUrl}
-											sx={{ objectFit: "contain" }}
-											width="100%"
 										/>
-									</Box>
+									</div>
 								)}
-							</Stack>
+							</div>
 						)}
 						{tabValue === "file" && (
-							<Stack width="100%">
+							<div className="flex flex-col gap-2 w-full">
 								<Select
-									size="medium"
 									value={folderId}
-									variant="standard"
-									onChange={folderSelectChangeHandler}
+									onValueChange={folderSelectChangeHandler}
 								>
-									{folders?.data?.data?.map((folder) => (
-										<MenuItem key={folder.id} value={folder.id}>
-											{folder.name}
-										</MenuItem>
-									))}
+									<SelectTrigger className="w-full">
+										<SelectValue placeholder="Select a folder" />
+									</SelectTrigger>
+									<SelectContent>
+										{folders?.data?.data?.map((folder) => (
+											<SelectItem key={folder.id} value={String(folder.id)}>
+												{folder.name}
+											</SelectItem>
+										))}
+									</SelectContent>
 								</Select>
-								<Stack
-									alignItems="center"
-									justifyContent="center"
-									maxHeight={500}
-									minHeight={200}
-									overflow="auto"
-								>
+								<div className="flex items-center justify-center overflow-auto">
 									{folderImageList?.length > 0 && (
-										<ImageList cols={2} gap={8} variant="masonry">
+										<div className="grid grid-cols-3 gap-4">
 											{folderImageList?.map((img) => (
-												<ImageListItem
+												<button
+													type="button"
 													key={img.id}
-													sx={{ cursor: "pointer" }}
+													className="cursor-pointer"
 													onClick={() => insertImage(img.url)}
 												>
 													<img alt={img.originalname} src={img.url} />
-												</ImageListItem>
+												</button>
 											))}
-										</ImageList>
+										</div>
 									)}
-									{folderId && isLoading && <CircularProgress />}
-								</Stack>
-							</Stack>
+									{folderId && isLoading && <Spinner />}
+								</div>
+							</div>
 						)}
-					</Stack>
-					<Stack gap={4} mt={4} width="100%">
+					</div>
+					<div className="flex flex-col gap-4 mt-4 w-full">
 						{tabValue === "upload" && (
 							<Select
-								size="medium"
 								value={uploadFolderId}
-								variant="standard"
-								onChange={uploadFolderSelectChangeHandler}
+								onValueChange={uploadFolderSelectChangeHandler}
 							>
-								<MenuItem key={0} value="0">
-									폴더를 선택해주세요.
-								</MenuItem>
-								{folders?.data?.data?.map((folder) => (
-									<MenuItem key={folder.id} value={folder.id}>
-										{folder.name}
-									</MenuItem>
-								))}
+								<SelectTrigger className="w-full">
+									<SelectValue placeholder="Select a folder" />
+								</SelectTrigger>
+								<SelectContent>
+									{folders?.data?.data?.map((folder) => (
+										<SelectItem key={folder.id} value={String(folder.id)}>
+											{folder.name}
+										</SelectItem>
+									))}
+								</SelectContent>
 							</Select>
 						)}
 						{tabValue !== "file" && (
-							<Stack mx="auto" width={300}>
-								<Button variant="contained" onClick={clickUploadButtonHandler}>
-									업로드
-								</Button>
-							</Stack>
+							<Button className="w-full" onClick={clickUploadButtonHandler}>
+								업로드
+							</Button>
 						)}
-					</Stack>
-				</Stack>
-			</ModalContent>
-		</Modal>
+					</div>
+				</div>
+			</DialogContent>
+		</Dialog>
 	);
-});
+};

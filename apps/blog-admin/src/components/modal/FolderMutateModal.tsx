@@ -1,21 +1,27 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { type FormEvent, forwardRef, useState } from "react";
-import { Button, Input, Modal, type ModalProps, Stack, useSnackbar } from "ui";
+import { Button } from "@ui/components/button";
+import { Dialog, DialogContent } from "@ui/components/dialog";
+import { Input } from "@ui/components/input";
+import { useSnackbar } from "notistack";
+import { type FormEvent, useState } from "react";
+import type { ModalProps } from "@/src/types/ui";
 import { useChanooMutation } from "../../libs/queryHook";
 import type { GlobalError } from "../../types/global";
 import type { AddFolder, EditFolder } from "../../types/req";
 import type { FolderRes } from "../../types/res";
-import { ModalContent } from "./ModalContent";
 
 interface FolderAddModalProps extends Omit<ModalProps, "children"> {
 	folder?: FolderRes;
 	parentId?: FolderRes["parentId"];
 }
 
-export const FolderMutateModal = forwardRef<
-	HTMLDivElement,
-	FolderAddModalProps
->(({ open, onClose, parentId, folder, ...modalProps }, ref) => {
+export const FolderMutateModal = ({
+	open,
+	onClose,
+	parentId,
+	folder,
+	...modalProps
+}: FolderAddModalProps) => {
 	const [folderName, setFolderName] = useState("");
 	const { enqueueSnackbar } = useSnackbar();
 	const client = useQueryClient();
@@ -31,7 +37,7 @@ export const FolderMutateModal = forwardRef<
 						queryKey: parentId ? [`folders/${parentId}`] : [`folders/root`],
 					});
 
-					if (onClose) onClose({}, "escapeKeyDown");
+					if (onClose) onClose?.();
 				},
 			},
 		);
@@ -46,7 +52,7 @@ export const FolderMutateModal = forwardRef<
 					client.invalidateQueries({
 						queryKey: parentId ? [`folders/${parentId}`] : [`folders/root`],
 					});
-					if (onClose) onClose({}, "escapeKeyDown");
+					if (onClose) onClose?.();
 				},
 			},
 		);
@@ -68,24 +74,19 @@ export const FolderMutateModal = forwardRef<
 	};
 
 	return (
-		<Modal keepMounted open={open} ref={ref} onClose={onClose} {...modalProps}>
-			<ModalContent>
-				<Stack
-					component="form"
-					spacing={2}
-					width={300}
-					onSubmit={folderAddSubmitHandler}
-				>
+		<Dialog open={open} {...modalProps}>
+			<DialogContent>
+				<form className="flex flex-col gap-2" onSubmit={folderAddSubmitHandler}>
 					<Input
 						placeholder="폴더 이름"
 						value={folderName}
 						onChange={(e) => setFolderName(e.target.value)}
 					/>
-					<Button size="small" type="submit" variant="contained">
+					<Button type="submit">
 						{folder ? "폴더 수정하기" : "폴더추가하기"}
 					</Button>
-				</Stack>
-			</ModalContent>
-		</Modal>
+				</form>
+			</DialogContent>
+		</Dialog>
 	);
-});
+};

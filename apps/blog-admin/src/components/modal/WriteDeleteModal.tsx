@@ -1,18 +1,19 @@
 import { useQueryClient } from "@tanstack/react-query";
+import { Button } from "@ui/components/button";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+} from "@ui/components/dialog";
+import { Input } from "@ui/components/input";
+import { useSnackbar } from "notistack";
 import { type ChangeEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-	Button,
-	Input,
-	Modal,
-	type ModalProps,
-	Stack,
-	Typography,
-	useSnackbar,
-} from "ui";
+import type { ModalProps } from "@/src/types/ui";
 import { useChanooMutation } from "../../libs/queryHook";
 import type { GlobalError } from "../../types/global";
-import { ModalContent } from "./ModalContent";
 
 interface WriteDeleteModalProps extends Omit<ModalProps, "children"> {
 	id: string;
@@ -22,6 +23,8 @@ interface WriteDeleteModalProps extends Omit<ModalProps, "children"> {
 export function WriteDeleteModal({
 	id,
 	title,
+	onClose,
+	open,
 	...modalProps
 }: WriteDeleteModalProps) {
 	const navigate = useNavigate();
@@ -59,24 +62,20 @@ export function WriteDeleteModal({
 	};
 
 	return (
-		<Modal {...modalProps}>
-			<ModalContent>
-				<Typography variant="h6">정말 글을 삭제하시겠습니까?</Typography>
-				<Typography variant="body2">
-					<b>{title}</b> 을 삭제하기 위해서 아래에 <b>글의 제목</b>을
-					입력해주세요.
-				</Typography>
-				<Stack gap={2} mt={1}>
+		<Dialog open={open} onOpenChange={(open) => !open && onClose()}>
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>정말 글을 삭제하시겠습니까?</DialogTitle>
+					<DialogDescription>
+						<b>{title}</b> 을 삭제하기 위해서 아래에 <b>글의 제목</b>을
+						입력해주세요.
+					</DialogDescription>
+				</DialogHeader>
+				<div className="flex flex-col gap-2 mt-1">
 					<Input placeholder="글 제목" onChange={changeEnteredTitle} />
-					<Button
-						color="error"
-						variant="contained"
-						onClick={clickDeleteButtonHandler}
-					>
-						글 삭제
-					</Button>
-				</Stack>
-			</ModalContent>
-		</Modal>
+					<Button onClick={clickDeleteButtonHandler}>글 삭제</Button>
+				</div>
+			</DialogContent>
+		</Dialog>
 	);
 }

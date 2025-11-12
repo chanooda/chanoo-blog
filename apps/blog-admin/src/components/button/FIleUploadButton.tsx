@@ -1,3 +1,4 @@
+import { Button } from "@ui/components/button";
 import {
 	type ChangeEvent,
 	type ComponentProps,
@@ -5,8 +6,7 @@ import {
 	type JSX,
 	useRef,
 } from "react";
-import { Button } from "ui";
-import { Upload } from "ui-icon";
+import { UploadIcon } from "ui-icon";
 import type { ImageFile } from "../../types/global";
 
 interface FIleUploadButtonProps extends ComponentProps<"input"> {
@@ -14,7 +14,7 @@ interface FIleUploadButtonProps extends ComponentProps<"input"> {
 	getImageList: (imageFiles: ImageFile[]) => void;
 }
 
-export function FIleUploadButton({
+export function FileUploadButton({
 	getImageList,
 	buttonCover,
 	...props
@@ -48,12 +48,11 @@ export function FIleUploadButton({
 		<>
 			{buttonCoverWithProps || (
 				<Button
-					endIcon={<Upload />}
-					sx={{ maxWidth: 200, width: "100%" }}
-					variant="outlined"
+					className="w-full"
+					variant="outline"
 					onClick={clickImageUploadButtonHandler}
 				>
-					이미지 업로드
+					이미지 업로드 <UploadIcon />
 				</Button>
 			)}
 			<input

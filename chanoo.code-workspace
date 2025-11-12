@@ -40,6 +40,7 @@
 			"source.biome": "always",
 			"source.fixAll.biome": "always",
 			"source.organizeImports.biome": "always"
-		}
+		},
+		"tailwindCSS.experimental.configFile": "packages/ui/src/styles/globals.css"
 	}
 }

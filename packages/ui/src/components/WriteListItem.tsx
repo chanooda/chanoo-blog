@@ -1,40 +1,36 @@
-import { Box, Stack, Typography } from '@mui/material';
-import { Write, day, regex, removeMarkdown } from 'utils';
-import { EllipsisMultilineTypography } from './EllipsisMultilineTypography';
-import { EllipsisTypography } from './EllipsisTypography';
+import { day, regex, removeMarkdown, type Write } from "utils";
 
 interface WriteListItemProps {
-  write: Write;
+	write: Write;
 }
 
 export function WriteListItem({ write }: WriteListItemProps) {
-  const markdownPreviewContent = regex.getWriteDescription(removeMarkdown(write.content));
+	const markdownPreviewContent = regex.getWriteDescription(
+		removeMarkdown(write.content),
+	);
 
-  return (
-    <Stack direction="row" gap={2} height="max-content">
-      {write.imgUrl ? (
-        <Box
-          alt={write.title}
-          component="img"
-          minWidth="35%"
-          src={write.imgUrl}
-          sx={{ aspectRatio: '16/9 auto', objectFit: 'cover' }}
-          width="35%"
-        />
-      ) : (
-        <Stack minWidth="35%" width="35%" />
-      )}
-      <Stack width="100%">
-        <EllipsisTypography fontSize={20} fontWeight={700} gutterBottom>
-          {write.title}
-        </EllipsisTypography>
-        <EllipsisMultilineTypography color="text.secondary" ellipsisLine={6} variant="body2">
-          {markdownPreviewContent}
-        </EllipsisMultilineTypography>
-        <Typography fontSize={14} mt={1} textAlign="end">
-          {day(write.createdAt).defaultFormat()}
-        </Typography>
-      </Stack>
-    </Stack>
-  );
+	return (
+		<div className="gap-2 flex flex-row flex-1 min-h-0 h-full">
+			{write.imgUrl ? (
+				<img
+					alt={write.title}
+					className="min-w-35% w-35% aspect-video object-cover"
+					src={write.imgUrl}
+				/>
+			) : (
+				<div className="min-w-35% w-35%" />
+			)}
+			<div className="w-full h-full min-h-0 flex-1 justify-between">
+				<div>
+					<p className="text-xl font-bold mb-2 line-clamp-1">{write.title}</p>
+					<p className="text-sm text-gray-500 line-clamp-6">
+						{markdownPreviewContent}
+					</p>
+				</div>
+				<p className="text-sm text-gray-500 mt-1 text-end">
+					{day(write.createdAt).defaultFormat()}
+				</p>
+			</div>
+		</div>
+	);
 }

@@ -15,7 +15,7 @@ import axios, {
 import type { GlobalError, GlobalResponse } from "../types/global";
 
 const axiosClient = axios.create({
-	baseURL: `${import.meta.env.VITE_APP_BLOG_ADMIN_BASE_URL || ""}/api`,
+	baseURL: import.meta.env.VITE_APP_BLOG_ADMIN_BASE_URL || "",
 });
 
 export const useChanooQuery = <
@@ -43,6 +43,7 @@ export const useChanooQuery = <
 				params: queryParams,
 			});
 		},
+		throwOnError: true,
 		...options,
 	});
 

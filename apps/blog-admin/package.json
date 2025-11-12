@@ -1,42 +1,44 @@
 {
-  "name": "blog-admin",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite --port 4002",
-    "build": "tsc && vite build",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@tanstack/react-query": "^5.90.6",
-    "@uiw/react-md-editor": "^4.0.8",
-    "axios": "^1.13.1",
-    "lodash": "^4.17.21",
-    "markdown": "workspace:*",
-    "markdown-to-text": "^0.1.1",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "react-error-boundary": "^6.0.0",
-    "react-hook-form": "^7.66.0",
-    "react-markdown": "^10.1.0",
-    "react-router-dom": "^7.9.5",
-    "react-syntax-highlighter": "^16.1.0",
-    "remark-gfm": "^4.0.1",
-    "ui": "workspace:*",
-    "ui-icon": "workspace:*",
-    "usehooks-ts": "^3.1.1",
-    "utils": "workspace:*"
-  },
-  "devDependencies": {
-    "@types/lodash": "^4.17.20",
-    "@types/react": "19.2.2",
-    "@types/react-dom": "19.2.2",
-    "@types/react-syntax-highlighter": "^15.5.13",
-    "@vitejs/plugin-react-swc": "^4.2.0",
-    "tsconfig": "workspace:*",
-    "typescript": "^5.9.3",
-    "vite": "^7.1.12"
-  }
+	"name": "blog-admin",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite --port 4002",
+		"build": "tsc && vite build",
+		"lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"@tanstack/react-query": "^5.90.6",
+		"@uiw/react-md-editor": "^4.0.8",
+		"axios": "^1.13.1",
+		"markdown": "workspace:*",
+		"markdown-to-text": "^0.1.1",
+		"notistack": "^3.0.2",
+		"react": "^19.2.0",
+		"react-dom": "^19.2.0",
+		"react-error-boundary": "^6.0.0",
+		"react-hook-form": "^7.66.0",
+		"react-markdown": "^10.1.0",
+		"react-router-dom": "^7.9.5",
+		"react-syntax-highlighter": "^16.1.0",
+		"remark-gfm": "^4.0.1",
+		"ui": "workspace:*",
+		"ui-icon": "workspace:*",
+		"usehooks-ts": "^3.1.1",
+		"utils": "workspace:*",
+		"zustand": "^5.0.8"
+	},
+	"devDependencies": {
+		"@types/lodash": "^4.17.20",
+		"@types/node": "^24.10.0",
+		"@types/react": "19.2.2",
+		"@types/react-dom": "19.2.2",
+		"@types/react-syntax-highlighter": "^15.5.13",
+		"@vitejs/plugin-react-swc": "^4.2.0",
+		"tsconfig": "workspace:*",
+		"typescript": "^5.9.3",
+		"vite": "^7.1.12"
+	}
 }

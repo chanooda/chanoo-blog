@@ -1,5 +1,6 @@
+import { Dialog } from "@ui/components/dialog";
 import { useEffect, useRef, useState } from "react";
-import { Box, Modal, type ModalProps } from "ui";
+import type { ModalProps } from "@/src/types/ui";
 import type { FolderImage } from "../../types/res";
 import { ModalContent } from "./ModalContent";
 
@@ -51,30 +52,18 @@ export function ImageCoverModal({
 	}, []);
 
 	return (
-		<Modal
-			keepMounted
-			open={open}
-			slotProps={{
-				backdrop: {
-					sx: {
-						backgroundColor: "rgba(1,1,1,0.9)",
-					},
-				},
-			}}
-			onClose={onClose}
-		>
+		<Dialog open={open}>
 			<ModalContent noBackground>
-				<Box
-					alt={image?.originalname}
-					component="img"
+				<img
 					ref={imageRef}
-					src={image?.url}
-					sx={{
+					alt={image?.originalname}
+					style={{
 						maxWidth: imageSize.width !== 0 ? imageSize.width : "auto",
 						maxHeight: imageSize.height !== 0 ? imageSize.height : "auto",
 					}}
+					src={image?.url}
 				/>
 			</ModalContent>
-		</Modal>
+		</Dialog>
 	);
 }

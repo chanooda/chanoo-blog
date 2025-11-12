@@ -1,48 +1,45 @@
 export interface WriteReq {
-  isPublish?: boolean;
-  limit?: number;
-  page?: number;
-  search?: string;
-  seriesId?: number;
-  tagId?: number;
+	isPublish?: boolean;
+	limit?: number;
+	page?: number;
+	search?: string;
+	seriesId?: string;
+	tagId?: string;
 }
 
 export interface Tag {
-  id: number;
-  name: string;
+	id: string;
+	name: string;
 }
 
 export interface WriteTag {
-  id: number;
-  tag: Tag;
-  tagId: number;
-  writeId: number;
+	id: string;
+	tag: Tag;
+	tagId: string;
+	writeId: string;
 }
 
 export interface Write {
-  content: string;
-  createdAt: string;
-  heart: number;
-  id: number;
-  imgUrl: string;
-  isPublish: true;
-  seriesId: number;
-  title: string;
-  updatedAt: string;
-  view: number;
+	content: string;
+	createdAt: string;
+	heart: number;
+	id: string;
+	imgUrl: string;
+	isPublish: true;
+	seriesId: string;
+	title: string;
+	updatedAt: string;
+	view: number;
+	series: SeriesDetail;
+	tags: Tag[];
 }
 
 export interface Series {
-  id: number;
-  name: string;
-  writeOrder: number[];
+	id: string;
+	name: string;
+	writeOrder: string[];
 }
 
 export interface SeriesDetail extends Series {
-  writes: Write[];
-}
-
-export interface WriteDetail extends Write {
-  series: SeriesDetail;
-  tags: WriteTag[];
+	writes: Write[];
 }

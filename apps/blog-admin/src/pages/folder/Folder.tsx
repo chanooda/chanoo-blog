@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import { Card, Grid2, Stack } from "ui";
 import { FolderAddButton } from "../../components/button/FolderAddButton";
 import { ImageAddButton } from "../../components/button/ImageAddButton";
 import { FolderCard } from "../../components/card/FolderCard";
@@ -22,51 +21,34 @@ export function FolderPage() {
 	);
 
 	return (
-		<Stack direction="column" p={4} width="100%">
-			<Grid2
-				columns={{ xs: 2, sm: 8, md: 12, lg: 16, xl: 15 }}
-				container
-				spacing={{ xs: 2, md: 3 }}
-			>
-				<Grid2 size={{ md: 4, sm: 4, xl: 3, xs: 2 }}>
-					<Card sx={{ height: 200 }}>
-						<Stack
-							alignItems="center"
-							height="100%"
-							justifyContent="center"
-							p={2}
-							spacing={2}
-							width="100%"
-						>
-							<FolderAddButton />
-							{params.id && <ImageAddButton />}
-						</Stack>
-					</Card>
-				</Grid2>
+		<div className="flex flex-col p-4 w-full">
+			<div className="grid grid-cols-4 gap-4">
+				<div className="flex items-center justify-center p-2 w-full">
+					<FolderAddButton />
+					{params.id && <ImageAddButton />}
+				</div>
+
 				{rootFolder &&
 					!params.id &&
 					rootFolder?.data?.data?.map((rootFolderData) => (
-						<Grid2
-							key={rootFolderData.id}
-							size={{ md: 4, sm: 4, xl: 3, xs: 2 }}
-						>
+						<div key={rootFolderData.id}>
 							<FolderCard folder={rootFolderData} />
-						</Grid2>
+						</div>
 					))}
 
 				{detailFolder?.data?.data?.child?.map((childFolder) => (
-					<Grid2 key={childFolder.id} size={{ md: 4, sm: 4, xl: 3, xs: 2 }}>
+					<div key={childFolder.id}>
 						<FolderCard folder={childFolder} />
-					</Grid2>
+					</div>
 				))}
 				{detailFolder?.data?.data?.folderImage?.map((image) => {
 					return (
-						<Grid2 key={image.id} size={{ md: 4, sm: 4, xl: 3, xs: 2 }}>
+						<div key={image.id}>
 							<ImageCard image={image} />
-						</Grid2>
+						</div>
 					);
 				})}
-			</Grid2>
-		</Stack>
+			</div>
+		</div>
 	);
 }

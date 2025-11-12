@@ -1,21 +1,18 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { type MouseEvent, useState } from "react";
+import { Button } from "@ui/components/button";
+import { Card, CardContent } from "@ui/components/card";
 import {
-	Button,
-	Card,
-	CardActionArea,
-	CardContent,
-	CardMedia,
 	Dialog,
-	DialogActions,
+	DialogClose,
 	DialogContent,
-	DialogContentText,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
 	DialogTitle,
-	IconButton,
-	Typography,
-	useSnackbar,
-} from "ui";
-import { Delete } from "ui-icon";
+} from "@ui/components/dialog";
+import { useSnackbar } from "notistack";
+import { type MouseEvent, useState } from "react";
+import { TrashIcon } from "ui-icon";
 import { useChanooMutation } from "../../libs/queryHook";
 import type { GlobalError } from "../../types/global";
 import type { FolderImage } from "../../types/res";
@@ -68,57 +65,45 @@ export function ImageCard({ image }: ImageCardProps) {
 		<>
 			<Card
 				aria-describedby="image-option"
-				sx={{
-					width: "100%",
-					height: 200,
-					position: "relative",
-					"&:hover": {
-						"& button": {
-							opacity: 1,
-						},
-					},
-				}}
+				className="w-full h-50 relative "
 				onClick={clickImageCardHandler}
 			>
-				<CardActionArea sx={{ width: "100%", height: "100%" }}>
-					<CardMedia
+				<CardContent className="w-full h-full">
+					<img
 						alt={image.originalname}
-						component="img"
-						height="80%"
+						className="w-full h-4/5"
 						src={image.url}
 					/>
-					<CardContent sx={{ p: 1, height: "20%" }}>
-						<Typography component="div" gutterBottom variant="body2">
+					<CardContent className="p-2 h-1/5">
+						<span className="text-sm text-gray-500 leading-0">
 							{image.originalname}
-						</Typography>
+						</span>
 					</CardContent>
-				</CardActionArea>
-				<IconButton
-					color="error"
-					sx={{
-						opacity: 0,
-						position: "absolute",
-						top: 10,
-						right: 10,
-						transition: "all 0.3s",
-					}}
+				</CardContent>
+				<Button
+					size="icon"
+					className="absolute top-10 right-10 opacity-0 transition-all"
 					onClick={deleteButtonClickHandler}
 				>
-					<Delete />
-				</IconButton>
+					<TrashIcon />
+				</Button>
 			</Card>
 
-			<Dialog open={showAskAlert} onClose={() => setShowAskAlert(false)}>
-				<DialogTitle>안내</DialogTitle>
+			<Dialog open={showAskAlert}>
 				<DialogContent>
-					<DialogContentText>이미지를 삭제하시겠습니까?</DialogContentText>
+					<DialogHeader>
+						<DialogTitle>안내</DialogTitle>
+						<DialogDescription>이미지를 삭제하시겠습니까?</DialogDescription>
+					</DialogHeader>
+					<DialogFooter>
+						<DialogClose asChild>
+							<Button>Disagree</Button>
+						</DialogClose>
+						<Button autoFocus onClick={deleteImage}>
+							Agree
+						</Button>
+					</DialogFooter>
 				</DialogContent>
-				<DialogActions>
-					<Button onClick={cancelDialog}>Disagree</Button>
-					<Button autoFocus onClick={deleteImage}>
-						Agree
-					</Button>
-				</DialogActions>
 			</Dialog>
 			{image && (
 				<ImageCoverModal

@@ -1,5 +1,5 @@
-import { getSeries, getSeriesDetail } from "src/base";
-import { SeriesList } from "./components/SeriesList";
+import { getSeries, getSeriesDetail } from "src/_base/ui/client";
+import { SeriesList } from "src/_pages/series";
 
 const getData = async (seriesId?: string) => {
 	const series = getSeries();
@@ -11,13 +11,13 @@ const getData = async (seriesId?: string) => {
 };
 
 interface SeriesPageProps {
-	searchParams?: {
-		seriesId?: string;
-	};
+	searchParams?: Promise<{
+		seriesId: string;
+	}>;
 }
 
 async function SeriesPage({ searchParams }: SeriesPageProps) {
-	const seriesId = searchParams?.seriesId;
+	const seriesId = (await searchParams).seriesId;
 	const { series, seriesDetail } = await getData(seriesId);
 	return <SeriesList series={series} seriesDetail={seriesDetail} />;
 }

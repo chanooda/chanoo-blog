@@ -1,15 +1,14 @@
-import { Chip, Input, MenuItem, Stack } from "@mui/material";
 import {
 	type ChangeEvent,
 	type ComponentProps,
 	forwardRef,
 	type KeyboardEvent,
-	type MouseEvent,
 	useEffect,
 	useRef,
 	useState,
 } from "react";
-import { useOnClickOutside } from "usehooks-ts";
+import { Badge } from "./badge";
+import { Input } from "./input";
 
 interface SelectOption {
 	label: string;
@@ -28,7 +27,6 @@ export const MultiSelectInput = forwardRef<
 >(({ selectOptionList = [], initialValue = [], ...props }, ref) => {
 	const isInitialValueSetting = useRef<boolean>(true);
 	const selectedListRef = useRef<HTMLInputElement>(null);
-	const inputWrapperRef = useRef<HTMLDivElement>(null);
 	const nativeOptionList = useRef<string[]>([]);
 	const [input, setInput] = useState("");
 	const [selectedValues, setSelectTedValues] = useState<string[]>([]);
@@ -71,17 +69,9 @@ export const MultiSelectInput = forwardRef<
 		}
 	};
 
-	const clickInputWrapperHandler = (e: MouseEvent<HTMLDivElement>) => {
-		setShowSelectOption((prev) => !prev);
-	};
-
 	const clickOptionListHandler = (value: string) => {
 		addSelectedValues(value);
 	};
-
-	useOnClickOutside(inputWrapperRef, (e) => {
-		setShowSelectOption(false);
-	});
 
 	useEffect(() => {
 		const selectedList = selectedListRef.current;
@@ -108,71 +98,53 @@ export const MultiSelectInput = forwardRef<
 	}, [initialValue]);
 
 	return (
-		<Stack width="100%">
-			<Stack direction="row" width="100%">
-				<Stack direction="row" flexWrap="wrap" gap={1}>
+		<div className="w-full flex flex-col">
+			<div className="flex flex-row w-full">
+				<div className="w-full flex flex-row flex-wrap gap-1">
 					{selectedValues.length > 0 && (
-						<Stack
-							direction="row"
-							flexWrap="wrap"
-							gap={1}
-							maxHeight={72}
-							overflow="auto"
+						<div
+							className="flex flex-row flex-wrap gap-1 max-h-72 overflow-auto"
 							ref={selectedListRef}
 						>
 							{selectedValues?.map((selectedValue, index) => (
-								<Chip
+								<Badge
 									key={selectedValue}
-									label={selectedValue}
 									onClick={() => deleteSelectedValue(selectedValue, index)}
-								/>
+								>
+									selectedValue
+								</Badge>
 							))}
-						</Stack>
+						</div>
 					)}
-					<Stack
-						position="relative"
-						ref={inputWrapperRef}
-						sx={{ width: 200, minWidth: 200 }}
-						onClick={clickInputWrapperHandler}
-					>
+					<div className="relative w-full">
 						<Input
-							fullWidth
+							onFocus={() => setShowSelectOption(true)}
+							onBlur={() => setShowSelectOption(false)}
 							placeholder="태그를 입력하세요."
-							sx={{ width: "100%" }}
+							className="w-full"
 							type="text"
 							value={input}
 							onChange={changeInputHandler}
 							onKeyDown={inputKeyDownHandler}
 						/>
 						{showSelectOption && selectOptionList.length > 0 && (
-							<Stack
-								bgcolor="white"
-								border={({ palette }) => `1px solid ${palette.grey[400]}`}
-								left={0}
-								maxHeight={180}
-								overflow="auto"
-								position="absolute"
-								top="100%"
-								width="100%"
-								zIndex={999}
-							>
+							<div className="bg-white border border-gray-400 left-0 max-h-45 overflow-auto absolute top-100% w-full z-999">
 								{selectOptionList?.map((selectOption) => (
-									<MenuItem
+									<Badge
 										key={selectOption.value}
-										value={selectOption.value}
 										onClick={(e) => {
 											e.stopPropagation();
 											clickOptionListHandler(selectOption.value);
 										}}
 									>
 										{selectOption.label}
-									</MenuItem>
+									</Badge>
 								))}
-							</Stack>
+							</div>
 						)}
-					</Stack>
-				</Stack>
-			</Stack>
+					</div>
+				</div>
+			</div>
 			{nativeOptionList?.current.map((value) => (
 				<input
 					id={`option-${value}`}
@@ -184,6 +156,6 @@ export const MultiSelectInput = forwardRef<
 					value={value}
 				/>
 			))}
-		</Stack>
+		</div>
 	);
 });

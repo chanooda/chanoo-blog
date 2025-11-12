@@ -1,165 +1,114 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { forwardRef, useState } from "react";
-import {
-	Box,
-	Button,
-	CircularProgress,
-	IconButton,
-	ImageList,
-	ImageListItem,
-	Modal,
-	type ModalProps,
-	Stack,
-	useSnackbar,
-} from "ui";
-import { Delete } from "ui-icon";
+import { Button } from "@ui/components/button";
+import { Dialog, DialogContent } from "@ui/components/dialog";
+import { Spinner } from "@ui/components/spinner";
+import { useSnackbar } from "notistack";
+import { useState } from "react";
+import { TrashIcon } from "ui-icon";
+import type { ModalProps } from "@/src/types/ui";
 import { useChanooMutation } from "../../libs/queryHook";
 import type { GlobalError, ImageFile } from "../../types/global";
-import { FIleUploadButton } from "../button/FIleUploadButton";
-import { ModalContent } from "./ModalContent";
+import { FileUploadButton } from "../button/FileUploadButton";
 
 export interface ImageAddModalProps extends Omit<ModalProps, "children"> {
 	folderId: number;
 }
 
-export const ImageAddModal = forwardRef<HTMLDivElement, ImageAddModalProps>(
-	({ folderId, open, onClose, ...modalProps }, ref) => {
-		const client = useQueryClient();
-		const { enqueueSnackbar } = useSnackbar();
-		const [imageList, setImageList] = useState<ImageFile[]>([]);
+export const ImageAddModal = ({
+	folderId,
+	open,
+	onClose,
+	...modalProps
+}: ImageAddModalProps) => {
+	const client = useQueryClient();
+	const { enqueueSnackbar } = useSnackbar();
+	const [imageList, setImageList] = useState<ImageFile[]>([]);
 
-		const { mutateAsync, isPending: isLoading } = useChanooMutation<
-			unknown,
-			GlobalError,
-			FormData
-		>(["POST", `/folders/${folderId}/image`, (data) => data]);
+	const { mutateAsync, isPending: isLoading } = useChanooMutation<
+		unknown,
+		GlobalError,
+		FormData
+	>(["POST", `/folders/${folderId}/image`, (data) => data]);
 
-		const getImageList = (imageFiles: ImageFile[]) => {
-			setImageList(imageFiles);
-		};
+	const getImageList = (imageFiles: ImageFile[]) => {
+		setImageList(imageFiles);
+	};
 
-		const imageClear = (_index: number) => {
-			setImageList((prev) => prev.filter((_, index) => index !== _index));
-		};
+	const imageClear = (_index: number) => {
+		setImageList((prev) => prev.filter((_, index) => index !== _index));
+	};
 
-		const imageListAllClear = () => {
-			setImageList([]);
-		};
+	const imageListAllClear = () => {
+		setImageList([]);
+	};
 
-		const imagesUploadHandler = async () => {
-			if (isLoading || imageList?.length === 0) return;
-			try {
-				await Promise.all(
-					imageList.map((image) => {
-						const formData = new FormData();
-						formData.append("image", image.file);
-						return mutateAsync(formData);
-					}),
-				);
-				enqueueSnackbar("이미지 업로드 성공!", { variant: "success" });
-				client.invalidateQueries({
-					queryKey: [`folders/${folderId}`],
-				});
-				if (onClose) onClose({}, "escapeKeyDown");
-			} catch (error) {
-				enqueueSnackbar("이미지 업로드 실패. 잠시 후 시도해 주세요.", {
-					variant: "error",
-				});
-			}
-		};
+	const imagesUploadHandler = async () => {
+		if (isLoading || imageList?.length === 0) return;
+		try {
+			await Promise.all(
+				imageList.map((image) => {
+					const formData = new FormData();
+					formData.append("image", image.file);
+					return mutateAsync(formData);
+				}),
+			);
+			enqueueSnackbar("이미지 업로드 성공!", { variant: "success" });
+			client.invalidateQueries({
+				queryKey: [`folders/${folderId}`],
+			});
+			onClose?.();
+		} catch (error) {
+			enqueueSnackbar("이미지 업로드 실패. 잠시 후 시도해 주세요.", {
+				variant: "error",
+			});
+		}
+	};
 
-		return (
-			<Modal open={open} ref={ref} onClose={onClose} {...modalProps}>
-				<ModalContent sx={{ width: "calc(100% - 50px)", maxWidth: 800 }}>
-					<Stack width="100%">
-						<Stack
-							alignItems="center"
-							direction="row"
-							justifyContent="space-between"
-							width="100%"
-						>
-							<FIleUploadButton getImageList={getImageList} multiple />
-							{imageList.length > 0 && (
-								<Button
-									color="error"
-									endIcon={<Delete />}
-									onClick={imageListAllClear}
-								>
-									모두 지우기
-								</Button>
-							)}
-						</Stack>
-						<Stack
-							bgcolor={(theme) => theme.palette.grey[100]}
-							border={(theme) => `2px solid ${theme.palette.primary.main}`}
-							borderRadius={2}
-							height={500}
-							mt={2}
-							overflow="auto"
-							position="relative"
-							px={2}
-							width="100%"
-						>
-							<ImageList cols={2} gap={8} variant="masonry">
-								{imageList?.map((image, index) => (
-									<ImageListItem key={image.url}>
-										<Box
-											position="relative"
-											sx={{
-												"&:hover": {
-													"& > button": {
-														opacity: 1,
-													},
-												},
-											}}
-										>
-											<Box
-												alt={image.url}
-												component="img"
-												loading="lazy"
-												src={image.url}
-												width="100%"
-											/>
-											<IconButton
-												color="error"
-												sx={{
-													position: "absolute",
-													top: 10,
-													right: 10,
-													opacity: 0,
-													transition: "all 0.3s",
-												}}
-												onClick={() => imageClear(index)}
-											>
-												<Delete />
-											</IconButton>
-										</Box>
-									</ImageListItem>
-								))}
-							</ImageList>
-							{isLoading && (
-								<CircularProgress
-									sx={{
-										position: "absolute",
-										top: "50%",
-										left: "50%",
-										transform: "translate(-50%, -50%)",
-									}}
-								/>
-							)}
-						</Stack>
-						<Stack alignItems="center" mt={2} width="100%">
-							<Button
-								sx={{ maxWidth: 400, width: "100%" }}
-								variant="contained"
-								onClick={imagesUploadHandler}
-							>
-								확인
+	return (
+		<Dialog open={open} {...modalProps}>
+			<DialogContent className="w-[calc(100%-50px)] max-w-800">
+				<div className="w-full flex">
+					<div className="items-center flex justify-between w-full">
+						<FileUploadButton getImageList={getImageList} multiple />
+						{imageList.length > 0 && (
+							<Button className="text-red-500" onClick={imageListAllClear}>
+								모두 지우기 <TrashIcon />
 							</Button>
-						</Stack>
-					</Stack>
-				</ModalContent>
-			</Modal>
-		);
-	},
-);
+						)}
+					</div>
+					<div className="bg-gray-100 border-2 border-primary rounded-2xl h-500 mt-2 overflow-auto relative px-2 w-full">
+						<div className="grid grid-cols-2 gap-8">
+							{imageList?.map((image, index) => (
+								<div
+									key={index}
+									className="relative hover:[&>button]:opacity-100"
+								>
+									<img
+										alt={image.url}
+										loading="lazy"
+										src={image.url}
+										className="w-full"
+									/>
+									<Button
+										className="absolute top-10 right-10 opacity-0 transition-all text-red-500"
+										onClick={() => imageClear(index)}
+									>
+										<TrashIcon />
+									</Button>
+								</div>
+							))}
+						</div>
+						{isLoading && (
+							<Spinner className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+						)}
+					</div>
+					<div className="items-center mt-2 w-full flex ">
+						<Button className="max-w-100 w-full" onClick={imagesUploadHandler}>
+							확인
+						</Button>
+					</div>
+				</div>
+			</DialogContent>
+		</Dialog>
+	);
+};

@@ -4,8 +4,13 @@
 		"types": ["./src/query.d.ts"],
 		"noUnusedLocals": false,
 		"noUnusedParameters": false,
-		"outDir": "./dist"
+		"outDir": "./dist",
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./*"],
+			"@ui/*": ["../../packages/ui/src/*"]
+		}
 	},
-	"include": ["src"],
+	"include": ["**/*.ts", "**/*.tsx"],
 	"references": [{ "path": "./tsconfig.node.json" }]
 }

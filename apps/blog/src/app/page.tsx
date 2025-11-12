@@ -1,5 +1,5 @@
-import { getWrites } from "src/base";
-import { WriteList } from "./components/WriteList";
+import { getWrites } from "../_base/api";
+import { WriteList } from "../_pages/writes";
 
 export const dynamic = "force-dynamic";
 

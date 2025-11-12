@@ -1,24 +1,24 @@
 import { useQueryClient } from "@tanstack/react-query";
+import { Button } from "@ui/components/button";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@ui/components/dialog";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@ui/components/popover";
+import { useSnackbar } from "notistack";
 import type React from "react";
 import { type MouseEvent, useId, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-	Button,
-	ButtonGroup,
-	Card,
-	CardContent,
-	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogContentText,
-	DialogTitle,
-	IconButton,
-	Popover,
-	Stack,
-	Typography,
-	useSnackbar,
-} from "ui";
-import { Folder as FolderIcon, MoreVert } from "ui-icon";
+import { DotsVerticalIcon, FileIcon } from "ui-icon";
 import { useChanooMutation } from "../../libs/queryHook";
 import type { GlobalError } from "../../types/global";
 import type { FolderRes } from "../../types/res";
@@ -88,81 +88,56 @@ export function FolderCard({ folder }: FolderCardProps) {
 
 	return (
 		<>
-			<Card
-				variant="outlined"
-				sx={(theme) => ({
-					width: "100%",
-					height: 200,
-					position: "relative",
-					p: 1,
-					cursor: "pointer",
-					transition: "all 0.2s",
-					"&:hover": {
-						border: `1px solid ${theme.palette.primary.main}`,
-					},
-				})}
+			<button
+				type="button"
+				className="border border-primary rounded-xl p-1 cursor-pointer transition-all hover:border-primary"
 				onClick={(e) => {
 					if (e.defaultPrevented) return;
 					e.preventDefault();
 					clickFolderCardHandler(folder.id);
 				}}
 			>
-				<CardContent sx={{ height: "100%" }}>
-					<Stack alignItems="center" gap={1} height="100%" width="100%">
-						<Stack
-							alignItems="center"
-							height="100%"
-							justifyContent="center"
-							width="100%"
+				<div className="flex flex-col h-full w-full">
+					<div className="flex items-center gap-1 h-full w-full">
+						<div className="flex items-center justify-center h-full w-full">
+							<FileIcon color="primary" fontSize="large" />
+						</div>
+						<div className="flex items-center justify-center h-full w-full">
+							<span>{folder.name}</span>
+						</div>
+					</div>
+				</div>
+				<Popover>
+					<PopoverTrigger>
+						<Button
+							aria-describedby={folderEditId}
+							className="absolute right-10 top-10"
+							size="icon"
 						>
-							<FolderIcon color="primary" fontSize="large" />
-						</Stack>
-						<Stack>
-							<Typography>{folder.name}</Typography>
-						</Stack>
-					</Stack>
-				</CardContent>
-				<IconButton
-					aria-describedby={folderEditId}
-					sx={{ position: "absolute", right: 10, top: 10 }}
-					onClick={handleClick}
-				>
-					<MoreVert />
-				</IconButton>
-				<Popover
-					anchorEl={anchorEl}
-					id={folderEditId}
-					open={!!anchorEl}
-					anchorOrigin={{
-						vertical: "bottom",
-						horizontal: "left",
-					}}
-					onClose={handleClose}
-				>
-					<Stack width={80}>
-						<ButtonGroup
-							color="inherit"
-							orientation="vertical"
-							size="medium"
-							variant="text"
-						>
-							<Button onClick={editButtonClickHandler}>수정</Button>
-							<Button
-								onClick={
-									fileCount
-										? (e) => {
-												e.preventDefault();
-												setShowAskAlert(true);
-											}
-										: deleteButtonClickHandler
-								}
-							>
-								삭제
-							</Button>
-						</ButtonGroup>
-					</Stack>
+							<DotsVerticalIcon />
+						</Button>
+					</PopoverTrigger>
+					<PopoverContent>
+						<div className="w-20">
+							<div className="flex flex-col gap-2">
+								<Button onClick={editButtonClickHandler}>수정</Button>
+								<Button
+									onClick={
+										fileCount
+											? (e) => {
+													e.preventDefault();
+													setShowAskAlert(true);
+												}
+											: deleteButtonClickHandler
+									}
+								>
+									삭제
+								</Button>
+							</div>
+						</div>
+					</PopoverContent>
 				</Popover>
-			</Card>
+			</button>
 			<FolderMutateModal
 				folder={folder}
 				open={isOpenEditModal}
@@ -170,18 +145,24 @@ export function FolderCard({ folder }: FolderCardProps) {
 				onClose={() => setIsOpenEditModal(false)}
 			/>
 			<Dialog open={showAskAlert}>
-				<DialogTitle>안내</DialogTitle>
 				<DialogContent>
-					<DialogContentText>
-						{`${fileCount} 개의 파일이 존재합니다. 삭제하시겠습니까?`}
-					</DialogContentText>
+					<DialogHeader>
+						<DialogTitle>안내</DialogTitle>
+						<DialogDescription>
+							{`${fileCount} 개의 파일이 존재합니다. 삭제하시겠습니까?`}
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter>
+						<DialogClose asChild>
+							<Button onClick={() => setShowAskAlert(false)}>Disagree</Button>
+						</DialogClose>
+						<DialogClose>
+							<Button autoFocus onClick={deleteButtonClickHandler}>
+								Agree
+							</Button>
+						</DialogClose>
+					</DialogFooter>
 				</DialogContent>
-				<DialogActions>
-					<Button onClick={() => setShowAskAlert(false)}>Disagree</Button>
-					<Button autoFocus onClick={deleteButtonClickHandler}>
-						Agree
-					</Button>
-				</DialogActions>
 			</Dialog>
 		</>
 	);
