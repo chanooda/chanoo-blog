@@ -41,12 +41,14 @@ export const Code: Components["code"] = ({
 
 export const Img: Components["img"] = ({ src, alt, className, ...props }) => {
 	return (
-		<img
-			alt={alt}
-			className={cn(className, "max-w-full")}
-			src={src}
-			{...props}
-		/>
+		<div className="flex w-full justify-center">
+			<img
+				alt={alt}
+				className={cn(className, "max-w-full max-h-100")}
+				src={src}
+				{...props}
+			/>
+		</div>
 	);
 };
 

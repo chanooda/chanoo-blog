@@ -100,23 +100,24 @@ export const MultiSelectInput = forwardRef<
 	return (
 		<div className="w-full flex flex-col">
 			<div className="flex flex-row w-full">
-				<div className="w-full flex flex-row flex-wrap gap-1">
-					{selectedValues.length > 0 && (
-						<div
-							className="flex flex-row flex-wrap gap-1 max-h-72 overflow-auto"
-							ref={selectedListRef}
-						>
-							{selectedValues?.map((selectedValue, index) => (
-								<Badge
-									key={selectedValue}
-									onClick={() => deleteSelectedValue(selectedValue, index)}
-								>
-									selectedValue
-								</Badge>
-							))}
-						</div>
-					)}
-					<div className="relative w-full">
+				<div className="w-full flex flex-row flex-wrap gap-2">
+					<div className="relative w-full flex flex-col gap-2">
+						{selectedValues.length > 0 && (
+							<div
+								className="flex flex-row flex-wrap gap-1 max-h-72 overflow-auto"
+								ref={selectedListRef}
+							>
+								{selectedValues?.map((selectedValue, index) => (
+									<Badge
+										className="py-1 cursor-pointer"
+										key={selectedValue}
+										onClick={() => deleteSelectedValue(selectedValue, index)}
+									>
+										{selectedValue}
+									</Badge>
+								))}
+							</div>
+						)}
 						<Input
 							onFocus={() => setShowSelectOption(true)}
 							onBlur={() => setShowSelectOption(false)}
@@ -128,11 +129,12 @@ export const MultiSelectInput = forwardRef<
 							onKeyDown={inputKeyDownHandler}
 						/>
 						{showSelectOption && selectOptionList.length > 0 && (
-							<div className="bg-white border border-gray-400 left-0 max-h-45 overflow-auto absolute top-100% w-full z-999">
+							<div className="bg-white border flex gap-1 rounded-md border-gray-400 flex-wrap left-0 p-1 overflow-auto  absolute top-full w-full z-999">
 								{selectOptionList?.map((selectOption) => (
 									<Badge
+										className="cursor-pointer py-1"
 										key={selectOption.value}
-										onClick={(e) => {
+										onMouseDown={(e) => {
 											e.stopPropagation();
 											clickOptionListHandler(selectOption.value);
 										}}

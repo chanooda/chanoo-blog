@@ -41,7 +41,11 @@ export function WriteListCard({ write }: WriteListCardProps) {
 				</div>
 			</CardContent>
 			<CardFooter className="gap-2 px-4 flex flex-row justify-between items-center">
-				{!write.isPublish && <p className="text-gray-500 text-sm">비공개글</p>}
+				{!write.isPublish && (
+					<span className="text-gray-500 whitespace-nowrap text-sm">
+						비공개글
+					</span>
+				)}
 				<p className="text-gray-500 text-sm text-end w-full">
 					{day(write.createdAt).defaultFormat()}
 				</p>

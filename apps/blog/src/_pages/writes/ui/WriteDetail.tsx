@@ -1,9 +1,9 @@
 "use client";
 
-import { type GetIdType, MarkdownPreview } from "markdown";
+import { type GetIdType, Markdown } from "markdown";
 import { useRouter } from "next/navigation";
-
 import type { Write } from "utils";
+import { LINK } from "@/src/_base/config";
 
 interface PostDetailProps {
 	write: Write;
@@ -13,29 +13,29 @@ export function WriteDetail({ write }: PostDetailProps) {
 	const router = useRouter();
 	const handleGetId = (type: GetIdType, id: string) => {
 		if (type === "post") {
-			router.push(`/post/${id}`);
+			router.push(`${LINK.writes}/${id}`);
 		}
 		if (type === "series") {
-			router.push(`/series?seriesId=${id}`);
+			router.push(`${LINK.series}?seriesId=${id}`);
 		}
 		if (type === "tag") {
-			router.push(`/post?tagId=${id}`);
+			router.push(`${LINK.writes}?tagId=${id}`);
 		}
 	};
 
 	return (
-		<MarkdownPreview
+		<Markdown
 			handleGetId={handleGetId}
 			write={{
 				id: write.id,
 				createdAt: write.createdAt,
-				mainImage: write.imgUrl,
+				imgUrl: write.imgUrl,
 				series: write.series,
-				tag: write.tags,
+				tags: write.tags,
 				title: write.title,
 			}}
 		>
 			{write.content}
-		</MarkdownPreview>
+		</Markdown>
 	);
 }

@@ -9,8 +9,10 @@ import remarkGfm from "remark-gfm";
 import { day, type Write } from "utils";
 import { markdownComponents } from "./MarkdownComponents";
 
+export type GetIdType = "post" | "series" | "tag";
 export interface MarkdownProps extends ComponentProps<typeof ReactMarkdown> {
 	write: Partial<Write>;
+	handleGetId?: (type: GetIdType, id: string) => void;
 }
 
 export const Markdown = memo(function Markdown({ write }: MarkdownProps) {
@@ -27,7 +29,7 @@ export const Markdown = memo(function Markdown({ write }: MarkdownProps) {
 					{write?.tags && write?.tags.length > 0 && (
 						<div className="flex flex-row flex-wrap gap-2 w-full">
 							{write?.tags?.map((writeTag) => (
-								<Badge key={writeTag.id}>{writeTag.name}</Badge>
+								<Badge key={writeTag.name}>{writeTag.name}</Badge>
 							))}
 						</div>
 					)}
