@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { LINK } from "@/src/_base/config";
 import { Logo } from "./Logo";
 
 export function Header() {
@@ -11,11 +10,7 @@ export function Header() {
 				<Link href="/">
 					<Logo />
 				</Link>
-				<div className="flex ml-4 gap-2">
-					<Link href={LINK.writes}>
-						<p className="font-medium leading-none">writes</p>
-					</Link>
-				</div>
+				<div className="flex ml-4 gap-2"></div>
 			</div>
 		</header>
 	);

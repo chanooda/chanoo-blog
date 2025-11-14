@@ -23,13 +23,12 @@ interface WriteDeleteModalProps extends Omit<ModalProps, "children"> {
 export function WriteDeleteModal({
 	id,
 	title,
-	onOpenChange: onClose,
+	onOpenChange,
 	open,
 }: WriteDeleteModalProps) {
 	const navigate = useNavigate();
 	const [enteredTitle, setEnteredTitle] = useState("");
 	const { enqueueSnackbar } = useSnackbar();
-	const { invalidateQueries } = useQueryClient();
 
 	const { mutate } = useChanooMutation<undefined, GlobalError>(
 		["DELETE", `write/${id}`],
@@ -60,7 +59,7 @@ export function WriteDeleteModal({
 	};
 
 	return (
-		<Dialog open={open} onOpenChange={(open) => !open && onClose()}>
+		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>정말 글을 삭제하시겠습니까?</DialogTitle>

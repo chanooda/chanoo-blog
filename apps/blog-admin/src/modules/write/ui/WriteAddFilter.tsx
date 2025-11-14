@@ -166,7 +166,7 @@ export const WriteAddFilter = ({ id }: { id?: string }) => {
 			);
 			setValue("mainImage", write.data.data.imgUrl || "");
 			setValue("isPublish", write.data.data.isPublish);
-			setMarkdownValue(write.data.data.content);
+			setMarkdownValue(write.data.data.content || "");
 		}
 	}, [write, setValue, setMarkdownValue]);
 
@@ -262,7 +262,7 @@ export const WriteAddFilter = ({ id }: { id?: string }) => {
 
 			<WriteImageAddModal
 				open={showImageAddModal}
-				onOpenChange={() => setShowImageAddModal(false)}
+				onOpenChange={setShowImageAddModal}
 				onChooseImage={(url: string) => {
 					setValue("mainImage", url);
 					setShowImageAddModal(false);

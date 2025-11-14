@@ -34,7 +34,6 @@ export function FolderCard({ folder }: FolderCardProps) {
 	const client = useQueryClient();
 	const { enqueueSnackbar } = useSnackbar();
 	const [isOpenEditModal, setIsOpenEditModal] = useState(false);
-	const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 	const [showAskAlert, setShowAskAlert] = useState(false);
 
 	const folderEditId = useId();
@@ -51,7 +50,6 @@ export function FolderCard({ folder }: FolderCardProps) {
 			{
 				onSuccess() {
 					enqueueSnackbar("폴더가 삭제되었습니다.", { variant: "success" });
-					setAnchorEl(null);
 					client.invalidateQueries({
 						queryKey: [
 							folder.parentId ? `folders/${folder.parentId}` : `folders/root`,
@@ -65,16 +63,6 @@ export function FolderCard({ folder }: FolderCardProps) {
 		navigate(`/folder/${folderId}`);
 	};
 
-	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-		event.preventDefault();
-		setAnchorEl(event.currentTarget);
-	};
-
-	const handleClose = (event: MouseEvent<HTMLDivElement>) => {
-		event.preventDefault();
-		setAnchorEl(null);
-	};
-
 	const deleteButtonClickHandler = (event: MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault();
 		if (isDeleteFolderLoading) return;
@@ -83,7 +71,6 @@ export function FolderCard({ folder }: FolderCardProps) {
 
 	const editButtonClickHandler = (event: MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault();
-		setAnchorEl(null);
 		setIsOpenEditModal(true);
 	};
 
@@ -141,7 +128,7 @@ export function FolderCard({ folder }: FolderCardProps) {
 				folder={folder}
 				open={isOpenEditModal}
 				parentId={folder.parentId}
-				onOpenChange={() => setIsOpenEditModal(false)}
+				onOpenChange={setIsOpenEditModal}
 			/>
 			<Dialog open={showAskAlert} onOpenChange={setShowAskAlert}>
 				<DialogContent>

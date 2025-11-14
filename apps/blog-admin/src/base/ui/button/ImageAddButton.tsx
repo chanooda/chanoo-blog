@@ -21,7 +21,7 @@ export function ImageAddButton() {
 			<ImageAddModal
 				folderId={Number(param.id)}
 				open={isShowImageAddModal}
-				onOpenChange={() => setIsShowImageAddModal(false)}
+				onOpenChange={setIsShowImageAddModal}
 			/>
 		</>
 	);

@@ -82,9 +82,11 @@ export const MarkdownEditor = () => {
 						close();
 						closeModalHandler();
 					}}
-					onOpenChange={() => {
-						closeModalHandler();
-						close();
+					onOpenChange={(open) => {
+						if (!open) {
+							closeModalHandler();
+							close();
+						}
 					}}
 				/>
 			);
@@ -140,9 +142,11 @@ export const MarkdownEditor = () => {
 						close();
 						closeModalHandler();
 					}}
-					onOpenChange={() => {
-						close();
-						closeModalHandler();
+					onOpenChange={(open) => {
+						if (!open) {
+							close();
+							closeModalHandler();
+						}
 					}}
 				/>
 			);

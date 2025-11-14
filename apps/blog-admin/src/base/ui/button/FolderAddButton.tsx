@@ -20,7 +20,7 @@ export function FolderAddButton() {
 			<FolderMutateModal
 				open={isFolderAddModalOpen}
 				parentId={Number(params.id)}
-				onOpenChange={(open) => setIsFolderAddModalOpen(open)}
+				onOpenChange={setIsFolderAddModalOpen}
 			/>
 		</>
 	);

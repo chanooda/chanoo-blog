@@ -17,8 +17,7 @@ export interface ImageAddModalProps extends Omit<ModalProps, "children"> {
 export const ImageAddModal = ({
 	folderId,
 	open,
-	onOpenChange: onClose,
-	...modalProps
+	onOpenChange,
 }: ImageAddModalProps) => {
 	const client = useQueryClient();
 	const { enqueueSnackbar } = useSnackbar();
@@ -56,7 +55,7 @@ export const ImageAddModal = ({
 			client.invalidateQueries({
 				queryKey: [`folders/${folderId}`],
 			});
-			onClose?.();
+			onOpenChange(false);
 		} catch (error) {
 			enqueueSnackbar("이미지 업로드 실패. 잠시 후 시도해 주세요.", {
 				variant: "error",
@@ -65,7 +64,7 @@ export const ImageAddModal = ({
 	};
 
 	return (
-		<Dialog open={open} {...modalProps}>
+		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent className="w-[calc(100%-50px)] max-w-800">
 				<div className="w-full flex">
 					<div className="items-center flex justify-between w-full">

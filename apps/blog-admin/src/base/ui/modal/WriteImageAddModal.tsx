@@ -16,14 +16,8 @@ import {
 } from "@ui/components/select";
 import { Spinner } from "@ui/components/spinner";
 import { Tabs, TabsList, TabsTrigger } from "@ui/components/tabs";
-import { debounce } from "lodash";
-import {
-	type ChangeEvent,
-	useCallback,
-	useEffect,
-	useRef,
-	useState,
-} from "react";
+import { type ChangeEvent, useCallback, useRef, useState } from "react";
+import { debounce } from "utils";
 import type { ModalProps } from "@/src/types/ui";
 import type { GlobalError, ImageFile } from "../../../types/global";
 import type { FolderImage, FolderRes } from "../../../types/res";
@@ -36,7 +30,7 @@ export interface WriteImageAddModalProps extends ModalProps {
 
 export const WriteImageAddModal = ({
 	onChooseImage,
-	onOpenChange: onClose,
+	onOpenChange,
 	open,
 }: WriteImageAddModalProps) => {
 	const embedImageRef = useRef<HTMLImageElement>(null);
@@ -127,7 +121,7 @@ export const WriteImageAddModal = ({
 	};
 
 	return (
-		<Dialog open={open} onOpenChange={(open) => !open && onClose()}>
+		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent className="w-[calc(100% - 24px)] max-w-600">
 				<DialogHeader>
 					<DialogTitle>이미지 추가</DialogTitle>

@@ -68,7 +68,7 @@ export function WriteListWithFilter({ writes, series, tags }: PostListProps) {
 
 	const searchSubmitHandler = (e: FormEvent) => {
 		e.preventDefault();
-		setQueries(e.target?.[0].value || undefined, undefined, undefined);
+		setQueries(e.target?.[1].value || undefined, undefined, undefined);
 	};
 
 	const changeSeriesHandler = (value: string) => {
@@ -83,14 +83,19 @@ export function WriteListWithFilter({ writes, series, tags }: PostListProps) {
 		<div className="w-full max-w-768 mx-auto py-12">
 			<div>
 				<div className="relative">
-					<div className="gap-2 flex flex-col left-[-235px] min-w-50 absolute w-50">
+					<div className="gap-2 flex-col left-[-235px] min-w-50 absolute w-50 hidden 2xl:flex">
 						<form
 							className="w-full flex flex-col gap-4"
 							onSubmit={searchSubmitHandler}
 						>
 							<div className="flex items-center justify-between">
 								<p>Search</p>
-								<Button size="sm" variant="link" onClick={resetQuires}>
+								<Button
+									size="sm"
+									type="button"
+									variant="link"
+									onClick={resetQuires}
+								>
 									초기화
 								</Button>
 							</div>
@@ -130,7 +135,6 @@ export function WriteListWithFilter({ writes, series, tags }: PostListProps) {
 									)}
 								/>
 							</div>
-
 							<Separator />
 							<div className="w-full">
 								<Controller
@@ -159,10 +163,14 @@ export function WriteListWithFilter({ writes, series, tags }: PostListProps) {
 									)}
 								/>
 							</div>
+							<Button type="submit">검색</Button>
 						</form>
 					</div>
 
-					<div className="flex flex-row gap-1 mb-1 xl:hidden">
+					<form
+						className="flex flex-row gap-2 mb-4 2xl:hidden"
+						onSubmit={searchSubmitHandler}
+					>
 						<Controller
 							name="search"
 							control={control}
@@ -217,10 +225,19 @@ export function WriteListWithFilter({ writes, series, tags }: PostListProps) {
 								</Select>
 							)}
 						/>
-						<Button size="sm" variant="link" onClick={resetQuires}>
+						<Button className="w-24" type="submit">
+							검색
+						</Button>
+						<Button
+							className="w-24"
+							size="sm"
+							variant="link"
+							type="button"
+							onClick={resetQuires}
+						>
 							초기화
 						</Button>
-					</div>
+					</form>
 
 					{writes?.length > 0 ? (
 						<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 w-full">
