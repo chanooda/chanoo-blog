@@ -164,13 +164,7 @@ export const Github: Components["a"] = ({ href, className, target }) => {
 	return null;
 };
 
-export const A: Components["a"] = ({
-	children,
-	href,
-	target,
-	className,
-	...props
-}) => {
+export const A: Components["a"] = ({ children, href, className, ...props }) => {
 	if (href?.indexOf("https://youtu.be/") !== -1)
 		return (
 			<iframe
@@ -183,7 +177,7 @@ export const A: Components["a"] = ({
 		);
 	if (href.indexOf("https://github.com/") !== -1) {
 		return (
-			<Github href={href} target={target} className={className} {...props}>
+			<Github href={href} target="_blank" className={className} {...props}>
 				{children}
 			</Github>
 		);
@@ -192,7 +186,7 @@ export const A: Components["a"] = ({
 		<a
 			className={cn("text-gray-700 text-decoration-underline", className)}
 			href={href}
-			target={target}
+			target="_blank"
 			{...props}
 		>
 			{children}

@@ -15,9 +15,6 @@ export function Header() {
 					<Link href={LINK.writes}>
 						<p className="font-medium leading-none">writes</p>
 					</Link>
-					<Link href={LINK.writes}>
-						<p className="font-medium leading-none">series</p>
-					</Link>
 				</div>
 			</div>
 		</header>

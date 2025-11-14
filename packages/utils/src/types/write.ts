@@ -20,7 +20,7 @@ export interface WriteTag {
 }
 
 export interface Write {
-	content: string;
+	content?: string;
 	createdAt: string;
 	heart: number;
 	id: string;
@@ -32,6 +32,7 @@ export interface Write {
 	view: number;
 	series: SeriesDetail;
 	tags: Tag[];
+	plainText?: string;
 }
 
 export interface Series {

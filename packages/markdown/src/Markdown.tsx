@@ -4,24 +4,26 @@ import { Badge } from "@ui/components/badge";
 import type { ComponentProps } from "react";
 import { memo } from "react";
 import ReactMarkdown from "react-markdown";
-import { Link } from "react-router-dom";
 import remarkGfm from "remark-gfm";
 import { day, type Write } from "utils";
 import { markdownComponents } from "./MarkdownComponents";
 
-export type GetIdType = "post" | "series" | "tag";
+export type GetIdType = "write" | "tag" | "series";
 export interface MarkdownProps extends ComponentProps<typeof ReactMarkdown> {
 	write: Partial<Write>;
 	handleGetId?: (type: GetIdType, id: string) => void;
 }
 
-export const Markdown = memo(function Markdown({ write }: MarkdownProps) {
+export const Markdown = memo(function Markdown({
+	write,
+	handleGetId,
+}: MarkdownProps) {
 	return (
-		<div className="font-inherit h-full mx-auto px-2 w-full">
+		<div className="font-inherit h-full mx-auto w-full">
 			<div className="flex flex-col py-4">
 				<div className="flex flex-col w-full gap-4">
 					{write?.title && (
-						<h1 className="text-2xl font-bold">{write.title}</h1>
+						<h1 className="text-4xl font-bold">{write.title}</h1>
 					)}
 					<div className="flex gap-1">
 						<p>김찬우</p> ・ <p>{day(write?.createdAt).format("YYYY-MM-DD")}</p>
@@ -29,22 +31,37 @@ export const Markdown = memo(function Markdown({ write }: MarkdownProps) {
 					{write?.tags && write?.tags.length > 0 && (
 						<div className="flex flex-row flex-wrap gap-2 w-full">
 							{write?.tags?.map((writeTag) => (
-								<Badge key={writeTag.name}>{writeTag.name}</Badge>
+								<Badge
+									key={writeTag.name}
+									onClick={() => handleGetId?.("tag", writeTag.id)}
+									className="cursor-pointer"
+								>
+									{writeTag.name}
+								</Badge>
 							))}
 						</div>
 					)}
 					{write.series && (
-						<div className="bg-gray-200 rounded-md p-4 w-full">
-							<h6 className="mb-2 text-xl">{write.series.name}</h6>
+						<div className="bg-primary rounded-md p-4 w-full">
+							<button
+								type="button"
+								aria-label={`시리즈 "${write.series.name}"로 이동`}
+								className="text-white mb-2 text-xl hover:underline cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded text-left font-bold"
+								onClick={() => handleGetId?.("series", write.series?.id || "")}
+							>
+								{write.series.name}
+							</button>
 							<ul className="flex flex-col gap-2">
 								{write.series.writes.map((write, index) => (
 									<li key={write.id}>
-										<Link
-											to={`/writes/${write.id}`}
-											className="hover:underline"
+										<button
+											type="button"
+											aria-label={`글 "${write.title}"로 이동`}
+											onClick={() => handleGetId?.("write", write.id)}
+											className="text-white hover:underline cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded text-left w-full"
 										>
 											{index + 1}. {write.title}
-										</Link>
+										</button>
 									</li>
 								))}
 							</ul>

@@ -1,4 +1,4 @@
-import { day, regex, removeMarkdown, type Write } from "utils";
+import { day, type Write } from "utils";
 import { Badge } from "./badge";
 import { Card, CardContent, CardFooter, CardHeader } from "./card";
 
@@ -7,10 +7,6 @@ interface WriteListCardProps {
 }
 
 export function WriteListCard({ write }: WriteListCardProps) {
-	const markdownPreviewContent = regex.getWriteDescription(
-		removeMarkdown(write.content),
-	);
-
 	return (
 		<Card className="w-full py-4 gap-4">
 			<CardHeader className="px-4">
@@ -29,7 +25,7 @@ export function WriteListCard({ write }: WriteListCardProps) {
 				<h2 className="line-clamp-1 text-xl ">{write.title}</h2>
 				<div className="my-3 w-full">
 					<p className="line-clamp-4 text-sm text-gray-500">
-						{markdownPreviewContent}
+						{write?.plainText}
 					</p>
 				</div>
 				<div className="gap-1 flex flex-wrap">

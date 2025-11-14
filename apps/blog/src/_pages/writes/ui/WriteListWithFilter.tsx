@@ -34,7 +34,7 @@ export function WriteListWithFilter({ writes, series, tags }: PostListProps) {
 	const query = useSearchParams();
 	const router = useRouter();
 
-	const { watch, control } = useForm<WriteFilterForm>({
+	const { watch, control, reset } = useForm<WriteFilterForm>({
 		defaultValues: {
 			search: query.get("search") || undefined,
 			seriesId: query.get("seriesId") || undefined,
@@ -45,7 +45,12 @@ export function WriteListWithFilter({ writes, series, tags }: PostListProps) {
 	const { search: _search, seriesId: _seriesId, tagId: _tagId } = watch();
 
 	const resetQuires = () => {
-		router.push("/post");
+		reset({
+			search: undefined,
+			seriesId: undefined,
+			tagId: undefined,
+		});
+		router.push(LINK.writes);
 	};
 
 	const setQueries = (
@@ -58,7 +63,7 @@ export function WriteListWithFilter({ writes, series, tags }: PostListProps) {
 			seriesId: chooseSeriesId,
 			tagId: chooseTagId,
 		});
-		router.push(`/post?${queryString}`);
+		router.push(`${LINK.writes}?${queryString}`);
 	};
 
 	const searchSubmitHandler = (e: FormEvent) => {
@@ -78,83 +83,86 @@ export function WriteListWithFilter({ writes, series, tags }: PostListProps) {
 		<div className="w-full max-w-768 mx-auto py-12">
 			<div>
 				<div className="relative">
-					<div className="gap-2 left-[-235px] min-w-200 absolute w-200 xl:hidden">
-						<div className="w-full">
+					<div className="gap-2 flex flex-col left-[-235px] min-w-50 absolute w-50">
+						<form
+							className="w-full flex flex-col gap-4"
+							onSubmit={searchSubmitHandler}
+						>
 							<div className="flex items-center justify-between">
 								<p>Search</p>
 								<Button size="sm" variant="link" onClick={resetQuires}>
 									초기화
 								</Button>
 							</div>
-							<form className="w-full" onSubmit={searchSubmitHandler}>
+							<Controller
+								name="search"
+								control={control}
+								render={({ field }) => <Input {...field} placeholder="검색" />}
+							/>
+							<Separator />
+							<div className="w-full">
 								<Controller
-									name="search"
+									name="seriesId"
 									control={control}
-									render={({ field }) => (
-										<Input {...field} placeholder="검색" />
+									render={({ field: { onChange, value, name } }) => (
+										<Select
+											name={name}
+											value={value}
+											onValueChange={(value) => {
+												onChange(value);
+												changeSeriesHandler(value);
+											}}
+										>
+											<SelectTrigger className="w-full">
+												<SelectValue placeholder="시리즈 선택" />
+											</SelectTrigger>
+											<SelectContent>
+												{series?.map((seriesName) => (
+													<SelectItem
+														key={seriesName.id}
+														value={String(seriesName.id)}
+													>
+														{seriesName.name}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
 									)}
 								/>
-							</form>
-						</div>
-						<div className="w-full">
-							<p>Series</p>
-							<Controller
-								name="seriesId"
-								control={control}
-								render={({ field: { onChange } }) => (
-									<Select
-										onValueChange={(value) => {
-											onChange(value);
-											changeSeriesHandler(value);
-										}}
-									>
-										<SelectTrigger>
-											<SelectValue placeholder="태그 선택" />
-										</SelectTrigger>
-										<SelectContent>
-											{series?.map((seriesName) => (
-												<SelectItem
-													key={seriesName.id}
-													value={String(seriesName.id)}
-												>
-													{seriesName.name}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
-								)}
-							/>
-						</div>
-						<Separator />
-						<div className="w-full">
-							<p>Tags</p>
-							<Controller
-								name="tagId"
-								control={control}
-								render={({ field: { onChange } }) => (
-									<Select
-										onValueChange={(value) => {
-											onChange(value);
-											changeTagHandler(value);
-										}}
-									>
-										<SelectTrigger>
-											<SelectValue placeholder="태그 선택" />
-										</SelectTrigger>
-										<SelectContent>
-											{tags?.map((tag) => (
-												<SelectItem key={tag.id} value={String(tag.id)}>
-													{tag.name}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
-								)}
-							/>
-						</div>
+							</div>
+
+							<Separator />
+							<div className="w-full">
+								<Controller
+									name="tagId"
+									control={control}
+									render={({ field: { onChange, value, name } }) => (
+										<Select
+											name={name}
+											value={value}
+											onValueChange={(value) => {
+												onChange(value);
+												changeTagHandler(value);
+											}}
+										>
+											<SelectTrigger className="w-full">
+												<SelectValue placeholder="태그 선택" />
+											</SelectTrigger>
+											<SelectContent>
+												{tags?.map((tag) => (
+													<SelectItem key={tag.id} value={String(tag.id)}>
+														{tag.name}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+									)}
+								/>
+							</div>
+						</form>
 					</div>
 
-					<div className="flex flex-row gap-1 mb-1 @media(min-width:1270px):hidden">
+					<div className="flex flex-row gap-1 mb-1 xl:hidden">
 						<Controller
 							name="search"
 							control={control}
@@ -215,12 +223,9 @@ export function WriteListWithFilter({ writes, series, tags }: PostListProps) {
 					</div>
 
 					{writes?.length > 0 ? (
-						<div className="grid grid-cols-2 sm:grid-cols-8 md:grid-cols-12 lg:grid-cols-12 xl:grid-cols-12 gap-4 md:gap-6 w-full">
+						<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 w-full">
 							{writes?.map((write) => (
-								<div
-									key={write.id}
-									className="col-span-2 sm:col-span-8 md:col-span-12 lg:col-span-12 xl:col-span-12"
-								>
+								<div key={write.id}>
 									<Link href={`${LINK.writes}/${write.id}`}>
 										<WriteListCard write={write} />
 									</Link>
