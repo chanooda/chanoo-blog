@@ -78,175 +78,173 @@ export function WriteListWithFilter({ writes, series, tags }: PostListProps) {
 	};
 
 	return (
-		<div className="w-full max-w-768 mx-auto py-12">
-			<div>
-				<div className="relative">
-					<div className="gap-2 flex-col left-[-235px] min-w-50 absolute w-50 hidden 2xl:flex">
-						<form
-							className="w-full flex flex-col gap-4"
-							onSubmit={searchSubmitHandler}
-						>
-							<div className="flex items-center justify-between">
-								<p>Search</p>
-								<Button
-									size="sm"
-									type="button"
-									variant="link"
-									onClick={resetQuires}
-								>
-									초기화
-								</Button>
-							</div>
-							<Input {...register("search")} placeholder="검색" />
-							<Separator />
-							<div className="w-full">
-								<Controller
-									name="seriesId"
-									control={control}
-									render={({ field: { onChange, value, name } }) => (
-										<Select
-											name={name}
-											value={value}
-											onValueChange={(value) => {
-												onChange(value);
-												changeSeriesHandler(value);
-											}}
-										>
-											<SelectTrigger className="w-full">
-												<SelectValue placeholder="시리즈 선택" />
-											</SelectTrigger>
-											<SelectContent>
-												{series?.map((seriesName) => (
-													<SelectItem
-														key={seriesName.id}
-														value={String(seriesName.id)}
-													>
-														{seriesName.name}
-													</SelectItem>
-												))}
-											</SelectContent>
-										</Select>
-									)}
-								/>
-							</div>
-							<Separator />
-							<div className="w-full">
-								<Controller
-									name="tagId"
-									control={control}
-									render={({ field: { onChange, value, name } }) => (
-										<Select
-											name={name}
-											value={value}
-											onValueChange={(value) => {
-												onChange(value);
-												changeTagHandler(value);
-											}}
-										>
-											<SelectTrigger className="w-full">
-												<SelectValue placeholder="태그 선택" />
-											</SelectTrigger>
-											<SelectContent>
-												{tags?.map((tag) => (
-													<SelectItem key={tag.id} value={String(tag.id)}>
-														{tag.name}
-													</SelectItem>
-												))}
-											</SelectContent>
-										</Select>
-									)}
-								/>
-							</div>
-							<Button type="submit">검색</Button>
-						</form>
-					</div>
-
+		<div className="w-full h-full">
+			<div className="flex flex-col lg:flex-row min-h-full">
+				<div className="gap-2 flex-col min-w-60 hidden lg:flex border-r p-4">
 					<form
-						className="flex flex-row gap-2 mb-4 2xl:hidden"
+						className="w-full flex flex-col gap-4"
 						onSubmit={searchSubmitHandler}
 					>
-						<Controller
-							name="search"
-							control={control}
-							render={({ field }) => <Input {...field} placeholder="검색" />}
-						/>
-						<Controller
-							name="seriesId"
-							control={control}
-							render={({ field }) => (
-								<Select
-									{...field}
-									onValueChange={(value) => {
-										changeSeriesHandler(value);
-									}}
-								>
-									<SelectTrigger>
-										<SelectValue placeholder="시리즈 선택" />
-									</SelectTrigger>
-									<SelectContent>
-										{series?.map((seriesName) => (
-											<SelectItem
-												key={seriesName.id}
-												value={String(seriesName.id)}
-											>
-												{seriesName.name}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							)}
-						/>
-						<Controller
-							name="tagId"
-							control={control}
-							render={({ field: { onChange } }) => (
-								<Select
-									onValueChange={(value) => {
-										onChange(value);
-										changeTagHandler(value);
-									}}
-								>
-									<SelectTrigger>
-										<SelectValue placeholder="태그 선택" />
-									</SelectTrigger>
-									<SelectContent>
-										{tags?.map((tag) => (
-											<SelectItem key={tag.id} value={String(tag.id)}>
-												{tag.name}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							)}
-						/>
-						<Button className="w-24" type="submit">
-							검색
-						</Button>
-						<Button
-							className="w-24"
-							size="sm"
-							variant="link"
-							type="button"
-							onClick={resetQuires}
-						>
-							초기화
-						</Button>
-					</form>
-
-					{writes?.length > 0 ? (
-						<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 w-full">
-							{writes?.map((write) => (
-								<div key={write.id}>
-									<Link href={`${LINK.writes}/${write.id}`}>
-										<WriteListCard write={write} />
-									</Link>
-								</div>
-							))}
+						<div className="flex items-center justify-between">
+							<p>Search</p>
+							<Button
+								size="sm"
+								type="button"
+								variant="link"
+								onClick={resetQuires}
+							>
+								초기화
+							</Button>
 						</div>
-					) : (
-						<div className="w-full" />
-					)}
+						<Input {...register("search")} placeholder="검색" />
+						<Separator />
+						<div className="w-full">
+							<Controller
+								name="seriesId"
+								control={control}
+								render={({ field: { onChange, value, name } }) => (
+									<Select
+										name={name}
+										value={value}
+										onValueChange={(value) => {
+											onChange(value);
+											changeSeriesHandler(value);
+										}}
+									>
+										<SelectTrigger className="w-full">
+											<SelectValue placeholder="시리즈 선택" />
+										</SelectTrigger>
+										<SelectContent>
+											{series?.map((seriesName) => (
+												<SelectItem
+													key={seriesName.id}
+													value={String(seriesName.id)}
+												>
+													{seriesName.name}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+								)}
+							/>
+						</div>
+						<Separator />
+						<div className="w-full">
+							<Controller
+								name="tagId"
+								control={control}
+								render={({ field: { onChange, value, name } }) => (
+									<Select
+										name={name}
+										value={value}
+										onValueChange={(value) => {
+											onChange(value);
+											changeTagHandler(value);
+										}}
+									>
+										<SelectTrigger className="w-full">
+											<SelectValue placeholder="태그 선택" />
+										</SelectTrigger>
+										<SelectContent>
+											{tags?.map((tag) => (
+												<SelectItem key={tag.id} value={String(tag.id)}>
+													{tag.name}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+								)}
+							/>
+						</div>
+						<Button type="submit">검색</Button>
+					</form>
 				</div>
+
+				<form
+					className="flex flex-row gap-2 lg:hidden p-4 flex-wrap sm:flex-nowrap"
+					onSubmit={searchSubmitHandler}
+				>
+					<Input {...register("search")} placeholder="검색" />
+					<Controller
+						name="seriesId"
+						control={control}
+						render={({ field: { onChange, value, name } }) => (
+							<Select
+								name={name}
+								value={value}
+								onValueChange={(value) => {
+									onChange(value);
+									changeSeriesHandler(value);
+								}}
+							>
+								<SelectTrigger>
+									<SelectValue placeholder="시리즈 선택" />
+								</SelectTrigger>
+								<SelectContent>
+									{series?.map((seriesName) => (
+										<SelectItem
+											key={seriesName.id}
+											value={String(seriesName.id)}
+										>
+											{seriesName.name}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						)}
+					/>
+					<Controller
+						name="tagId"
+						control={control}
+						render={({ field: { onChange, value, name } }) => (
+							<Select
+								name={name}
+								value={value}
+								onValueChange={(value) => {
+									onChange(value);
+									changeTagHandler(value);
+								}}
+							>
+								<SelectTrigger>
+									<SelectValue placeholder="태그 선택" />
+								</SelectTrigger>
+								<SelectContent>
+									{tags?.map((tag) => (
+										<SelectItem key={tag.id} value={String(tag.id)}>
+											{tag.name}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						)}
+					/>
+					<Button className="w-24" type="submit">
+						검색
+					</Button>
+					<Button
+						className="w-24"
+						size="sm"
+						variant="link"
+						type="button"
+						onClick={resetQuires}
+					>
+						초기화
+					</Button>
+				</form>
+
+				{writes?.length > 0 ? (
+					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 w-full p-4">
+						{writes?.map((write) => (
+							<div key={write.id}>
+								<Link href={`${LINK.writes}/${write.id}`}>
+									<WriteListCard write={write} />
+								</Link>
+							</div>
+						))}
+					</div>
+				) : (
+					<div className="w-full" />
+				)}
 			</div>
 		</div>
 	);
