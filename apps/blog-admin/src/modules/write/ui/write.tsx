@@ -3,16 +3,14 @@ import { Markdown } from "markdown";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import type { Write } from "utils";
-import { useChanooQuery } from "../../../base/libs/queryHook";
-import { WriteDeleteModal } from "../../../base/ui/modal/WriteDeleteModal";
-import type { GlobalError } from "../../../types/global";
+import { useChanooQuery } from "@/src/base/libs/queryHook";
+import { WriteDeleteModal } from "@/src/base/ui/modal/WriteDeleteModal";
 
 export function WriteDetail() {
 	const { id } = useParams();
 	const [isShowDeleteModal, setIsShowDeleteModal] = useState(false);
-	const { data: write } = useChanooQuery<Write, GlobalError>([`/write/${id}`], {
+	const { data: write } = useChanooQuery<Write>([`/write/${id}`], {
 		enabled: !!id,
-		throwOnError: true,
 	});
 
 	const clickDeleteHandler = () => {

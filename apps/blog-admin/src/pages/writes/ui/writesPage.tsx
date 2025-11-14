@@ -67,7 +67,7 @@ export function WritesPage() {
 	};
 
 	const changeTagHandler = (tagId: string) => {
-		setQueries({ tagId: tagId });
+		setQueries({ tagId });
 	};
 
 	return (

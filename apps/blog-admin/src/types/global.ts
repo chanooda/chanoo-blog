@@ -5,9 +5,10 @@ export interface GlobalResponse<T> {
 	status: HttpStatusCode;
 }
 
-export interface GlobalError {
-	error: string;
-	status: number;
+export interface GlobalError<T = unknown> {
+	code: string;
+	message: string;
+	data?: T;
 }
 
 export interface ImageFile {

@@ -14,10 +14,10 @@ export function WriteDetail({ write }: PostDetailProps) {
 			open(`${LINK.writes}/${id}`, "_blank", "noopener,noreferrer");
 		}
 		if (type === "series") {
-			open(`${LINK.writes}?seriesId=${id}`, "_blank", "noopener,noreferrer");
+			open(`${LINK.home}?seriesId=${id}`, "_blank", "noopener,noreferrer");
 		}
 		if (type === "tag") {
-			open(`${LINK.writes}?tagId=${id}`, "_blank", "noopener,noreferrer");
+			open(`${LINK.home}?tagId=${id}`, "_blank", "noopener,noreferrer");
 		}
 	};
 

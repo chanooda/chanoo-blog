@@ -13,6 +13,7 @@ import axios, {
 	type Method,
 } from "axios";
 import type { GlobalError, GlobalResponse } from "../../types/global";
+import { useAuth } from "../contexts/AuthContext";
 
 const axiosClient = axios.create({
 	baseURL: import.meta.env.VITE_APP_BLOG_ADMIN_BASE_URL || "",
@@ -20,30 +21,65 @@ const axiosClient = axios.create({
 
 export const useChanooQuery = <
 	TQueryFnData = unknown,
-	TError = AxiosError<GlobalError>,
+	TError = unknown,
 	TData = AxiosResponse<GlobalResponse<TQueryFnData>>,
 	TQueryKey extends QueryKey = QueryKey,
 >(
 	queryKey: TQueryKey,
-	options?: Omit<
-		UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
+	_options?: Omit<
+		UseQueryOptions<
+			TQueryFnData,
+			AxiosError<GlobalError<TError>>,
+			TData,
+			TQueryKey
+		>,
 		"initialData" | "queryKey"
 	> & {
 		initialData?: () => undefined;
 	},
-): UseQueryResult<TData, TError> => {
+): UseQueryResult<TData, AxiosError<GlobalError<TError>>> => {
 	const queryUrl = typeof queryKey[0] === "string" ? queryKey[0] : "";
 	const queryParams = typeof queryKey[1] === "object" ? queryKey[1] : {};
-	const query = useQuery<TQueryFnData, TError, TData, TQueryKey>({
+
+	const { throwOnError, ...options } = _options || {};
+
+	const { token } = useAuth();
+
+	const query = useQuery<
+		TQueryFnData,
+		AxiosError<GlobalError<TError>>,
+		TData,
+		TQueryKey
+	>({
 		queryKey,
-		queryFn: async () => {
-			return axiosClient.request({
+		queryFn: async () =>
+			axiosClient.request({
 				method: "get",
 				url: queryUrl,
 				params: queryParams,
-			});
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			}),
+		throwOnError: (error, query) => {
+			// queryCache.onError가 실행되도록 하기 위해 먼저 false를 반환
+			// 그 다음에 throwOnError 옵션에 따라 결정
+			if (error?.response?.data?.code === "UNAUTHORIZED") {
+				return false;
+			}
+
+			// throwOnError가 명시적으로 설정된 경우에만 그 값을 사용
+			// 설정되지 않은 경우 false를 반환하여 queryCache.onError가 실행되도록 함
+			if (throwOnError !== undefined) {
+				if (typeof throwOnError === "function") {
+					return throwOnError(error, query);
+				}
+				return throwOnError;
+			}
+
+			// 기본값을 false로 변경하여 queryCache.onError가 실행되도록 함
+			return false;
 		},
-		throwOnError: true,
 		...options,
 	});
 

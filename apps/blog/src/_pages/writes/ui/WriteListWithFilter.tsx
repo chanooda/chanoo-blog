@@ -13,10 +13,10 @@ import { Separator } from "@ui/components/separator";
 import { WriteListCard } from "@ui/components/WriteListCard";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import type { FormEvent } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
 	buildQueryString,
+	getQuery,
 	type Series,
 	type Tag,
 	type Write,
@@ -34,49 +34,47 @@ export function WriteListWithFilter({ writes, series, tags }: PostListProps) {
 	const query = useSearchParams();
 	const router = useRouter();
 
-	const { watch, control, reset } = useForm<WriteFilterForm>({
-		defaultValues: {
-			search: query.get("search") || undefined,
-			seriesId: query.get("seriesId") || undefined,
-			tagId: query.get("tagId") || undefined,
-		},
-	});
+	const queryObject = getQuery(query.toString(), [
+		"search",
+		"seriesId",
+		"tagId",
+	]);
+
+	const { watch, control, reset, register, handleSubmit } =
+		useForm<WriteFilterForm>({
+			defaultValues: { ...queryObject },
+		});
 
 	const { search: _search, seriesId: _seriesId, tagId: _tagId } = watch();
 
 	const resetQuires = () => {
-		reset({
-			search: undefined,
-			seriesId: undefined,
-			tagId: undefined,
-		});
-		router.push(LINK.writes);
+		reset();
+		router.push(LINK.home);
 	};
 
-	const setQueries = (
+	const setQueries = ({
 		search = _search,
-		chooseSeriesId = _seriesId,
-		chooseTagId = _tagId,
-	) => {
+		seriesId = _seriesId,
+		tagId = _tagId,
+	}: Partial<WriteFilterForm>) => {
 		const queryString = buildQueryString({
 			search,
-			seriesId: chooseSeriesId,
-			tagId: chooseTagId,
+			seriesId,
+			tagId,
 		});
-		router.push(`${LINK.writes}?${queryString}`);
+		router.push(`${LINK.home}?${queryString}`);
 	};
 
-	const searchSubmitHandler = (e: FormEvent) => {
-		e.preventDefault();
-		setQueries(e.target?.[1].value || undefined, undefined, undefined);
+	const searchSubmitHandler = handleSubmit((formData) => {
+		setQueries(formData);
+	});
+
+	const changeSeriesHandler = (seriesId: string) => {
+		setQueries({ seriesId });
 	};
 
-	const changeSeriesHandler = (value: string) => {
-		setQueries(undefined, value || undefined, undefined);
-	};
-
-	const changeTagHandler = (chooseTagId: string) => {
-		setQueries(undefined, undefined, chooseTagId || undefined);
+	const changeTagHandler = (tagId: string) => {
+		setQueries({ tagId });
 	};
 
 	return (
@@ -99,11 +97,7 @@ export function WriteListWithFilter({ writes, series, tags }: PostListProps) {
 									초기화
 								</Button>
 							</div>
-							<Controller
-								name="search"
-								control={control}
-								render={({ field }) => <Input {...field} placeholder="검색" />}
-							/>
+							<Input {...register("search")} placeholder="검색" />
 							<Separator />
 							<div className="w-full">
 								<Controller

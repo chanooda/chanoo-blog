@@ -3,7 +3,7 @@ import { baseApi } from "./fetch";
 
 export const getWrites = async (writeReq: WriteReq) => {
 	try {
-		const data = await baseApi.get<Write[]>("write", writeReq);
+		const data = await baseApi.get<Write[]>("public/write", writeReq);
 		return data;
 	} catch (e) {
 		console.error(e);
@@ -13,7 +13,7 @@ export const getWrites = async (writeReq: WriteReq) => {
 
 export const getWrite = async (writeReq: IdReq) => {
 	try {
-		const data = await baseApi.get<Write>(`write/${writeReq.id}`);
+		const data = await baseApi.get<Write>(`public/write/${writeReq.id}`);
 		return data;
 	} catch (e) {
 		console.error(e);

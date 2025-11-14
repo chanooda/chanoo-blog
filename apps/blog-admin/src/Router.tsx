@@ -1,6 +1,8 @@
 import { Route, Routes } from "react-router-dom";
+import { AuthProvider } from "./base/contexts/AuthContext";
 import { Layout } from "./base/ui/container/Layout";
 import { NotFound } from "./pages/404";
+import { SigninPage } from "./pages/auth/signinPage";
 import { FolderPage } from "./pages/folder/Folder";
 import { Home } from "./pages/Home";
 import { WriteAddPage } from "./pages/writes/ui/writeAddPage";
@@ -10,17 +12,20 @@ import { WritesPage } from "./pages/writes/ui/writesPage";
 
 export function Router() {
 	return (
-		<Routes>
-			<Route element={<Layout />} path="/">
-				<Route element={<Home />} path="/" />
-				<Route element={<WritesPage />} path="/writes" />
-				<Route element={<WriteAddPage />} path="/writes/add" />
-				<Route element={<WritePage />} path="/writes/:id" />
-				<Route element={<WriteEditPage />} path="/writes/:id/edit" />
-				<Route element={<FolderPage />} path="/folder" />
-				<Route element={<FolderPage />} path="/folder/:id" />
-			</Route>
-			<Route element={<NotFound />} path="*" />
-		</Routes>
+		<AuthProvider>
+			<Routes>
+				<Route element={<Layout />} path="/">
+					<Route element={<Home />} path="/" />
+					<Route element={<SigninPage />} path="/signin" />
+					<Route element={<WritesPage />} path="/writes" />
+					<Route element={<WriteAddPage />} path="/writes/add" />
+					<Route element={<WritePage />} path="/writes/:id" />
+					<Route element={<WriteEditPage />} path="/writes/:id/edit" />
+					<Route element={<FolderPage />} path="/folder" />
+					<Route element={<FolderPage />} path="/folder/:id" />
+				</Route>
+				<Route element={<NotFound />} path="*" />
+			</Routes>
+		</AuthProvider>
 	);
 }
