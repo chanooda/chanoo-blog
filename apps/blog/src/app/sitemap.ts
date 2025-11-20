@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getSeries, getTags, getWrites } from "src/_base/ui/client";
+import { getSeries, getTags, getWrites } from "../_base/api";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	const series = await getSeries();

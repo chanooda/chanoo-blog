@@ -4,6 +4,7 @@
 		"jsx": "react-jsx",
 		"baseUrl": ".",
 		"paths": {
+			"ui": ["./src"],
 			"ui/*": ["./src/*"]
 		}
 	},
