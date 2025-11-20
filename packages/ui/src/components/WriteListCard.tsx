@@ -1,44 +1,51 @@
-import { Card, CardActionArea, CardContent, CardMedia, Stack, Typography } from '@mui/material';
-import { Write, day, regex, removeMarkdown } from 'utils';
-import { EllipsisTypography } from './EllipsisTypography';
-import { EllipsisMultilineTypography } from './EllipsisMultilineTypography';
+import { day, type Write } from "utils";
+import { Badge } from "./badge";
+import { Card, CardContent, CardFooter, CardHeader } from "./card";
 
 interface WriteListCardProps {
-  write: Write;
+	write: Write;
 }
 
 export function WriteListCard({ write }: WriteListCardProps) {
-  const markdownPreviewContent = regex.getWriteDescription(removeMarkdown(write.content));
-
-  return (
-    <Card sx={{ width: '100%' }}>
-      <CardActionArea>
-        {write.imgUrl ? (
-          <CardMedia alt={write.title} component="img" height={170} image={write.imgUrl} />
-        ) : (
-          <Stack height={170} />
-        )}
-        <CardContent>
-          <EllipsisTypography fontSize={18} gutterBottom>
-            {write.title}
-          </EllipsisTypography>
-          <Stack width="100%">
-            <EllipsisMultilineTypography color="text.secondary" ellipsisLine={4} variant="body2">
-              {markdownPreviewContent}
-            </EllipsisMultilineTypography>
-          </Stack>
-          <Stack alignItems="center" direction="row" gap={2} justifyContent="space-between" mt={2}>
-            {!write.isPublish && (
-              <Typography color={(theme) => theme.palette.grey[500]} fontSize={15}>
-                비공개글
-              </Typography>
-            )}
-            <Typography fontSize={15} textAlign="end">
-              {day(write.createdAt).defaultFormat()}
-            </Typography>
-          </Stack>
-        </CardContent>
-      </CardActionArea>
-    </Card>
-  );
+	return (
+		<Card className="w-full py-4 gap-4">
+			<CardHeader className="px-4">
+				{write.imgUrl ? (
+					<img
+						alt={write.title}
+						src={write.imgUrl}
+						className="w-full h-auto aspect-video object-cover rounded-sm"
+					/>
+				) : (
+					<div className="w-full h-auto aspect-video" />
+				)}
+			</CardHeader>
+			<CardContent className="px-4">
+				<span className="text-sm text-primary/70">{write.series.name}</span>
+				<h2 className="line-clamp-1 text-xl ">{write.title}</h2>
+				<div className="my-3 w-full">
+					<p className="line-clamp-4 text-sm text-gray-500">
+						{write?.plainText}
+					</p>
+				</div>
+				<div className="gap-1 flex flex-wrap">
+					{write.tags.map((tag) => (
+						<Badge color="primary" key={tag.id}>
+							{tag.name}
+						</Badge>
+					))}
+				</div>
+			</CardContent>
+			<CardFooter className="gap-2 px-4 flex flex-row justify-between items-center">
+				{!write.isPublish && (
+					<span className="text-gray-500 whitespace-nowrap text-sm">
+						비공개글
+					</span>
+				)}
+				<p className="text-gray-500 text-sm text-end w-full">
+					{day(write.createdAt).defaultFormat()}
+				</p>
+			</CardFooter>
+		</Card>
+	);
 }

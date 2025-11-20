@@ -1,5 +1,5 @@
 export interface WriteFilterForm {
-  search: string;
-  seriesId: number;
-  tagId: number;
+	search: string;
+	seriesId: string;
+	tagId: string;
 }

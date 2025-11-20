@@ -1,27 +1,31 @@
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
-import { Home } from './pages/Home';
-import { Layout } from './components/container/Layout';
-import { FolderPage } from './pages/folder/Folder';
-import { NotFound } from './pages/404';
-import { PostEdit } from './pages/post/edit/postEdit';
-import { Write } from './pages/post/write/write';
-import { PostDetail } from './pages/post/PostDetail';
-import { Post } from './pages/post/Post';
+import { Route, Routes } from "react-router-dom";
+import { AuthProvider } from "./base/contexts/AuthContext";
+import { Layout } from "./base/ui/container/Layout";
+import { NotFound } from "./pages/404";
+import { SigninPage } from "./pages/auth/signinPage";
+import { FolderPage } from "./pages/folder/Folder";
+import { Home } from "./pages/Home";
+import { WriteAddPage } from "./pages/writes/ui/writeAddPage";
+import { WriteEditPage } from "./pages/writes/ui/writeEditPage";
+import { WritePage } from "./pages/writes/ui/writePage";
+import { WritesPage } from "./pages/writes/ui/writesPage";
 
 export function Router() {
-  return (
-    <Routes>
-      <Route element={<Layout />} path="/">
-        <Route element={<Home />} path="/" />
-        <Route element={<Post />} path="/post" />
-        <Route element={<Write />} path="/write" />
-        <Route element={<PostDetail />} path="/post/:id" />
-        <Route element={<PostEdit />} path="/post/:id/edit" />
-        <Route element={<FolderPage />} path="/folder" />
-        <Route element={<FolderPage />} path="/folder/:id" />
-      </Route>
-      <Route element={<NotFound />} path="*" />
-    </Routes>
-  );
+	return (
+		<AuthProvider>
+			<Routes>
+				<Route element={<Layout />} path="/">
+					<Route element={<Home />} path="/" />
+					<Route element={<SigninPage />} path="/signin" />
+					<Route element={<WritesPage />} path="/writes" />
+					<Route element={<WriteAddPage />} path="/writes/add" />
+					<Route element={<WritePage />} path="/writes/:id" />
+					<Route element={<WriteEditPage />} path="/writes/:id/edit" />
+					<Route element={<FolderPage />} path="/folder" />
+					<Route element={<FolderPage />} path="/folder/:id" />
+				</Route>
+				<Route element={<NotFound />} path="*" />
+			</Routes>
+		</AuthProvider>
+	);
 }

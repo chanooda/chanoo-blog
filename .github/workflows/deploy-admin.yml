@@ -1,0 +1,87 @@
+on:
+  push:
+    branches: ["main"]
+    paths: ["apps/blog-admin/**"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/blog-admin
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "24.x"
+          cache: "pnpm"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Create .env file
+        run: |
+          touch .env
+          jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' <<< "$SECRETS_CONTEXT" > .env
+          ls -a
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        working-directory: .
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Build Docker image
+        run: docker build -t blog-admin:latest .
+
+      - name: Export Docker image to tar
+        run: docker save blog-admin:latest -o blog-admin.tar
+
+      - name: Create deployment package
+        run: tar -czf blog-admin-deploy.tar.gz blog-admin.tar deploy-blue-green.sh .env
+
+      - name: Copy deployment package to server
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.GCP_VM_IP }}
+          username: ${{ secrets.GCP_VM_USER }}
+          key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
+          port: 22
+          source: "blog-admin-deploy.tar.gz"
+          target: /home/${{ secrets.GCP_VM_USER }}/blog-admin
+
+      - name: SSH to VM and deploy
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.GCP_VM_IP }}
+          username: ${{ secrets.GCP_VM_USER }}
+          key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+            cd /home/${{ secrets.GCP_VM_USER }}/blog-admin
+            tar -xzf blog-admin-deploy.tar.gz
+            chmod +x deploy-blue-green.sh
+            LOG_DIR=/home/${{ secrets.GCP_VM_USER }}/blog-admin/logs
+            mkdir -p "$LOG_DIR"
+            TS=$(date +"%Y%m%d-%H%M%S")
+            LOG_FILE="$LOG_DIR/deploy-$TS.log"
+            nohup bash -c "REMOVE_OLD_CONTAINER_ON_DEPLOY=true ./deploy-blue-green.sh > $LOG_FILE 2>&1" >/dev/null 2>&1 &
+            echo "배포 스크립트를 백그라운드로 실행했습니다. PID: $!"
