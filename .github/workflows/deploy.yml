@@ -68,9 +68,9 @@ jobs:
         working-directory: apps/blog
         run: |
           mkdir -p blog-deploy
-          cp blog.tar blog-deploy
-          cp deploy-blue-green.sh blog-deploy
-          cp .env blog-deploy
+          cp blog.tar blog-deploy/
+          cp deploy-blue-green.sh blog-deploy/
+          cp -a .env blog-deploy/.
           tar czf blog-deploy.tar.gz -C blog-deploy .
           cp blog-deploy.tar.gz ../../blog-deploy.tar.gz
 
@@ -81,7 +81,7 @@ jobs:
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
           port: 22
-          source: blog-deploy.tar.gz
+          source: "blog-deploy.tar.gz"
           target: /home/${{ secrets.GCP_VM_USER }}/blog
 
       - name: SSH to VM and deploy
