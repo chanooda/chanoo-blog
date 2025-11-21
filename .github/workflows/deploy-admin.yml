@@ -65,6 +65,7 @@ jobs:
           cp .env blog-admin-deploy
           cp -r nginx blog-admin-deploy
           tar czf blog-admin-deploy.tar.gz -C blog-admin-deploy .
+          cp blog-admin-deploy.tar.gz ../../blog-admin-deploy.tar.gz
 
       - name: Copy deployment package to server
         uses: appleboy/scp-action@v1
@@ -73,8 +74,8 @@ jobs:
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
           port: 22
-          source: "apps/blog-admin/blog-admin-deploy.tar.gz"
-          target: /home/${{ secrets.GCP_VM_USER }}/blog-admin/blog-admin-deploy.tar.gz
+          source: blog-admin-deploy.tar.gz
+          target: /home/${{ secrets.GCP_VM_USER }}/blog-admin
 
       - name: SSH to VM and deploy
         uses: appleboy/ssh-action@v0.1.10
@@ -97,4 +98,5 @@ jobs:
         if: always()
         run: |
           rm -f blog-admin-deploy.tar.gz
-          rm -rf blog-admin-deploy
+          rm -rf apps/blog-admin/blog-admin-deploy
+          rm -f apps/blog-admin/blog-admin-deploy.tar.gz
