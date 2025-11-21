@@ -72,6 +72,7 @@ jobs:
           cp deploy-blue-green.sh blog-deploy
           cp .env blog-deploy
           tar czf blog-deploy.tar.gz -C blog-deploy .
+          cp blog-deploy.tar.gz ../../blog-deploy.tar.gz
 
       - name: Copy deployment package to server
         uses: appleboy/scp-action@v1
@@ -80,8 +81,8 @@ jobs:
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
           port: 22
-          source: "apps/blog/blog-deploy.tar.gz"
-          target: /home/${{ secrets.GCP_VM_USER }}/blog/blog-deploy.tar.gz
+          source: blog-deploy.tar.gz
+          target: /home/${{ secrets.GCP_VM_USER }}/blog
 
       - name: SSH to VM and deploy
         uses: appleboy/ssh-action@v0.1.10
@@ -104,4 +105,5 @@ jobs:
         if: always()
         run: |
           rm -f blog-deploy.tar.gz
-          rm -rf blog-deploy
+          rm -rf apps/blog/blog-deploy
+          rm -f apps/blog/blog-deploy.tar.gz
