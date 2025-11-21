@@ -20,16 +20,24 @@ jobs:
           node-version: "24.x"
           cache: "pnpm"
 
+      - name: Create .npmrc file
+        run: |
+          cat <<EOF > ~/.npmrc
+              @smiledragon-corp:registry=https://npm.pkg.github.com/
+              //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
+          EOF
+
       - name: Create .env file
         working-directory: apps/blog-admin
         run: |
           touch .env
-          jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' <<< "$SECRETS_CONTEXT" > .env
-          ls -a
+          jq -r 'to_entries
+            | map(select(.key | startswith("GCP") | not))
+            | map("\(.key)=\(.value|tostring)")
+            | .[]' <<< "$SECRETS_CONTEXT" > .env
 
       - name: Get pnpm store directory
         shell: bash
-        working-directory: .
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
