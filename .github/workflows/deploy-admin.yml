@@ -67,7 +67,7 @@ jobs:
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
           port: 22
-          source: ./apps/blog-admin/blog-admin-deploy.tar.gz
+          source: blog-admin-deploy.tar.gz
           target: /home/${{ secrets.GCP_VM_USER }}/blog-admin
 
       - name: SSH to VM and deploy
@@ -87,3 +87,8 @@ jobs:
             LOG_FILE="$LOG_DIR/deploy-$TS.log"
             nohup bash -c "REMOVE_OLD_CONTAINER_ON_DEPLOY=true ./deploy-blue-green.sh > $LOG_FILE 2>&1" >/dev/null 2>&1 &
             echo "배포 스크립트를 백그라운드로 실행했습니다. PID: $!"
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f blog-admin-deploy.tar.gz
+          rm -rf blog-admin-deploy
