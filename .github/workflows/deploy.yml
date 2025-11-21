@@ -1,7 +1,7 @@
 on:
   push:
     branches: ["main"]
-    paths: ["apps/blog/**"]
+    # paths: ["apps/blog/**"]
 
 jobs:
   deploy:
