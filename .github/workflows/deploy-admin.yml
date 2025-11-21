@@ -18,12 +18,12 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: "24.x"
-          cache: "pnpm"
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
 
       - name: Create .env file
+        working-directory: .
         run: |
           touch .env
           jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' <<< "$SECRETS_CONTEXT" > .env
@@ -31,6 +31,7 @@ jobs:
 
       - name: Get pnpm store directory
         shell: bash
+        working-directory: .
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
@@ -50,13 +51,15 @@ jobs:
         run: pnpm build
 
       - name: Build Docker image
-        run: docker build -t blog-admin:latest .
+        run: |
+          docker build -t blog-admin:latest .
 
       - name: Export Docker image to tar
-        run: docker save blog-admin:latest -o blog-admin.tar
+        run: |
+          docker save blog-admin:latest -o blog-admin.tar
 
       - name: Create deployment package
-        run: tar -czf blog-admin-deploy.tar.gz blog-admin.tar deploy-blue-green.sh .env
+        run: tar -czf blog-admin-deploy.tar.gz blog-admin.tar deploy-blue-green.sh .env nginx
 
       - name: Copy deployment package to server
         uses: appleboy/scp-action@v1

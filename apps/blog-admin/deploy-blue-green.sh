@@ -8,16 +8,16 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # 설정
-PROJECT_DIR="/home/hanrhfqkq/blog"
+PROJECT_DIR="/home/hanrhfqkq/blog-admin"
 BLUE_PORT=5000
 GREEN_PORT=5001
-BLUE_CONTAINER="blog-blue"
-GREEN_CONTAINER="blog-green"
-IMAGE_NAME="blog"
+BLUE_CONTAINER="blog-admin-blue"
+GREEN_CONTAINER="blog-admin-green"
+IMAGE_NAME="blog-admin"
 # GitHub Actions 등 비대화형 환경에서 이전 컨테이너 제거 여부를 제어
 REMOVE_OLD_CONTAINER_ON_DEPLOY="${REMOVE_OLD_CONTAINER_ON_DEPLOY:-false}"
-NGINX_CONFIG="/etc/nginx/sites-available/blog"
-NGINX_ENABLED="/etc/nginx/sites-enabled/blog"
+NGINX_CONFIG="/etc/nginx/sites-available/blog-admin"
+NGINX_ENABLED="/etc/nginx/sites-enabled/blog-admin"
 # 헬스 체크 URL: VM 내부에서 컨테이너를 확인하는 주소 (실제 배포 주소가 아님)
 # 배포 스크립트가 VM 내부에서 실행되므로 localhost 사용
 HEALTH_CHECK_URL="http://localhost"
@@ -66,19 +66,19 @@ update_nginx_config() {
     echo -e "${YELLOW}Nginx 설정 업데이트 중... (포트 ${target_port})${NC}"
     
     sudo tee $NGINX_CONFIG > /dev/null <<EOF
-upstream blog {
-    server localhost:5000;  # Blue 환경 (초기 활성)
-    # server localhost:5001;  # Green 환경으로 전환 시 주석 해제
+upstream admin {
+    server localhost:6000;  # Blue 환경 (초기 활성)
+    # server localhost:6001;  # Green 환경으로 전환 시 주석 해제
 }
 
 server {
-    listen 5000;
+    listen 6000;
     server_name _;
 
     client_max_body_size 100M;
 
     location / {
-        proxy_pass http://blog;
+        proxy_pass http://admin;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -133,7 +133,7 @@ deploy_new_container() {
     # 이미지 빌드
     echo -e "${YELLOW}Docker 이미지 빌드 중...${NC}"
     cd $PROJECT_DIR
-    docker docker load -i blog.tar
+    docker docker load -i blog-admin.tar
     
     # 새 컨테이너 실행
     echo -e "${YELLOW}컨테이너 실행 중: ${container_name}${NC}"
