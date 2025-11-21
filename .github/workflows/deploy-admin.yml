@@ -88,6 +88,7 @@ jobs:
             set -e
             cd /home/${{ secrets.GCP_VM_USER }}/blog-admin
             tar -xzf blog-admin-deploy.tar.gz
+            rm -rf blog-admin-deploy.tar.gz
             chmod +x deploy-blue-green.sh
             LOG_DIR=/home/${{ secrets.GCP_VM_USER }}/blog-admin/logs
             mkdir -p "$LOG_DIR"
