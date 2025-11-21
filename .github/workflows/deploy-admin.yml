@@ -6,9 +6,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: apps/blog-admin
 
     steps:
       - name: checkout
@@ -23,7 +20,7 @@ jobs:
         uses: pnpm/action-setup@v4
 
       - name: Create .env file
-        working-directory: .
+        working-directory: apps/blog-admin
         run: |
           touch .env
           jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' <<< "$SECRETS_CONTEXT" > .env
@@ -44,21 +41,21 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        working-directory: .
         run: pnpm install --frozen-lockfile
 
       - name: Build
+        working-directory: apps/blog-admin
         run: pnpm build
 
       - name: Build Docker image
-        run: |
-          docker build -t blog-admin:latest .
+        run: docker build -t blog-admin:latest .
 
       - name: Export Docker image to tar
-        run: |
-          docker save blog-admin:latest -o blog-admin.tar
+        working-directory: apps/blog-admin
+        run: docker save blog-admin:latest -o blog-admin.tar
 
       - name: Create deployment package
+        working-directory: apps/blog-admin
         run: tar -czf blog-admin-deploy.tar.gz blog-admin.tar deploy-blue-green.sh .env nginx
 
       - name: Copy deployment package to server
@@ -68,7 +65,7 @@ jobs:
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
           port: 22
-          source: "blog-admin-deploy.tar.gz"
+          source: ./apps/blog-admin/blog-admin-deploy.tar.gz
           target: /home/${{ secrets.GCP_VM_USER }}/blog-admin
 
       - name: SSH to VM and deploy
