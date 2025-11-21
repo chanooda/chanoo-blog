@@ -75,7 +75,7 @@ jobs:
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
           port: 22
-          source: blog-deploy.tar.gz
+          source: "apps/blog/blog-deploy.tar.gz"
           target: /home/${{ secrets.GCP_VM_USER }}/blog
 
       - name: SSH to VM and deploy
