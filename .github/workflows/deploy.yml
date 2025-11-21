@@ -81,7 +81,7 @@ jobs:
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
           port: 22
           source: "apps/blog/blog-deploy.tar.gz"
-          target: /home/${{ secrets.GCP_VM_USER }}/blog
+          target: /home/${{ secrets.GCP_VM_USER }}/blog/blog-deploy.tar.gz
 
       - name: SSH to VM and deploy
         uses: appleboy/ssh-action@v0.1.10
