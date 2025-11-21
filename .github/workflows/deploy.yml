@@ -74,6 +74,7 @@ jobs:
           # 압축 후 중간 파일들 즉시 삭제
           rm -rf blog-deploy
           rm -f blog.tar
+          docker rmi blog:latest || true
           cp blog-deploy.tar.gz ../../blog-deploy.tar.gz
           rm -rf blog-deploy
 
