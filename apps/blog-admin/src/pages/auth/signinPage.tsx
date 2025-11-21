@@ -20,8 +20,8 @@ export const SigninPage = () => {
 		e.preventDefault();
 		mutate(
 			{
-				username: e.target.username.value,
-				password: e.target.password.value,
+				username: (e.target as HTMLFormElement).username.value,
+				password: (e.target as HTMLFormElement).password.value,
 			},
 			{
 				onSuccess: (data) => {

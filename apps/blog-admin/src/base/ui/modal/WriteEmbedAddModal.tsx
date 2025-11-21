@@ -10,7 +10,7 @@ interface WriteEmbedAddModalProps extends Omit<ModalProps, "children"> {
 
 export function WriteEmbedAddModal({
 	getEmbedUrl,
-	onOpenChange: onClose,
+	onOpenChange,
 	open,
 }: WriteEmbedAddModalProps) {
 	const [embedUrl, setEmbedUrl] = useState("");
@@ -24,7 +24,7 @@ export function WriteEmbedAddModal({
 	};
 
 	return (
-		<Dialog open={open} onOpenChange={(open) => !open && onClose()}>
+		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent className="w-[calc(100%-40px)] max-w-500">
 				<Input
 					placeholder="url을 입력해주세요."
