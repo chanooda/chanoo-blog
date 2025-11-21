@@ -71,7 +71,7 @@ jobs:
           cp blog.tar blog-deploy
           cp deploy-blue-green.sh blog-deploy
           cp .env blog-deploy
-          tar -czf blog-deploy.tar.gz blog-deploy
+          tar czf blog-deploy.tar.gz -C blog-deploy .
 
       - name: Copy deployment package to server
         uses: appleboy/scp-action@v1

@@ -63,8 +63,8 @@ jobs:
           cp -r dist blog-admin-deploy
           cp deploy-blue-green.sh blog-admin-deploy
           cp .env blog-admin-deploy
-          cp nginx blog-admin-deploy
-          tar -czf blog-admin-deploy.tar.gz blog-admin-deploy
+          cp -r nginx blog-admin-deploy
+          tar czf blog-admin-deploy.tar.gz -C blog-admin-deploy .
 
       - name: Copy deployment package to server
         uses: appleboy/scp-action@v1
