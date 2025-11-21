@@ -23,7 +23,7 @@ jobs:
       - name: Create .npmrc file
         run: |
           cat <<EOF > ~/.npmrc
-              @smiledragon-corp:registry=https://npm.pkg.github.com/
+              @chanooda:registry=https://npm.pkg.github.com/
               //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
           EOF
 
