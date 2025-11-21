@@ -85,7 +85,6 @@ jobs:
           rm -f blog.tar
           docker rmi blog:latest || true
           cp blog-deploy.tar.gz ../../blog-deploy.tar.gz
-          rm -f blog-deploy.tar.gz
 
       - name: Copy deployment package to server
         uses: appleboy/scp-action@v1
