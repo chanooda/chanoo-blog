@@ -4,7 +4,7 @@ on:
     # paths: ["apps/blog-admin/**"]
 
 jobs:
-  deploy:
+  deploy-admin:
     runs-on: ubuntu-latest
 
     steps:
