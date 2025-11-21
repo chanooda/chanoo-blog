@@ -103,5 +103,5 @@ jobs:
       - name: Cleanup
         if: always()
         run: |
-          rm -f deploy.tar.gz
-          rm -rf deploy
+          rm -f blog-deploy.tar.gz
+          rm -rf blog-deploy
