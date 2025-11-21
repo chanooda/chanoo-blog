@@ -56,17 +56,9 @@ jobs:
         working-directory: apps/blog-admin
         run: pnpm build
 
-      - name: Build Docker image
-        working-directory: apps/blog-admin
-        run: docker build -t blog-admin:latest .
-
-      - name: Export Docker image to tar
-        working-directory: apps/blog-admin
-        run: docker save blog-admin:latest -o blog-admin.tar
-
       - name: Create deployment package
         working-directory: apps/blog-admin
-        run: tar -czf blog-admin-deploy.tar.gz blog-admin.tar deploy-blue-green.sh .env nginx
+        run: tar -czf blog-admin-deploy.tar.gz dist deploy-blue-green.sh .env nginx
 
       - name: Copy deployment package to server
         uses: appleboy/scp-action@v1

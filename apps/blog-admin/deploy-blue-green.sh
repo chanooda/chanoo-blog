@@ -133,7 +133,8 @@ deploy_new_container() {
     # 이미지 빌드
     echo -e "${YELLOW}Docker 이미지 빌드 중...${NC}"
     cd $PROJECT_DIR
-    docker docker load -i blog-admin.tar
+    docker build -t $IMAGE_NAME:latest .
+    
     
     # 새 컨테이너 실행
     echo -e "${YELLOW}컨테이너 실행 중: ${container_name}${NC}"
