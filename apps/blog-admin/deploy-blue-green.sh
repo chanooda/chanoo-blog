@@ -9,8 +9,8 @@ NC='\033[0m' # No Color
 
 # 설정
 PROJECT_DIR="/home/hanrhfqkq/blog-admin"
-BLUE_PORT=5000
-GREEN_PORT=5001
+BLUE_PORT=6000
+GREEN_PORT=6001
 BLUE_CONTAINER="blog-admin-blue"
 GREEN_CONTAINER="blog-admin-green"
 IMAGE_NAME="blog-admin"
@@ -140,9 +140,8 @@ deploy_new_container() {
     echo -e "${YELLOW}컨테이너 실행 중: ${container_name}${NC}"
     docker run -d \
         --name $container_name \
-        -p ${target_port}:4000 \
+        -p ${target_port}:80 \
         --env-file $PROJECT_DIR/.env \
-        -v $PROJECT_DIR/prisma:/usr/src/app/prisma \
         --restart unless-stopped \
         $IMAGE_NAME:latest
     

@@ -139,9 +139,8 @@ deploy_new_container() {
     echo -e "${YELLOW}컨테이너 실행 중: ${container_name}${NC}"
     docker run -d \
         --name $container_name \
-        -p ${target_port}:4000 \
+        -p ${target_port}:3000 \
         --env-file $PROJECT_DIR/.env \
-        -v $PROJECT_DIR/prisma:/usr/src/app/prisma \
         --restart unless-stopped \
         $IMAGE_NAME:latest
     
