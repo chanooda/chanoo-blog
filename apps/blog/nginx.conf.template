@@ -1,7 +1,6 @@
 # /etc/nginx/sites-available/blog
 upstream blog {
     server localhost:5000;  # Blue 환경 (초기 활성)
-    # server localhost:5001;  # Green 환경으로 전환 시 주석 해제
 }
 
 server {
