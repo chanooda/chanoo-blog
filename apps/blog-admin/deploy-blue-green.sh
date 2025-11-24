@@ -66,9 +66,8 @@ update_nginx_config() {
     echo -e "${YELLOW}Nginx 설정 업데이트 중... (포트 ${target_port})${NC}"
     
     sudo tee $NGINX_CONFIG > /dev/null <<EOF
-upstream admin {
-    server localhost:6000;  # Blue 환경 (초기 활성)
-    # server localhost:6001;  # Green 환경으로 전환 시 주석 해제
+upstream frontend {
+    server localhost:${target_port};
 }
 
 server {
@@ -80,13 +79,13 @@ server {
     location / {
         proxy_pass http://admin;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Host \$host;
+        proxy_cache_bypass \$http_upgrade;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
 
         proxy_connect_timeout 60s;
         proxy_send_timeout 60s;
