@@ -40,21 +40,38 @@ health_check() {
     local port=$1
     local container_name=$2
     local retries=0
-    
+
     echo -e "${YELLOW}헬스 체크 시작: ${container_name} (포트 ${port})${NC}"
-    
+
+    # 1) 포트 오픈 먼저 체크
     while [ $retries -lt $MAX_HEALTH_CHECK_RETRIES ]; do
-        if curl -f -s "${HEALTH_CHECK_URL}:${port}/api/health" > /dev/null 2>&1; then
+        if nc -z localhost $port; then
+            echo -e "${GREEN}✓ 포트 오픈 확인${NC}"
+            break
+        fi
+        retries=$((retries + 1))
+        echo -e "${YELLOW}포트 오픈 대기 ${retries}/${MAX_HEALTH_CHECK_RETRIES}...${NC}"
+        sleep $HEALTH_CHECK_INTERVAL
+    done
+
+    if [ $retries -ge $MAX_HEALTH_CHECK_RETRIES ]; then
+        echo -e "${RED}✗ 포트 오픈 실패: ${container_name}${NC}"
+        return 1
+    fi
+
+    # 2) 앱 레벨 헬스 체크
+    retries=0
+    while [ $retries -lt $MAX_HEALTH_CHECK_RETRIES ]; do
+        if curl -f -s "http://localhost:${port}" > /dev/null 2>&1; then
             echo -e "${GREEN}✓ 헬스 체크 성공: ${container_name}${NC}"
             return 0
         fi
-        
         retries=$((retries + 1))
-        echo -e "${YELLOW}헬스 체크 재시도 ${retries}/${MAX_HEALTH_CHECK_RETRIES}...${NC}"
+        echo -e "${YELLOW}앱 준비 대기 ${retries}/${MAX_HEALTH_CHECK_RETRIES}...${NC}"
         sleep $HEALTH_CHECK_INTERVAL
     done
-    
-    echo -e "${RED}✗ 헬스 체크 실패: ${container_name}${NC}"
+
+    echo -e "${RED}✗ 앱 준비 실패: ${container_name}${NC}"
     return 1
 }
 

@@ -44,7 +44,7 @@ health_check() {
     echo -e "${YELLOW}헬스 체크 시작: ${container_name} (포트 ${port})${NC}"
     
     while [ $retries -lt $MAX_HEALTH_CHECK_RETRIES ]; do
-        if curl -f -s "${HEALTH_CHECK_URL}:${port}/api/health" > /dev/null 2>&1; then
+        if curl -f -s "${HEALTH_CHECK_URL}:${port}" > /dev/null 2>&1; then
             echo -e "${GREEN}✓ 헬스 체크 성공: ${container_name}${NC}"
             return 0
         fi
