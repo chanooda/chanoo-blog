@@ -73,12 +73,8 @@ jobs:
           cp deploy-blue-green.sh blog-deploy/
           cp -a .env blog-deploy/.
           tar czf blog-deploy.tar.gz -C blog-deploy .
-          # 압축 후 중간 파일들 즉시 삭제
-          rm -rf blog-deploy
-          rm -f blog.tar
           docker rmi blog:latest || true
           cp blog-deploy.tar.gz ../../blog-deploy.tar.gz
-          rm -rf blog-deploy
 
       - name: Copy deployment package to server
         uses: appleboy/scp-action@v1
