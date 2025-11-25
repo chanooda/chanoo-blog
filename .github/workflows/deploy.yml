@@ -35,6 +35,8 @@ jobs:
             | map(select(.key | startswith("GCP") | not))
             | map("\(.key)=\(.value|tostring)")
             | .[]' <<< "$SECRETS_CONTEXT" > .env
+        env:
+          SECRETS_CONTEXT: ${{ toJson(secrets) }}
 
       - name: Get pnpm store directory
         shell: bash
