@@ -114,6 +114,12 @@ server {
 }
 EOF
 
+    # sites-enabled에 심볼릭 링크 생성
+    if [ ! -L "$NGINX_ENABLED" ]; then
+        echo -e "${YELLOW}sites-enabled에 심볼릭 링크 생성 중...${NC}"
+        sudo ln -sf $NGINX_CONFIG $NGINX_ENABLED
+    fi
+    
     # Nginx 설정 테스트
     if sudo nginx -t > /dev/null 2>&1; then
         sudo systemctl reload nginx
