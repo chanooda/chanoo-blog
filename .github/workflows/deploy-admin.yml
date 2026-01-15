@@ -64,9 +64,9 @@ jobs:
           mkdir -p blog-admin-deploy
           cp -r nginx blog-admin-deploy/
           cp -a .env blog-admin-deploy/.
-          cp deploy.sh blog-deploy/
-          cp nginx.conf.template blog-deploy/.
-          cp nginx.inc.template blog-deploy/. || true
+          cp deploy.sh blog-admin-deploy/
+          cp nginx.conf.template blog-admin-deploy/.
+          cp nginx.inc.template blog-admin-deploy/. || true
           tar czf blog-admin-deploy.tar.gz -C blog-admin-deploy .
 
       - name: Get Public IP
