@@ -51,12 +51,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        working-directory: apps/blog
+        run: pnpm build
+
       - name: Create deployment package
         working-directory: apps/blog
         run: |
           mkdir -p blog-deploy
-          cp deploy.sh blog-deploy/
           cp -a .env blog-deploy/.
+          cp deploy.sh blog-deploy/
           cp nginx.conf.template blog-deploy/.
           cp nginx.inc.template blog-deploy/. || true
           tar czf blog-deploy.tar.gz -C blog-deploy .
