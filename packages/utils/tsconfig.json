@@ -1,7 +1,6 @@
 {
-  "compilerOptions": {
-    "jsx": "react"
-  },
-
-  "extends": ["tsconfig/base.json"]
+	"extends": "tsconfig/base.json",
+	"compilerOptions": {
+		"jsx": "react"
+	}
 }
