@@ -125,7 +125,7 @@ jobs:
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
           port: 22
-          source: "/apps/blog/blog-deploy.tar.gz"
+          source: "apps/blog/blog-deploy.tar.gz"
           target: /home/${{ secrets.GCP_VM_USER }}/blog
 
       - name: SSH to VM and deploy
@@ -139,7 +139,7 @@ jobs:
             cd /home/${{ secrets.GCP_VM_USER }}/blog
             tar -xzf blog-deploy.tar.gz
             rm -rf blog-deploy.tar.gz
-            chmod +x deploy-blue-green.sh
+            chmod +x deploy.sh
             LOG_DIR=/home/${{ secrets.GCP_VM_USER }}/blog/logs
             mkdir -p "$LOG_DIR"
             TS=$(date +"%Y%m%d-%H%M%S")
