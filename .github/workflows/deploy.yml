@@ -118,13 +118,14 @@ jobs:
           cache-to: type=gha, mode=max
 
       - name: Copy deployment package to server
+
         uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.GCP_VM_IP }}
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
           port: 22
-          source: "blog-deploy.tar.gz"
+          source: "/apps/blog/blog-deploy.tar.gz"
           target: /home/${{ secrets.GCP_VM_USER }}/blog
 
       - name: SSH to VM and deploy

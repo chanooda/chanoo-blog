@@ -110,11 +110,11 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: ./apps/blog
+          context: ./apps/blog-admin
           push: true
           tags: |
-            ${{ secrets.GCP_VM_IP }}:5000/blog-service-app:latest
-            ${{ secrets.GCP_VM_IP }}:5000/blog-service-app:${{ github.sha }}
+            ${{ secrets.GCP_VM_IP }}:5000/blog-admin-app:latest
+            ${{ secrets.GCP_VM_IP }}:5000/blog-admin-app:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha, mode=max
 
@@ -125,7 +125,7 @@ jobs:
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
           port: 22
-          source: "blog-admin-deploy.tar.gz"
+          source: "/apps/blog-admin/blog-admin-deploy.tar.gz"
           target: /home/${{ secrets.GCP_VM_USER }}/blog-admin
 
       - name: SSH to VM and deploy
