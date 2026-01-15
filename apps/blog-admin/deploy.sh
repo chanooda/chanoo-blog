@@ -10,7 +10,7 @@ IMAGE_NAME="blog-admin-app"
 IMAGE_TAG="latest"
 FULL_IMAGE_PATH="$REGISTRY_URL/$IMAGE_NAME:$IMAGE_TAG"
 
-APP_PORT=3001
+APP_PORT=80
 APP_NAME=blog-admin
 TARGET_INC="/etc/nginx/conf.d/blog_admin_target.inc"
 NGINX_CONF="/etc/nginx/conf.d/blog_admin.conf"
