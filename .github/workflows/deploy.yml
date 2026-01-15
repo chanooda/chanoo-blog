@@ -127,6 +127,7 @@ jobs:
           port: 22
           source: "apps/blog/blog-deploy.tar.gz"
           target: /home/${{ secrets.GCP_VM_USER }}/blog
+          strip_components: 2
 
       - name: SSH to VM and deploy
         uses: appleboy/ssh-action@v0.1.10
@@ -151,3 +152,4 @@ jobs:
         run: |
           rm -f apps/blog/blog-deploy.tar.gz
           rm -rf apps/blog/blog-deploy
+          gcloud compute firewall-rules delete
