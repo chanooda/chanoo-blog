@@ -106,8 +106,8 @@ jobs:
           context: ./apps/blog-admin
           push: true
           tags: |
-            chanoo.dev:5000:5000/blog-admin-app:latest
-            chanoo.dev:5000:5000/blog-admin-app:${{ github.sha }}
+            chanoo.dev:5000/blog-admin-app:latest
+            chanoo.dev:5000/blog-admin-app:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha, mode=max
 

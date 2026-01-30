@@ -105,8 +105,8 @@ jobs:
           context: ./apps/blog
           push: true
           tags: |
-            chanoo.dev:5000:5000/blog-service-app:latest
-            chanoo.dev:5000:5000/blog-service-app:${{ github.sha }}
+            chanoo.dev:5000/blog-service-app:latest
+            chanoo.dev:5000/blog-service-app:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha, mode=max
 
