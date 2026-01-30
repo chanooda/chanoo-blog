@@ -92,15 +92,6 @@ jobs:
           driver-opts: |
             image=moby/buildkit:master
             network=host
-          buildkitd-config-inline: |
-            [registry."${{ secrets.GCP_VM_IP }}:5000"]
-              http = true
-              insecure = true
-
-      - name: Configure Insecure Registry
-        run: |
-          echo '{"insecure-registries": ["${{ secrets.GCP_VM_IP }}:5000"]}' | sudo tee /etc/docker/daemon.json
-          sudo systemctl restart docker
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -124,17 +115,19 @@ jobs:
           host: ${{ secrets.GCP_VM_IP }}
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GCP_SSH_PASSWORD }}
           port: 22
           source: "apps/blog-admin/blog-admin-deploy.tar.gz"
           target: /home/${{ secrets.GCP_VM_USER }}/blog-admin
-          strip_components: 2
 
       - name: SSH to VM and deploy
-        uses: appleboy/ssh-action@v0.1.10
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.GCP_VM_IP }}
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GCP_SSH_PASSWORD }}
+          port: 22
           script: |
             set -e
             cd /home/${{ secrets.GCP_VM_USER }}/blog-admin
