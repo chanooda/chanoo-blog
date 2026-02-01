@@ -5,23 +5,23 @@ import { FilePlusIcon } from "ui-icon";
 import { FolderMutateModal } from "../modal/FolderMutateModal";
 
 export function FolderAddButton() {
-	const params = useParams();
-	const [isFolderAddModalOpen, setIsFolderAddModalOpen] = useState(false);
+  const params = useParams();
+  const [isFolderAddModalOpen, setIsFolderAddModalOpen] = useState(false);
 
-	return (
-		<>
-			<Button
-				className="w-full py-6"
-				variant="outline"
-				onClick={() => setIsFolderAddModalOpen(true)}
-			>
-				<FilePlusIcon /> 폴더추가
-			</Button>
-			<FolderMutateModal
-				open={isFolderAddModalOpen}
-				parentId={Number(params.id)}
-				onOpenChange={setIsFolderAddModalOpen}
-			/>
-		</>
-	);
+  return (
+    <>
+      <Button
+        className="w-full py-6"
+        variant="default"
+        onClick={() => setIsFolderAddModalOpen(true)}
+      >
+        <FilePlusIcon /> 폴더추가
+      </Button>
+      <FolderMutateModal
+        open={isFolderAddModalOpen}
+        parentId={Number(params.id)}
+        onOpenChange={setIsFolderAddModalOpen}
+      />
+    </>
+  );
 }

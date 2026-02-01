@@ -12,8 +12,8 @@ import axios, {
 	type AxiosResponse,
 	type Method,
 } from "axios";
+import { useAuth } from "../../apps/provider/AuthContext";
 import type { GlobalError, GlobalResponse } from "../../types/global";
-import { useAuth } from "../contexts/AuthContext";
 
 const axiosClient = axios.create({
 	baseURL: import.meta.env.VITE_APP_BLOG_ADMIN_BASE_URL || "",
@@ -110,6 +110,8 @@ export const useChanooMutation = <
 	>,
 	axiosOption?: AxiosRequestConfig,
 ) => {
+	const { token } = useAuth();
+
 	const mutation = useMutation<
 		AxiosResponse<GlobalResponse<TData>>,
 		AxiosError<TError>,
@@ -125,6 +127,9 @@ export const useChanooMutation = <
 				url:
 					typeof keyCopy[1] === "function" ? keyCopy[1](variables) : keyCopy[1],
 				data: keyCopy[2] ? keyCopy[2](variables) : undefined,
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
 				...axiosOption,
 			});
 		},

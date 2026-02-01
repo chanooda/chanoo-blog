@@ -1,2 +1,2 @@
+export * from "../../../app/(provider)/QueryProvider";
 export * from "./layout";
-export * from "./QueryProvider";
