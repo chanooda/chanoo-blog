@@ -1,8 +1,16 @@
 import { cn } from "@ui/lib/utils";
-import { useEffect, useState } from "react";
-import type { Components } from "react-markdown";
+import {
+  type ComponentPropsWithoutRef,
+  type FC,
+  useEffect,
+  useState,
+} from "react";
+import type { ExtraProps } from "react-markdown";
 import type { githubRepoInfo, githubUserInfo } from "../markdownType";
 import { convertLink } from "../markdownUtils";
+
+// GitHub 링크 컴포넌트 Props 타입
+type GithubProps = ComponentPropsWithoutRef<"a"> & ExtraProps;
 
 // GitHub 아이콘 컴포넌트
 export const GithubIcon = ({ className }: { className?: string }) => (
@@ -60,7 +68,7 @@ const parseGithubUrl = (href: string | undefined) => {
   };
 };
 
-export const Github: Components["a"] = ({ href, className, target }) => {
+export const Github: FC<GithubProps> = ({ href, className, target }) => {
   const { owner, repo } = parseGithubUrl(href);
 
   const [repoInfo, setRepoInfo] = useState<typeof githubRepoInfo | undefined>(
@@ -75,7 +83,7 @@ export const Github: Components["a"] = ({ href, className, target }) => {
   useEffect(() => {
     if (!owner) {
       setLoading(false);
-      return;
+      return undefined;
     }
 
     const controller = new AbortController();

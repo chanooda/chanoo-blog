@@ -41,6 +41,7 @@
 			"source.fixAll.biome": "always",
 			"source.organizeImports.biome": "always"
 		},
-		"tailwindCSS.experimental.configFile": "packages/ui/src/styles/globals.css"
+		"tailwindCSS.experimental.configFile": "packages/ui/src/styles/globals.css",
+		"typescript.tsdk": "blog/node_modules/typescript/lib"
 	}
 }
