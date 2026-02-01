@@ -5,9 +5,9 @@ import App from "./App";
 import "@ui/styles/globals.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-	<React.StrictMode>
-		<SnackbarProvider>
-			<App />
-		</SnackbarProvider>
-	</React.StrictMode>,
+  <React.StrictMode>
+    <SnackbarProvider>
+      <App />
+    </SnackbarProvider>
+  </React.StrictMode>
 );
